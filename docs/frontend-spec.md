@@ -1009,7 +1009,7 @@ The authenticated user's backend preference is authoritative. Mirror it to
 localStorage only as an early-render cache:
 
 ```txt
-jobtrack.theme
+tally.theme
 ```
 
 Possible values:
@@ -1043,7 +1043,7 @@ Manifest should include:
 ```json
 {
   "name": "Job Application Tracker",
-  "short_name": "JobTrack",
+  "short_name": "Tally",
   "description": "Track your job applications, interviews, and follow-ups",
   "start_url": "/",
   "display": "standalone",
