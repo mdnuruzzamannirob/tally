@@ -46,7 +46,7 @@ The frontend will be a responsive, installable Progressive Web App and will comm
 | Language              | TypeScript                                                        |
 | Rendering strategy    | App Router with client-side interactivity for authenticated areas |
 | Styling               | Tailwind CSS                                                      |
-| UI primitives         | Radix UI or headless components                                   |
+| UI primitives         | Customized shadcn/ui exposed only through `components/app-ui`     |
 | State management      | Redux Toolkit                                                     |
 | Server state          | RTK Query                                                         |
 | Forms                 | React Hook Form                                                   |
@@ -55,7 +55,7 @@ The frontend will be a responsive, installable Progressive Web App and will comm
 | Drag and drop         | dnd-kit, only if the Should Have board enhancement is delivered   |
 | Date handling         | date-fns                                                          |
 | Fonts                 | next/font                                                         |
-| PWA                   | Serwist or equivalent Next.js PWA solution                        |
+| PWA                   | Manual web manifest and service worker                            |
 | Unit testing          | Vitest                                                            |
 | Component testing     | Testing Library                                                   |
 | E2E testing           | Playwright                                                        |
@@ -79,6 +79,20 @@ The frontend should follow a clean, feature-based architecture.
 8. Use URL search params for shareable list filters where practical.
 9. Avoid direct fetch calls inside components.
 10. Keep authentication tokens out of localStorage.
+11. Pages and features must import primitives only from `components/app-ui`,
+    never directly from shadcn/ui.
+12. Pin and consume the released OpenAPI 3.1 artifact; never import backend
+    source types.
+
+### Naming conventions
+
+- React component files use PascalCase, for example `ApplicationTable.tsx`.
+- Hooks and utilities use camelCase, for example `useOnlineStatus.ts`.
+- Route segments and feature directories use kebab-case where they contain
+  multiple words, for example `export-import` and `forgot-password`.
+- Backend-facing endpoint modules use domain names such as
+  `applications.api.ts`; feature files retain the same singular/plural domain
+  terminology as their API resource.
 
 ---
 
@@ -119,71 +133,81 @@ Recommended structure:
 src/
 ├── app/
 │   ├── (public)/
-│   │   ├── login/
-│   │   ├── register/
-│   │   ├── forgot-password/
-│   │   ├── reset-password/
-│   │   ├── verify-email/
-│   │   ├── auth/social/callback/
-│   │   └── offline/
+│   │   ├── login/  register/  forgot-password/  reset-password/  verify-email/
+│   ├── (auth)/
+│   │   └── auth/social/callback/
 │   ├── (protected)/
 │   │   ├── dashboard/
 │   │   ├── applications/
+│   │   │   └── [id]/
 │   │   ├── interviews/
 │   │   └── settings/
+│   │       ├── profile/  password/  connected-accounts/  preferences/  data/
+│   ├── offline/
 │   ├── layout.tsx
 │   ├── page.tsx
 │   ├── not-found.tsx
 │   ├── error.tsx
 │   └── global-error.tsx
 ├── components/
-│   ├── ui/
+│   ├── app-ui/                 # only app-facing customized shadcn primitives
+│   │   ├── Button.tsx  Input.tsx  Select.tsx  Dialog.tsx  Sheet.tsx
+│   │   ├── DropdownMenu.tsx  Tooltip.tsx  Tabs.tsx  Badge.tsx  Card.tsx
+│   │   ├── Table.tsx  Skeleton.tsx  EmptyState.tsx  Spinner.tsx  Toast.tsx
+│   │   └── index.ts
 │   ├── layout/
+│   │   ├── AppShell.tsx  Sidebar.tsx  Header.tsx  MobileNav.tsx  OfflineBanner.tsx
 │   ├── forms/
-│   ├── common/
+│   │   ├── FormField.tsx  DatePicker.tsx  TagSelect.tsx
+│   ├── shared/
+│   │   ├── ConfirmDialog.tsx  PageHeader.tsx  Pagination.tsx  ErrorState.tsx
 │   └── providers/
 ├── features/
-│   ├── auth/
-│   ├── applications/
-│   ├── dashboard/
-│   ├── interviews/
-│   ├── tags/
-│   ├── notes/
-│   └── settings/
-├── services/
+│   ├── auth/  dashboard/  applications/  tags/  notes/  interviews/  settings/
+│   └── export-import/
+│       └── { components/, hooks/, api/, types/, utils/ }  # as applicable per feature
+├── store/
 │   ├── api/
 │   │   ├── base-api.ts
 │   │   ├── auth.api.ts
+│   │   ├── users.api.ts
 │   │   ├── applications.api.ts
 │   │   ├── tags.api.ts
 │   │   ├── notes.api.ts
 │   │   ├── interviews.api.ts
-│   │   ├── settings.api.ts
-│   │   └── dashboard.api.ts
-├── store/
+│   │   ├── dashboard.api.ts
+│   │   └── export-import.api.ts
 │   ├── index.ts
 │   ├── hooks.ts
-│   ├── auth.slice.ts
-│   └── ui.slice.ts
+│   ├── slices/
+│   │   ├── auth.slice.ts
+│   │   ├── ui.slice.ts
+│   │   └── preferences.slice.ts
 ├── hooks/
-│   ├── use-auth.ts
-│   ├── use-online-status.ts
-│   ├── use-theme.ts
-│   └── use-debounce.ts
+│   ├── useAuth.ts  useOnlineStatus.ts  useTheme.ts  useDebounce.ts
+│   ├── useMediaQuery.ts  useTimezone.ts
 ├── lib/
-│   ├── utils.ts
-│   ├── date.ts
-│   └── constants.ts
+│   ├── api-client.ts  auth.ts  format.ts  validators.ts
+│   ├── utils.ts  date.ts  constants.ts
 ├── styles/
-│   └── globals.css
+│   ├── globals.css  themes.css  animations.css
 ├── types/
 │   ├── api.types.ts
 │   ├── auth.types.ts
+│   ├── user.types.ts
 │   ├── application.types.ts
 │   ├── interview.types.ts
 │   ├── tag.types.ts
-│   └── note.types.ts
+│   ├── note.types.ts
+│   └── dashboard.types.ts
 └── proxy.ts
+public/
+├── manifest.json
+├── offline.html
+├── sw.js
+└── icons/
+    ├── icon-192.png
+    └── icon-512.png
 ```
 
 ---
@@ -245,6 +269,20 @@ Because the access token exists only in browser memory, Next.js `proxy.ts`
 cannot determine the authenticated state. Protected/PublicOnly guards run in
 the client auth shell after bootstrap; the backend remains the security
 boundary. Proxy may perform only token-independent routing work.
+
+### Next.js 16 Proxy convention
+
+- The single request-boundary file is `src/proxy.ts`, exporting a named
+  `proxy` function. `middleware.ts` and an exported `middleware` function are
+  deprecated in Next.js 16.
+- Use a narrow `config.matcher` and keep the proxy to redirects, rewrites, or
+  request/response header work. Prefer `next.config.ts` redirects for simple
+  static redirects.
+- Do not call the API to bootstrap a session, fetch user data, or enforce
+  authorization in Proxy. The client bootstrap and API authorization remain
+  the respective UX and security boundaries.
+- Proxy uses Next.js's Node.js runtime and must not declare a `runtime`
+  setting.
 
 ### PublicOnlyRoute
 
@@ -477,6 +515,27 @@ User clicks logout
 All backend communication must use RTK Query.
 
 Do not use direct `fetch` or `axios` calls inside UI components.
+
+The API base layer normalizes the approved envelope:
+
+```ts
+type ApiSuccess<T> = { success: true; message: string; data: T; meta?: ApiMeta };
+type ApiFailure = {
+  success: false;
+  message: string;
+  error: { code: string; details?: Record<string, string[]> };
+  meta: { requestId: string };
+};
+```
+
+`data` is generic and direct: endpoint types use `Resource` for one resource
+and `Resource[]` for a collection. Collection endpoints must not invent a
+`{ items: Resource[] }` wrapper; pagination/count information is read from
+top-level `meta`.
+
+The pinned OpenAPI artifact is served by the API at `/api/v1/openapi.json`; its
+interactive Swagger UI is at `/api/v1/docs`. It is used for compatibility and
+client-type validation, while RTK Query remains the only browser API client.
 
 ---
 
@@ -912,6 +971,10 @@ field update.
 ## 11. UI Component Architecture
 
 ## 11.1 UI Primitives
+
+All primitives live in `components/app-ui`. They are the application-owned,
+customized wrappers around shadcn/ui; no page, layout, or feature may import
+shadcn/ui directly.
 
 Create reusable components:
 
@@ -1418,12 +1481,15 @@ Expected backend error shape:
 ```json
 {
   "success": false,
+  "message": "Validation failed",
   "error": {
     "code": "VALIDATION_ERROR",
-    "message": "Validation failed",
     "details": {
       "field": ["Error message"]
     }
+  },
+  "meta": {
+    "requestId": "request_id"
   }
 }
 ```
@@ -1527,7 +1593,7 @@ Production build must:
 - Pass linting
 - Pass tests
 - Generate PWA assets
-- Be deployable to Vercel or equivalent
+- Be deployable to Vercel
 
 ---
 

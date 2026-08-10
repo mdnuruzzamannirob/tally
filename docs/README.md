@@ -10,3 +10,7 @@ These files are tracked with the standalone web repository.
 
 The authoritative runtime API behavior is consumed through the documented HTTP
 contract. Coordinate endpoint/payload changes with the separate `api` repository.
+
+For every API change, pin the released `contracts/openapi.json` OpenAPI 3.1
+artifact before updating RTK Query endpoint types or frontend behavior. Swagger
+UI is available from the API at `/api/v1/docs`.

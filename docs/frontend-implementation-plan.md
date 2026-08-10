@@ -2,16 +2,38 @@
 
 ## Tally
 
-This plan converts the frontend, UI/UX, PRD, operations, and Definition of Done specifications into small delivery phases. The frontend can be built against MSW mocks until the matching backend endpoint is available.
+This plan converts the frontend, UI/UX, PRD, operations, and Definition of Done
+specifications into small delivery phases. It is coordinated with the API
+refactor plan: a feature may use MSW while its API module is being refactored,
+but it must switch to the released, versioned HTTP schema/types before release.
+
+## Current architecture status
+
+- `web/` is an independent Next.js repository with no workspace dependency on
+  `api/`.
+- API releases versioned `contracts/openapi.json` artifacts; web pins and
+  validates the released OpenAPI contract rather than importing backend source
+  types.
+- `components/app-ui` is the only app-facing primitive layer. shadcn/ui may be
+  customized inside that folder, but pages and features must never import
+  shadcn/ui directly.
+- RTK Query base and endpoint modules live in `store/api`; Redux slices hold
+  only auth and durable UI state.
 
 ## Delivery Rules
 
 - Use Next.js 16+ App Router, TypeScript strict mode, Tailwind CSS, Redux Toolkit, and RTK Query.
-- Keep backend communication in RTK Query services; do not call `fetch` or Axios in UI components.
+- Keep backend communication in RTK Query API modules under `store/api`; do not
+  call `fetch` or Axios in UI components.
 - Store access tokens in Redux memory only. Never use localStorage or sessionStorage for access tokens.
 - Use React Hook Form and Zod for every interactive form.
 - Use semantic HTML, keyboard access, visible focus styles, and WCAG 2.1 AA as implementation requirements.
 - Follow the UI/UX visual system: indigo `#6366f1`, compact radii, thin borders, and no heavy shadows.
+- Normalize the approved API envelope: successful responses require `message`,
+  direct object/array payloads live in `data` (never an `items` wrapper), and
+  error codes/details live in `error` with a request ID in `meta`.
+- Do not complete a feature phase until its API refactor phase has released a
+  matching contract version and its RTK Query endpoints have been verified.
 
 ---
 
@@ -20,6 +42,9 @@ This plan converts the frontend, UI/UX, PRD, operations, and Definition of Done 
 ### Scope
 
 - Initialize `web/` as a standalone Next.js App Router + TypeScript project.
+- Add the single `src/proxy.ts` convention with a named `proxy` export; do not
+  use the deprecated `middleware.ts` convention. Keep it limited to narrow,
+  token-independent request-boundary work.
 - Add its development, build, lint, typecheck, unit-test, and E2E scripts.
 - Add the documented frontend environment template.
 
@@ -44,9 +69,13 @@ This plan converts the frontend, UI/UX, PRD, operations, and Definition of Done 
 
 ### Scope
 
-- Create the documented `app`, `components`, `features`, `services`, `store`, `hooks`, `lib`, `styles`, and `types` structure.
-- Add API-envelope, auth, application, tag, note, interview, and dashboard TypeScript types.
-- Publish stable client/server contracts from a separate versioned schema package or API contract artifact when needed; do not create a workspace package.
+- Create the documented route groups, `components/app-ui`, layout/forms/shared
+  components, feature folders, `store/api`, slices, hooks, lib, styles, and
+  types structure.
+- Add API-envelope, auth, user, application, tag, note, interview, dashboard,
+  and export/import TypeScript types.
+- Pin and validate client types against the released OpenAPI 3.1 artifact; do
+  not create a workspace package.
 
 ### Exit criteria
 
@@ -338,7 +367,8 @@ This plan converts the frontend, UI/UX, PRD, operations, and Definition of Done 
 
 ### Scope
 
-- Add manifest, Tally branding, icon assets, offline route, and Serwist (or equivalent) integration.
+- Add `public/manifest.json`, Tally icon assets, `offline.html`, `sw.js`, and
+  the offline route.
 - Precache only static app-shell assets; exclude authenticated API responses.
 
 ### Exit criteria
