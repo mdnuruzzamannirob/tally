@@ -6,9 +6,6 @@ import { OfflineBanner } from "./OfflineBanner";
 export function AppShell({ children }: { children: ReactNode }) {
   return (
     <div className="app-shell">
-      <a className="skip-link" href="#main-content">
-        Skip to content
-      </a>
       <header className="app-header">
         <Link href="/dashboard">Tally</Link>
       </header>

@@ -16,16 +16,30 @@ const inter = Inter({
 export const metadata: Metadata = {
   title: { default: "Tally", template: "%s | Tally" },
   description: "Track your job applications, interviews, and follow-ups.",
+  applicationName: "Tally",
+  keywords: ["job applications", "career tracker", "interviews"],
   manifest: "/manifest.json",
+  icons: { icon: "/icons/icon-192.svg", apple: "/icons/icon-192.svg" },
+  robots: { index: false, follow: false },
+};
+
+export const viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
+  themeColor: "#6366f1",
 };
 
 export default function RootLayout({ children }: Readonly<{ children: ReactNode }>) {
   return (
     <html lang="en">
       <body className={inter.variable}>
+        <a className="skip-link" href="#main-content">
+          Skip to content
+        </a>
         <StoreProvider>
           <SessionBootstrap />
-          {children}
+          <div>{children}</div>
           <ServiceWorkerRegistration />
         </StoreProvider>
       </body>
