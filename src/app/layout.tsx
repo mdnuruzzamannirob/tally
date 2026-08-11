@@ -1,16 +1,17 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Ubuntu_Sans } from "next/font/google";
 import type { ReactNode } from "react";
 
-import "./globals.css";
 import { ServiceWorkerRegistration } from "@/components/providers/ServiceWorkerRegistration";
 import { StoreProvider } from "@/components/providers/StoreProvider";
+import { Toaster } from "@/components/ui/sonner";
+import { TooltipProvider } from "@/components/ui/tooltip";
 import { SessionBootstrap } from "@/features/auth/SessionBootstrap";
+import "./globals.css";
 
-const inter = Inter({
+const ubuntu = Ubuntu_Sans({
   subsets: ["latin"],
-  variable: "--font-inter",
-  display: "swap",
+  variable: "--font-ubuntu",
 });
 
 export const metadata: Metadata = {
@@ -33,14 +34,24 @@ export const viewport = {
 export default function RootLayout({ children }: Readonly<{ children: ReactNode }>) {
   return (
     <html lang="en">
-      <body className={inter.variable}>
+      <body className={ubuntu.variable}>
         <a className="skip-link" href="#main-content">
           Skip to content
         </a>
         <StoreProvider>
-          <SessionBootstrap />
-          <div>{children}</div>
-          <ServiceWorkerRegistration />
+          <TooltipProvider>
+            <SessionBootstrap />
+            <div>{children}</div>
+            <Toaster
+              expand
+              richColors
+              duration={5000}
+              visibleToasts={3}
+              position="top-right"
+              swipeDirections={["bottom", "top", "left", "right"]}
+            />
+            <ServiceWorkerRegistration />
+          </TooltipProvider>
         </StoreProvider>
       </body>
     </html>
