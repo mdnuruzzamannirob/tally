@@ -14,9 +14,11 @@ but it must switch to the released, versioned HTTP schema/types before release.
 - API releases versioned `contracts/openapi.json` artifacts; web pins and
   validates the released OpenAPI contract rather than importing backend source
   types.
-- `components/app-ui` is the only app-facing primitive layer. shadcn/ui may be
-  customized inside that folder, but pages and features must never import
-  shadcn/ui directly.
+- `components/ui` contains the raw/generated shadcn/ui primitives. These files
+  are vendor-style source and must not be customized directly.
+- `components/app-ui` contains project-specific wrappers and compositions that
+  import from `components/ui`. Pages and feature components use this stable
+  app-facing layer, never raw shadcn primitives.
 - RTK Query base and endpoint modules live in `store/api`; Redux slices hold
   only auth and durable UI state.
 
@@ -69,7 +71,7 @@ but it must switch to the released, versioned HTTP schema/types before release.
 
 ### Scope
 
-- Create the documented route groups, `components/app-ui`, layout/forms/shared
+- Create the documented route groups, `components/ui`, `components/app-ui`, layout/forms/shared
   components, feature folders, `store/api`, slices, hooks, lib, styles, and
   types structure.
 - Add API-envelope, auth, user, application, tag, note, interview, dashboard,
@@ -94,7 +96,34 @@ but it must switch to the released, versioned HTTP schema/types before release.
 - Light and dark token previews match the UI/UX specification.
 - Components can use semantic tokens without hard-coding page-specific colors.
 
-## Phase 4 — Base App Shell and Metadata
+## Phase 4 — shadcn/ui Foundation
+
+### Scope
+
+- Initialize shadcn/ui for the existing Next.js App Router, TypeScript, and
+  Tailwind CSS v4 stack; commit `components.json` with the project aliases.
+- Configure generated shadcn primitives to live in `src/components/ui`, and
+  keep `src/lib/utils.ts` as the shared `cn` utility location.
+- Add `lucide-react` for the shadcn icon surface. Add Radix dependencies only
+  through the shadcn CLI when a selected primitive requires them; do not add a
+  blanket Radix dependency set.
+- Generate and theme the initial Button, Input, Textarea, Label, Select,
+  Checkbox, Switch, Badge, Skeleton, Tooltip, Dialog, AlertDialog, Toast,
+  Tabs, DropdownMenu, and Sheet primitives.
+- Keep generated files under `components/ui` unchanged after generation. Build
+  app-owned wrappers in `components/app-ui` for semantic defaults, loading
+  states, form-error wiring, and Tally visual tokens. The wrappers, not
+  generated files, are the stable import surface for pages/features.
+
+### Exit criteria
+
+- `components.json`, aliases, Tailwind token variables, and generated
+  primitives compile with the existing frontend stack.
+- A page imports only from `components/app-ui`; no feature/page imports from
+  `components/ui`.
+- Light and dark visual tokens apply consistently to generated primitives.
+
+## Phase 5 — Base App Shell and Metadata
 
 ### Scope
 
@@ -105,29 +134,32 @@ but it must switch to the released, versioned HTTP schema/types before release.
 
 - Every route has a consistent document shell and accessible main-content target.
 
-## Phase 5 — Reusable UI Primitives: Inputs and Actions
+## Phase 6 — Reusable UI Primitives: Inputs and Actions
 
 ### Scope
 
-- Build Button, Input, Textarea, Select, Checkbox, Switch, Badge, Tag, Tooltip, and Spinner primitives.
+- Compose app-owned Button, Input, Textarea, Select, Checkbox, Switch, Badge,
+  Tag, Tooltip, and Spinner wrappers from the Phase 4 shadcn primitives.
 - Ensure label, error, disabled, loading, and focus states are accessible.
 
 ### Exit criteria
 
 - Form primitives are keyboard usable and have component tests.
 
-## Phase 6 — Reusable UI Primitives: Feedback and Overlays
+## Phase 7 — Reusable UI Primitives: Feedback and Overlays
 
 ### Scope
 
-- Build Dialog/Modal, confirmation dialog, Toast, ErrorBanner, EmptyState, Skeleton, Pagination, Tabs, DropdownMenu, and OfflineBanner.
+- Compose Dialog/Modal, confirmation dialog, Toast, ErrorBanner, EmptyState,
+  Skeleton, Pagination, Tabs, DropdownMenu, and OfflineBanner from the Phase 4
+  shadcn primitives.
 - Add focus trap, Escape close, focus return, and live-region behavior.
 
 ### Exit criteria
 
 - Dialogs and toasts meet keyboard and screen-reader requirements.
 
-## Phase 7 — Redux Store and Providers
+## Phase 8 — Redux Store and Providers
 
 ### Scope
 
@@ -139,7 +171,7 @@ but it must switch to the released, versioned HTTP schema/types before release.
 - Client components can read/write typed UI state.
 - Access-token state disappears on a full browser reload.
 
-## Phase 8 — RTK Query Base API
+## Phase 9 — RTK Query Base API
 
 ### Scope
 
@@ -152,7 +184,7 @@ but it must switch to the released, versioned HTTP schema/types before release.
 - Components do not need direct HTTP calls.
 - Query/mutation error states have one normalized shape.
 
-## Phase 9 — Reauthentication Base Query
+## Phase 10 — Reauthentication Base Query
 
 ### Scope
 
@@ -164,7 +196,7 @@ but it must switch to the released, versioned HTTP schema/types before release.
 - Concurrent 401 responses produce only one refresh request.
 - No access token is written to browser storage.
 
-## Phase 10 — Theme System
+## Phase 11 — Theme System
 
 ### Scope
 
@@ -177,7 +209,7 @@ but it must switch to the released, versioned HTTP schema/types before release.
 - Theme changes do not cause a visible flash or layout shift.
 - All primitives render correctly in both themes.
 
-## Phase 11 — Route Groups and Route Guards
+## Phase 12 — Route Groups and Route Guards
 
 ### Scope
 
@@ -190,7 +222,7 @@ but it must switch to the released, versioned HTTP schema/types before release.
 - Protected pages never render their content before auth state resolves.
 - Unauthenticated users reach `/login?redirect=...`.
 
-## Phase 12 — Authentication API and Bootstrap
+## Phase 13 — Authentication API and Bootstrap
 
 ### Scope
 
@@ -202,7 +234,7 @@ but it must switch to the released, versioned HTTP schema/types before release.
 - Refresh followed by `/auth/me` sets the documented auth state.
 - Failed bootstrap results in a clean unauthenticated state.
 
-## Phase 13 — Public Auth Forms
+## Phase 14 — Public Auth Forms
 
 ### Scope
 
@@ -213,7 +245,7 @@ but it must switch to the released, versioned HTTP schema/types before release.
 
 - Forms provide inline errors, prevent duplicate submit, and redirect according to auth state.
 
-## Phase 14 — OAuth and Account-Recovery UX
+## Phase 15 — OAuth and Account-Recovery UX
 
 ### Scope
 
@@ -225,7 +257,7 @@ but it must switch to the released, versioned HTTP schema/types before release.
 - Social callback restores the session through refresh and redirects safely.
 - Public auth screens meet the documented loading/error/success states.
 
-## Phase 15 — Authenticated Navigation Shell
+## Phase 16 — Authenticated Navigation Shell
 
 ### Scope
 
@@ -237,7 +269,7 @@ but it must switch to the released, versioned HTTP schema/types before release.
 - Navigation supports Dashboard, Applications, Interviews, and Settings on desktop and mobile.
 - Global search routes to the canonical applications search URL.
 
-## Phase 16 — Application API Service and URL-State Utilities
+## Phase 17 — Application API Service and URL-State Utilities
 
 ### Scope
 
@@ -248,7 +280,7 @@ but it must switch to the released, versioned HTTP schema/types before release.
 
 - Application list state survives refresh/back/forward and produces valid API query arguments.
 
-## Phase 17 — Application List
+## Phase 18 — Application List
 
 ### Scope
 
@@ -259,7 +291,7 @@ but it must switch to the released, versioned HTTP schema/types before release.
 - List works responsively with every documented filter and sort parameter.
 - Default page size is 20 and pagination controls are accessible.
 
-## Phase 18 — Application Form and Create Flow
+## Phase 19 — Application Form and Create Flow
 
 ### Scope
 
@@ -271,7 +303,7 @@ but it must switch to the released, versioned HTTP schema/types before release.
 - Form validation mirrors the backend contract.
 - A successful create updates the visible UI without manual refresh.
 
-## Phase 19 — Application Detail and Edit Flow
+## Phase 20 — Application Detail and Edit Flow
 
 ### Scope
 
@@ -282,7 +314,7 @@ but it must switch to the released, versioned HTTP schema/types before release.
 - Detail works on mobile and desktop.
 - Generic edit cannot change status; destructive actions require confirmation.
 
-## Phase 20 — Status Management and Activity
+## Phase 21 — Status Management and Activity
 
 ### Scope
 
@@ -294,7 +326,7 @@ but it must switch to the released, versioned HTTP schema/types before release.
 - Status mutation refreshes detail, list, dashboard, and history correctly.
 - The accessible status control is the MVP implementation; drag-and-drop board remains optional.
 
-## Phase 21 — Tag Management
+## Phase 22 — Tag Management
 
 ### Scope
 
@@ -306,7 +338,7 @@ but it must switch to the released, versioned HTTP schema/types before release.
 - Tag changes invalidate documented list/detail data.
 - Tag deletion confirmation explains that application records are retained.
 
-## Phase 22 — Notes
+## Phase 23 — Notes
 
 ### Scope
 
@@ -316,7 +348,7 @@ but it must switch to the released, versioned HTTP schema/types before release.
 
 - Notes sort newest-first and mutations refresh the notes area.
 
-## Phase 23 — Interviews
+## Phase 24 — Interviews
 
 ### Scope
 
@@ -327,7 +359,7 @@ but it must switch to the released, versioned HTTP schema/types before release.
 
 - Upcoming/past sort order, meeting links, empty states, and archive behavior follow the specification.
 
-## Phase 24 — Dashboard Service and Widgets
+## Phase 25 — Dashboard Service and Widgets
 
 ### Scope
 
@@ -339,7 +371,7 @@ but it must switch to the released, versioned HTTP schema/types before release.
 - Widget links use canonical filtered/list/detail routes.
 - Dashboard has loading, empty, and error states and remains responsive.
 
-## Phase 25 — Settings: Profile, Security, and Preferences
+## Phase 26 — Settings: Profile, Security, and Preferences
 
 ### Scope
 
@@ -351,7 +383,7 @@ but it must switch to the released, versioned HTTP schema/types before release.
 - Server-stored preferences supersede the local early-render cache after bootstrap.
 - Security forms provide safe, clear feedback.
 
-## Phase 26 — Export and Import UX
+## Phase 27 — Export and Import UX
 
 ### Scope
 
@@ -363,7 +395,7 @@ but it must switch to the released, versioned HTTP schema/types before release.
 - Download uses the server filename when supplied and revokes object URLs.
 - Import clearly states that portable application data will be replaced.
 
-## Phase 27 — PWA Foundation
+## Phase 28 — PWA Foundation
 
 ### Scope
 
@@ -375,7 +407,7 @@ but it must switch to the released, versioned HTTP schema/types before release.
 
 - The deployed application is installable and provides the offline fallback page.
 
-## Phase 28 — Offline, Install, and Update UX
+## Phase 29 — Offline, Install, and Update UX
 
 ### Scope
 
@@ -386,7 +418,7 @@ but it must switch to the released, versioned HTTP schema/types before release.
 - Offline state is visible globally and mutations do not silently fail.
 - An available service-worker update can be applied through Reload.
 
-## Phase 29 — Frontend Quality Completion
+## Phase 30 — Frontend Quality Completion
 
 ### Scope
 
@@ -399,7 +431,7 @@ but it must switch to the released, versioned HTTP schema/types before release.
 - Frontend checklist in `definition-of-done.md` is satisfied.
 - Critical E2E flows pass against a running frontend and API.
 
-## Phase 30 — Performance, Accessibility, and Deployment Review
+## Phase 31 — Performance, Accessibility, and Deployment Review
 
 ### Scope
 

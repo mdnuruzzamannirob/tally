@@ -40,26 +40,26 @@ The frontend will be a responsive, installable Progressive Web App and will comm
 
 ## 2. Technology Stack
 
-| Concern               | Choice                                                            |
-| --------------------- | ----------------------------------------------------------------- |
-| Framework             | Next.js 16+ App Router                                            |
-| Language              | TypeScript                                                        |
-| Rendering strategy    | App Router with client-side interactivity for authenticated areas |
-| Styling               | Tailwind CSS                                                      |
-| UI primitives         | Customized shadcn/ui exposed only through `components/app-ui`     |
-| State management      | Redux Toolkit                                                     |
-| Server state          | RTK Query                                                         |
-| Forms                 | React Hook Form                                                   |
-| Validation            | Zod                                                               |
-| Charts                | Recharts                                                          |
-| Drag and drop         | dnd-kit, only if the Should Have board enhancement is delivered   |
-| Date handling         | date-fns                                                          |
-| Fonts                 | next/font                                                         |
-| PWA                   | Manual web manifest and service worker                            |
-| Unit testing          | Vitest                                                            |
-| Component testing     | Testing Library                                                   |
-| E2E testing           | Playwright                                                        |
-| API mocking for tests | MSW                                                               |
+| Concern               | Choice                                                                |
+| --------------------- | --------------------------------------------------------------------- |
+| Framework             | Next.js 16+ App Router                                                |
+| Language              | TypeScript                                                            |
+| Rendering strategy    | App Router with client-side interactivity for authenticated areas     |
+| Styling               | Tailwind CSS                                                          |
+| UI primitives         | Raw shadcn/ui in `components/ui`, app wrappers in `components/app-ui` |
+| State management      | Redux Toolkit                                                         |
+| Server state          | RTK Query                                                             |
+| Forms                 | React Hook Form                                                       |
+| Validation            | Zod                                                                   |
+| Charts                | Recharts                                                              |
+| Drag and drop         | dnd-kit, only if the Should Have board enhancement is delivered       |
+| Date handling         | date-fns                                                              |
+| Fonts                 | next/font                                                             |
+| PWA                   | Manual web manifest and service worker                                |
+| Unit testing          | Vitest                                                                |
+| Component testing     | Testing Library                                                       |
+| E2E testing           | Playwright                                                            |
+| API mocking for tests | MSW                                                                   |
 
 ---
 
@@ -79,8 +79,9 @@ The frontend should follow a clean, feature-based architecture.
 8. Use URL search params for shareable list filters where practical.
 9. Avoid direct fetch calls inside components.
 10. Keep authentication tokens out of localStorage.
-11. Pages and features must import primitives only from `components/app-ui`,
-    never directly from shadcn/ui.
+11. Raw/generated shadcn primitives live in `components/ui` and must not be
+    customized directly. Pages and features import only project-owned wrappers
+    from `components/app-ui`, which may compose the raw primitives.
 12. Pin and consume the released OpenAPI 3.1 artifact; never import backend
     source types.
 
@@ -150,7 +151,10 @@ src/
 │   ├── error.tsx
 │   └── global-error.tsx
 ├── components/
-│   ├── app-ui/                 # only app-facing customized shadcn primitives
+│   ├── ui/                     # raw/generated shadcn primitives; do not edit directly
+│   │   ├── button.tsx  input.tsx  select.tsx  dialog.tsx  sheet.tsx
+│   │   └── ...
+│   ├── app-ui/                 # app-owned wrappers/compositions around ui/
 │   │   ├── Button.tsx  Input.tsx  Select.tsx  Dialog.tsx  Sheet.tsx
 │   │   ├── DropdownMenu.tsx  Tooltip.tsx  Tabs.tsx  Badge.tsx  Card.tsx
 │   │   ├── Table.tsx  Skeleton.tsx  EmptyState.tsx  Spinner.tsx  Toast.tsx
@@ -519,7 +523,12 @@ Do not use direct `fetch` or `axios` calls inside UI components.
 The API base layer normalizes the approved envelope:
 
 ```ts
-type ApiSuccess<T> = { success: true; message: string; data: T; meta?: ApiMeta };
+type ApiSuccess<T> = {
+  success: true;
+  message: string;
+  data: T;
+  meta?: ApiMeta;
+};
 type ApiFailure = {
   success: false;
   message: string;
@@ -972,9 +981,9 @@ field update.
 
 ## 11.1 UI Primitives
 
-All primitives live in `components/app-ui`. They are the application-owned,
-customized wrappers around shadcn/ui; no page, layout, or feature may import
-shadcn/ui directly.
+Raw shadcn primitives live in `components/ui` and are not edited directly.
+Application-owned wrappers and compositions live in `components/app-ui`; no
+page, layout, or feature may import from `components/ui` directly.
 
 Create reusable components:
 
