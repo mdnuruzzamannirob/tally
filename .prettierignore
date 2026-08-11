@@ -4,6 +4,7 @@ node_modules
 playwright-report
 test-results
 pnpm-lock.yaml
+contracts/openapi.json
 public/sw.js
 public/mockServiceWorker.js
 public/manifest.json

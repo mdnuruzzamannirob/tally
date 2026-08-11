@@ -8,7 +8,6 @@ const user: CurrentUser = {
   name: "Test User",
   email: "test@example.com",
   emailVerified: true,
-  theme: "SYSTEM",
 };
 
 const session: AuthSession = { accessToken: "test-access-token", user };

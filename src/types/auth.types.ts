@@ -1,10 +1,6 @@
-export interface CurrentUser {
-  id: string;
-  name: string | null;
-  email: string;
-  emailVerified: boolean;
-  theme?: "LIGHT" | "DARK" | "SYSTEM";
-}
+import type { User } from "./user.types";
+
+export type CurrentUser = User;
 
 export interface AuthSession {
   accessToken: string;
