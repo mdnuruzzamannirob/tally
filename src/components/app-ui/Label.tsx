@@ -3,5 +3,5 @@ import type { ComponentPropsWithoutRef } from "react";
 import { Label as PrimitiveLabel } from "@/components/ui/label";
 
 export function Label(props: ComponentPropsWithoutRef<typeof PrimitiveLabel>) {
-  return <PrimitiveLabel {...props} />;
+  return <PrimitiveLabel className="text-sm font-medium text-foreground" {...props} />;
 }
