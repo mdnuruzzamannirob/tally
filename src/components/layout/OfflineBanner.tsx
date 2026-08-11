@@ -9,7 +9,14 @@ export function OfflineBanner() {
     sync();
     addEventListener("online", sync);
     addEventListener("offline", sync);
-    return () => { removeEventListener("online", sync); removeEventListener("offline", sync); };
+    return () => {
+      removeEventListener("online", sync);
+      removeEventListener("offline", sync);
+    };
   }, []);
-  return online ? null : <p role="status" className="offline-banner">You are offline. Changes cannot be saved until you reconnect.</p>;
+  return online ? null : (
+    <p role="status" className="offline-banner">
+      You are offline. Changes cannot be saved until you reconnect.
+    </p>
+  );
 }

@@ -13,7 +13,11 @@ export const authApi = baseApi.injectEndpoints({
       invalidatesTags: ["Auth"],
     }),
     logout: build.mutation<void, void>({
-      query: () => ({ url: "/auth/logout", method: "POST", headers: { "X-Requested-With": "XMLHttpRequest" } }),
+      query: () => ({
+        url: "/auth/logout",
+        method: "POST",
+        headers: { "X-Requested-With": "XMLHttpRequest" },
+      }),
       invalidatesTags: ["Auth"],
     }),
     currentUser: build.query<CurrentUser, void>({

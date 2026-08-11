@@ -1,2 +1,9 @@
 import Link from "next/link";
-export default function NotFound() { return <main><h1>Page not found</h1><Link href="/dashboard">Return to Tally</Link></main>; }
+export default function NotFound() {
+  return (
+    <main>
+      <h1>Page not found</h1>
+      <Link href="/dashboard">Return to Tally</Link>
+    </main>
+  );
+}

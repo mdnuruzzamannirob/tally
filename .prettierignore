@@ -1,0 +1,11 @@
+.next
+coverage
+node_modules
+playwright-report
+test-results
+pnpm-lock.yaml
+public/sw.js
+public/mockServiceWorker.js
+public/manifest.json
+docs/*.md
+docs/tally-uiux-demo (1).html

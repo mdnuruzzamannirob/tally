@@ -18,21 +18,42 @@ export function LoginForm() {
   const dispatch = useAppDispatch();
   const [login, { isLoading }] = useLoginMutation();
   const [error, setError] = useState<string | null>(null);
-  const { register, handleSubmit, formState: { errors } } = useForm<LoginValues>();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<LoginValues>();
   const onSubmit = async (values: LoginValues) => {
     const parsed = loginSchema.safeParse(values);
-    if (!parsed.success) { setError("Enter a valid email and password."); return; }
+    if (!parsed.success) {
+      setError("Enter a valid email and password.");
+      return;
+    }
     try {
       const session = await login(parsed.data).unwrap();
       dispatch(setSession(session));
       router.replace("/dashboard");
-    } catch { setError("Unable to sign in with those credentials."); }
+    } catch {
+      setError("Unable to sign in with those credentials.");
+    }
   };
-  return <form className="stack" onSubmit={handleSubmit(onSubmit)} noValidate>
-    <h1>Sign in to Tally</h1>
-    <label>Email<Input type="email" autoComplete="email" {...register("email")} /></label>
-    <label>Password<Input type="password" autoComplete="current-password" {...register("password")} /></label>
-    {(error || errors.email || errors.password) && <p role="alert">{error ?? "Please complete all fields."}</p>}
-    <Button type="submit" disabled={isLoading}>{isLoading ? "Signing in…" : "Sign in"}</Button>
-  </form>;
+  return (
+    <form className="stack" onSubmit={handleSubmit(onSubmit)} noValidate>
+      <h1>Sign in to Tally</h1>
+      <label>
+        Email
+        <Input type="email" autoComplete="email" {...register("email")} />
+      </label>
+      <label>
+        Password
+        <Input type="password" autoComplete="current-password" {...register("password")} />
+      </label>
+      {(error || errors.email || errors.password) && (
+        <p role="alert">{error ?? "Please complete all fields."}</p>
+      )}
+      <Button type="submit" disabled={isLoading}>
+        {isLoading ? "Signing in…" : "Sign in"}
+      </Button>
+    </form>
+  );
 }

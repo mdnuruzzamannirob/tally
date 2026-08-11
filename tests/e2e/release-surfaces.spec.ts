@@ -15,9 +15,7 @@ test.describe("release public surfaces", () => {
     });
   }
 
-  test("login form exposes accessible credentials and submit controls", async ({
-    page,
-  }) => {
+  test("login form exposes accessible credentials and submit controls", async ({ page }) => {
     await page.goto("/login");
     await expect(page.getByLabel("Email")).toBeVisible();
     await expect(page.getByLabel("Password")).toBeVisible();

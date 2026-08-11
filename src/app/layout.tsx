@@ -16,7 +16,11 @@ export default function RootLayout({ children }: Readonly<{ children: ReactNode 
   return (
     <html lang="en">
       <body>
-        <StoreProvider><SessionBootstrap />{children}<ServiceWorkerRegistration /></StoreProvider>
+        <StoreProvider>
+          <SessionBootstrap />
+          {children}
+          <ServiceWorkerRegistration />
+        </StoreProvider>
       </body>
     </html>
   );

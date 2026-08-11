@@ -26,7 +26,11 @@ const refreshSession = async (
   api: Parameters<BaseQueryFn>[1],
   extraOptions: Parameters<BaseQueryFn>[2],
 ): Promise<AuthSession | null> => {
-  const refreshResult = await rawBaseQuery({ url: "/auth/refresh", method: "POST" }, api, extraOptions);
+  const refreshResult = await rawBaseQuery(
+    { url: "/auth/refresh", method: "POST" },
+    api,
+    extraOptions,
+  );
   const refreshBody = refreshResult.data as ApiEnvelope<{ accessToken: string }> | undefined;
   if (!refreshBody?.success) return null;
 

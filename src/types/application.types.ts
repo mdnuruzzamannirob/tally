@@ -1,11 +1,5 @@
 export type ApplicationStatus =
-  | "WISHLIST"
-  | "APPLIED"
-  | "SCREENING"
-  | "INTERVIEW"
-  | "OFFER"
-  | "REJECTED"
-  | "WITHDRAWN";
+  "WISHLIST" | "APPLIED" | "SCREENING" | "INTERVIEW" | "OFFER" | "REJECTED" | "WITHDRAWN";
 
 export interface Application {
   id: string;
