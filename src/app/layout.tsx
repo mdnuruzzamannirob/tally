@@ -3,10 +3,9 @@ import { ThemeProvider } from "next-themes";
 import { Ubuntu_Sans } from "next/font/google";
 import type { ReactNode } from "react";
 
+import { AppToaster, AppTooltipProvider } from "@/components/app-ui";
 import { ServiceWorkerRegistration } from "@/components/providers/ServiceWorkerRegistration";
 import { StoreProvider } from "@/components/providers/StoreProvider";
-import { Toaster } from "@/components/ui/sonner";
-import { TooltipProvider } from "@/components/ui/tooltip";
 import { SessionBootstrap } from "@/features/auth/SessionBootstrap";
 import "./globals.css";
 
@@ -35,17 +34,14 @@ export const viewport = {
 
 export default function RootLayout({ children }: Readonly<{ children: ReactNode }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
-      <body className={ubuntu.variable} suppressHydrationWarning>
-        <a className="skip-link" href="#main-content">
-          Skip to content
-        </a>
+    <html className={ubuntu.variable} lang="en" suppressHydrationWarning>
+      <body className="font-sans" suppressHydrationWarning>
         <StoreProvider>
           <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-            <TooltipProvider>
+            <AppTooltipProvider>
               <SessionBootstrap />
               <div>{children}</div>
-              <Toaster
+              <AppToaster
                 expand
                 richColors
                 duration={5000}
@@ -54,7 +50,7 @@ export default function RootLayout({ children }: Readonly<{ children: ReactNode 
                 swipeDirections={["bottom", "top", "left", "right"]}
               />
               <ServiceWorkerRegistration />
-            </TooltipProvider>
+            </AppTooltipProvider>
           </ThemeProvider>
         </StoreProvider>
       </body>

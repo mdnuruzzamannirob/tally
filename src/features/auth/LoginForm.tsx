@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
-import { Button, Input } from "@/components/app-ui";
+import { AppButton, AppInput } from "@/components/app-ui";
 import { useLoginMutation } from "@/store/api/auth.api";
 import { useAppDispatch } from "@/store/hooks";
 import { setSession } from "@/store/slices/auth.slice";
@@ -42,18 +42,18 @@ export function LoginForm() {
       <h1>Sign in to Tally</h1>
       <label>
         Email
-        <Input type="email" autoComplete="email" {...register("email")} />
+        <AppInput type="email" autoComplete="email" {...register("email")} />
       </label>
       <label>
         Password
-        <Input type="password" autoComplete="current-password" {...register("password")} />
+        <AppInput type="password" autoComplete="current-password" {...register("password")} />
       </label>
       {(error || errors.email || errors.password) && (
         <p role="alert">{error ?? "Please complete all fields."}</p>
       )}
-      <Button type="submit" disabled={isLoading}>
+      <AppButton type="submit" disabled={isLoading}>
         {isLoading ? "Signing in…" : "Sign in"}
-      </Button>
+      </AppButton>
     </form>
   );
 }
