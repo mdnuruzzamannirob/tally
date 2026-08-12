@@ -10,7 +10,8 @@ export function Textarea({ className, error = false, ...props }: TextareaProps) 
     <PrimitiveTextarea
       aria-invalid={error || props["aria-invalid"] || undefined}
       className={cn(
-        "min-h-24 rounded-md border-border-strong bg-surface text-base shadow-none",
+        "min-h-24 rounded-md border-2 border-border bg-surface px-3 text-base shadow-none",
+        "placeholder:text-muted-foreground hover:border-border-strong transition-colors",
         "focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-primary-ring",
         error && "border-danger focus-visible:border-danger focus-visible:ring-danger/25",
         className,

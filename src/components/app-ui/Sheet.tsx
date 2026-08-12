@@ -5,8 +5,8 @@ import {
   SheetClose,
   SheetContent as PrimitiveSheetContent,
   SheetDescription,
-  SheetFooter,
-  SheetHeader,
+  SheetFooter as PrimitiveSheetFooter,
+  SheetHeader as PrimitiveSheetHeader,
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
@@ -16,6 +16,24 @@ function SheetContent({ className, ...props }: ComponentProps<typeof PrimitiveSh
   return (
     <PrimitiveSheetContent
       className={cn("border-border bg-surface shadow-modal", className)}
+      {...props}
+    />
+  );
+}
+
+function SheetHeader({ className, ...props }: ComponentProps<typeof PrimitiveSheetHeader>) {
+  return (
+    <PrimitiveSheetHeader
+      className={cn("border-b border-border px-6 pb-4", className)}
+      {...props}
+    />
+  );
+}
+
+function SheetFooter({ className, ...props }: ComponentProps<typeof PrimitiveSheetFooter>) {
+  return (
+    <PrimitiveSheetFooter
+      className={cn("border-t-2 border-border-strong bg-secondary px-6 py-4", className)}
       {...props}
     />
   );

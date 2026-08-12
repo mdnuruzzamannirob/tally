@@ -47,12 +47,16 @@
   --color-brand-accent: var(--brand-accent);
   --color-brand-accent-soft: var(--brand-accent-soft);
   --color-success: var(--success);
+  --color-success-hover: var(--success-hover);
   --color-success-soft: var(--success-soft);
   --color-warning: var(--warning);
+  --color-warning-hover: var(--warning-hover);
   --color-warning-soft: var(--warning-soft);
   --color-danger: var(--danger);
+  --color-danger-hover: var(--danger-hover);
   --color-danger-soft: var(--danger-soft);
   --color-info: var(--info);
+  --color-info-hover: var(--info-hover);
   --color-info-soft: var(--info-soft);
 
   /* Compatibility utilities used by existing Tally components */
@@ -88,6 +92,11 @@
   --color-status-withdrawn-text: var(--status-withdrawn-text);
   --color-status-withdrawn-border: var(--status-withdrawn-border);
 
+  --color-interview-scheduled-text: var(--interview-scheduled-text);
+  --color-interview-completed-text: var(--interview-completed-text);
+  --color-interview-cancelled-text: var(--interview-cancelled-text);
+  --color-interview-no-show-text: var(--interview-no-show-text);
+
   --radius-xs: 0.125rem;
   --radius-sm: 0.25rem;
   --radius-md: 0.375rem;
@@ -98,20 +107,15 @@
   --radius-4xl: 2rem;
   --radius-full: 9999px;
 
-  --shadow-xs: 0 1px 2px rgb(15 23 42 / 5%);
-  --shadow-sm: 0 1px 3px rgb(15 23 42 / 8%), 0 1px 2px rgb(15 23 42 / 4%);
-  --shadow-md: 0 8px 18px rgb(15 23 42 / 8%), 0 2px 6px rgb(15 23 42 / 4%);
-  --shadow-lg: 0 14px 28px rgb(15 23 42 / 10%), 0 4px 10px rgb(15 23 42 / 5%);
-  --shadow-xl: 0 22px 44px rgb(15 23 42 / 14%), 0 8px 18px rgb(15 23 42 / 6%);
-  --shadow-2xl: 0 28px 64px rgb(15 23 42 / 18%);
-  --shadow-popover: 0 8px 24px rgb(15 23 42 / 8%);
-  --shadow-modal: 0 12px 32px rgb(15 23 42 / 12%);
-  --shadow-primary-control: 0 4px 10px -6px rgb(99 102 241 / 45%);
-
-  --ease-default: cubic-bezier(0.4, 0, 0.2, 1);
-  --duration-fast: 150ms;
-  --duration-normal: 250ms;
-  --duration-slow: 400ms;
+  --shadow-xs: var(--shadow-xs-value);
+  --shadow-sm: var(--shadow-sm-value);
+  --shadow-md: var(--shadow-md-value);
+  --shadow-lg: var(--shadow-lg-value);
+  --shadow-xl: var(--shadow-xl-value);
+  --shadow-2xl: var(--shadow-2xl-value);
+  --shadow-popover: var(--shadow-popover-value);
+  --shadow-modal: var(--shadow-modal-value);
+  --shadow-primary-control: var(--shadow-primary-control-value);
 
   --ease-default: cubic-bezier(0.4, 0, 0.2, 1);
   --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
@@ -146,12 +150,16 @@
 
   /* Feedback palette */
   --color-success: #16a34a;
+  --color-success-hover: #15803d;
   --color-success-soft: #f0fdf4;
   --color-warning: #d97706;
+  --color-warning-hover: #b45309;
   --color-warning-soft: #fffbeb;
   --color-danger: #dc2626;
+  --color-danger-hover: #b91c1c;
   --color-danger-soft: #fef2f2;
   --color-info: #0891b2;
+  --color-info-hover: #0e7490;
   --color-info-soft: #ecfeff;
 
   /* Canonical shadcn semantic tokens */
@@ -207,12 +215,16 @@
   --brand-accent: var(--color-brand-accent);
   --brand-accent-soft: var(--color-brand-accent-soft);
   --success: var(--color-success);
+  --success-hover: var(--color-success-hover);
   --success-soft: var(--color-success-soft);
   --warning: var(--color-warning);
+  --warning-hover: var(--color-warning-hover);
   --warning-soft: var(--color-warning-soft);
   --danger: var(--color-danger);
+  --danger-hover: var(--color-danger-hover);
   --danger-soft: var(--color-danger-soft);
   --info: var(--color-info);
+  --info-hover: var(--color-info-hover);
   --info-soft: var(--color-info-soft);
 
   /* 4px spacing rhythm and restrained typography weights. */
@@ -228,9 +240,6 @@
   --space-16: 4rem;
   --space-20: 5rem;
   --space-24: 6rem;
-  --font-weight-normal: 400;
-  --font-weight-medium: 500;
-  --font-weight-semibold: 600;
 
   /* Application status badges: subtle fill, readable text, thin border. */
   --status-wishlist-background: #f1f5f9;
@@ -261,9 +270,15 @@
   --interview-no-show-text: #b91c1c;
 
   /* Elevation and motion */
+  --shadow-xs-value: 0 1px 2px rgb(15 23 42 / 5%);
+  --shadow-sm-value: 0 1px 3px rgb(15 23 42 / 8%), 0 1px 2px rgb(15 23 42 / 4%);
+  --shadow-md-value: 0 8px 18px rgb(15 23 42 / 8%), 0 2px 6px rgb(15 23 42 / 4%);
+  --shadow-lg-value: 0 14px 28px rgb(15 23 42 / 10%), 0 4px 10px rgb(15 23 42 / 5%);
+  --shadow-xl-value: 0 22px 44px rgb(15 23 42 / 14%), 0 8px 18px rgb(15 23 42 / 6%);
+  --shadow-2xl-value: 0 28px 64px rgb(15 23 42 / 18%);
   --shadow-popover-value: 0 8px 24px rgb(15 23 42 / 8%);
   --shadow-modal-value: 0 12px 32px rgb(15 23 42 / 12%);
-  --shadow-primary-control: 0 4px 10px -6px rgb(99 102 241 / 45%);
+  --shadow-primary-control-value: 0 4px 10px -6px rgb(99 102 241 / 45%);
 }
 
 .dark,
@@ -287,12 +302,16 @@
   --color-primary-border: rgb(129 140 248 / 35%);
 
   --color-success: #22c55e;
+  --color-success-hover: #16a34a;
   --color-success-soft: rgb(34 197 94 / 14%);
   --color-warning: #f59e0b;
+  --color-warning-hover: #d97706;
   --color-warning-soft: rgb(245 158 11 / 14%);
   --color-danger: #ef4444;
+  --color-danger-hover: #dc2626;
   --color-danger-soft: rgb(239 68 68 / 14%);
   --color-info: #38bdf8;
+  --color-info-hover: #0ea5e9;
   --color-info-soft: rgb(34 211 238 / 12%);
 
   --background: var(--color-bg);
@@ -338,12 +357,16 @@
   --brand-accent: var(--color-brand-accent);
   --brand-accent-soft: var(--color-brand-accent-soft);
   --success: var(--color-success);
+  --success-hover: var(--color-success-hover);
   --success-soft: var(--color-success-soft);
   --warning: var(--color-warning);
+  --warning-hover: var(--color-warning-hover);
   --warning-soft: var(--color-warning-soft);
   --danger: var(--color-danger);
+  --danger-hover: var(--color-danger-hover);
   --danger-soft: var(--color-danger-soft);
   --info: var(--color-info);
+  --info-hover: var(--color-info-hover);
   --info-soft: var(--color-info-soft);
 
   --interview-scheduled-text: #bfdbfe;
@@ -373,18 +396,15 @@
   --status-withdrawn-text: #e5e7eb;
   --status-withdrawn-border: rgb(156 163 175 / 25%);
 
+  --shadow-xs-value: 0 1px 2px rgb(0 0 0 / 30%);
+  --shadow-sm-value: 0 1px 3px rgb(0 0 0 / 40%), 0 1px 2px rgb(0 0 0 / 30%);
+  --shadow-md-value: 0 8px 18px rgb(0 0 0 / 45%), 0 2px 6px rgb(0 0 0 / 30%);
+  --shadow-lg-value: 0 14px 28px rgb(0 0 0 / 50%), 0 4px 10px rgb(0 0 0 / 35%);
+  --shadow-xl-value: 0 22px 44px rgb(0 0 0 / 55%), 0 8px 18px rgb(0 0 0 / 40%);
+  --shadow-2xl-value: 0 28px 64px rgb(0 0 0 / 60%);
   --shadow-popover-value: 0 8px 24px rgb(0 0 0 / 24%);
   --shadow-modal-value: 0 12px 32px rgb(0 0 0 / 36%);
-
-  --shadow-xs: 0 1px 2px rgb(0 0 0 / 30%);
-  --shadow-sm: 0 1px 3px rgb(0 0 0 / 40%), 0 1px 2px rgb(0 0 0 / 30%);
-  --shadow-md: 0 8px 18px rgb(0 0 0 / 45%), 0 2px 6px rgb(0 0 0 / 30%);
-  --shadow-lg: 0 14px 28px rgb(0 0 0 / 50%), 0 4px 10px rgb(0 0 0 / 35%);
-  --shadow-xl: 0 22px 44px rgb(0 0 0 / 55%), 0 8px 18px rgb(0 0 0 / 40%);
-  --shadow-2xl: 0 28px 64px rgb(0 0 0 / 60%);
-  --shadow-popover: 0 8px 24px rgb(0 0 0 / 24%);
-  --shadow-modal: 0 12px 32px rgb(0 0 0 / 36%);
-  --shadow-primary-control: 0 4px 10px -6px rgb(99 102 241 / 55%);
+  --shadow-primary-control-value: 0 4px 10px -6px rgb(99 102 241 / 55%);
 }
 
 @layer base {
@@ -394,10 +414,12 @@
 
   html {
     @apply font-sans;
+    font-family: var(--font-ubuntu), ui-sans-serif, system-ui, sans-serif;
   }
 
   body {
     @apply bg-background text-foreground antialiased;
+    font-family: var(--font-ubuntu), ui-sans-serif, system-ui, sans-serif;
   }
 
   button {

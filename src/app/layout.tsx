@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Ubuntu_Sans } from "next/font/google";
+import { ThemeProvider } from "next-themes";
 import type { ReactNode } from "react";
 
 import { ServiceWorkerRegistration } from "@/components/providers/ServiceWorkerRegistration";
@@ -12,6 +13,7 @@ import "./globals.css";
 const ubuntu = Ubuntu_Sans({
   subsets: ["latin"],
   variable: "--font-ubuntu",
+  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -39,19 +41,21 @@ export default function RootLayout({ children }: Readonly<{ children: ReactNode 
           Skip to content
         </a>
         <StoreProvider>
-          <TooltipProvider>
-            <SessionBootstrap />
-            <div>{children}</div>
-            <Toaster
-              expand
-              richColors
-              duration={5000}
-              visibleToasts={3}
-              position="top-right"
-              swipeDirections={["bottom", "top", "left", "right"]}
-            />
-            <ServiceWorkerRegistration />
-          </TooltipProvider>
+          <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+            <TooltipProvider>
+              <SessionBootstrap />
+              <div>{children}</div>
+              <Toaster
+                expand
+                richColors
+                duration={5000}
+                visibleToasts={3}
+                position="top-right"
+                swipeDirections={["bottom", "top", "left", "right"]}
+              />
+              <ServiceWorkerRegistration />
+            </TooltipProvider>
+          </ThemeProvider>
         </StoreProvider>
       </body>
     </html>

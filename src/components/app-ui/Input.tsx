@@ -10,7 +10,8 @@ export function Input({ className, error = false, ...props }: InputProps) {
     <PrimitiveInput
       aria-invalid={error || props["aria-invalid"] || undefined}
       className={cn(
-        "h-10 rounded-md border-border-strong bg-surface text-base shadow-none transition-colors",
+        "h-10 rounded-md border-2 border-border bg-surface px-3 text-base shadow-none transition-colors",
+        "placeholder:text-muted-foreground hover:border-border-strong",
         "focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-primary-ring",
         error && "border-danger focus-visible:border-danger focus-visible:ring-danger/25",
         className,

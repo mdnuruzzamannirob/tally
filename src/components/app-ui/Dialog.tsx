@@ -32,7 +32,16 @@ function DialogTitle({ className, ...props }: ComponentProps<typeof PrimitiveDia
 }
 
 function DialogFooter({ className, ...props }: ComponentProps<typeof PrimitiveDialogFooter>) {
-  return <PrimitiveDialogFooter className={cn("gap-2", className)} {...props} />;
+  return (
+    <PrimitiveDialogFooter
+      className={cn(
+        "-mx-6 -mb-6 mt-2 rounded-b-lg border-t-2 border-border-strong bg-secondary px-6 py-4",
+        "gap-2 sm:justify-end",
+        className,
+      )}
+      {...props}
+    />
+  );
 }
 
 export {
