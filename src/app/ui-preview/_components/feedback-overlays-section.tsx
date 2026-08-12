@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import {
   AppAlert,
@@ -9,8 +9,8 @@ import {
   AppProgress,
   AppSheet,
   AppTooltip,
-} from '@/components/app-ui';
-import { useState } from 'react';
+} from "@/components/app-ui";
+import { useState } from "react";
 
 export function FeedbackOverlaysSection() {
   const [modalOpen, setModalOpen] = useState(false);
@@ -83,7 +83,7 @@ export function FeedbackOverlaysSection() {
           <AppModal
             footer={
               <>
-                <AppButton onClick={() => setModalOpen(false)} variant="outline">
+                <AppButton onClick={() => setModalOpen(false)} variant="ghost">
                   Cancel
                 </AppButton>
                 <AppButton onClick={() => setModalOpen(false)}>Confirm Action</AppButton>

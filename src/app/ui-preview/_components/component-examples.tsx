@@ -276,7 +276,7 @@ export function ComponentExamples({ component }: { component: ComponentPreviewId
             <AppField description="Used for updates and reminders." label="Email" required>
               <AppInput placeholder="name@example.com" />
             </AppField>
-            <AppField error="A company name is required." label="Company">
+            <AppField error="A company name is required." label="Company" required>
               <AppInput aria-invalid="true" placeholder="Company name" />
             </AppField>
           </div>
@@ -596,7 +596,7 @@ export function ComponentExamples({ component }: { component: ComponentPreviewId
         <AppModal
           footer={
             <>
-              <AppButton onClick={() => setModalOpen(false)} variant="outline">
+              <AppButton onClick={() => setModalOpen(false)} variant="ghost">
                 Cancel
               </AppButton>
               <AppButton onClick={() => setModalOpen(false)}>Save changes</AppButton>
@@ -647,26 +647,22 @@ export function ComponentExamples({ component }: { component: ComponentPreviewId
         />
         <ExampleFrame>
           <div className="grid gap-5 sm:grid-cols-2">
-            <label className="space-y-2 text-sm font-medium">
-              Default input
+            <AppField label="Default input" required>
               <AppInput
                 onChange={(event) => setInputValue(event.target.value)}
                 placeholder="Enter a company name"
                 value={inputValue}
               />
-            </label>
-            <label className="space-y-2 text-sm font-medium">
-              Filled input
+            </AppField>
+            <AppField label="Filled input" optional>
               <AppInput defaultValue="Tally" />
-            </label>
-            <label className="space-y-2 text-sm font-medium">
-              Disabled input
+            </AppField>
+            <AppField label="Disabled input">
               <AppInput defaultValue="Not editable" disabled />
-            </label>
-            <label className="space-y-2 text-sm font-medium">
-              Email input
+            </AppField>
+            <AppField label="Email input" optional>
               <AppInput placeholder="name@example.com" type="email" />
-            </label>
+            </AppField>
           </div>
         </ExampleFrame>
       </div>
@@ -682,14 +678,12 @@ export function ComponentExamples({ component }: { component: ComponentPreviewId
         />
         <ExampleFrame>
           <div className="grid gap-5 sm:grid-cols-2">
-            <label className="space-y-2 text-sm font-medium">
-              Empty
+            <AppField label="Empty">
               <AppTextarea placeholder="Add a note..." />
-            </label>
-            <label className="space-y-2 text-sm font-medium">
-              With value
+            </AppField>
+            <AppField label="With value" optional>
               <AppTextarea defaultValue="Follow up with the recruiter next week." />
-            </label>
+            </AppField>
           </div>
         </ExampleFrame>
       </div>
@@ -705,8 +699,7 @@ export function ComponentExamples({ component }: { component: ComponentPreviewId
         />
         <ExampleFrame>
           <div className="grid gap-5 sm:grid-cols-2">
-            <div className="space-y-2">
-              <p className="text-sm font-medium">Account type</p>
+            <AppField label="Account type">
               <AppSelect
                 onValueChange={(value) => setSelectValue(value ?? "personal")}
                 options={[
@@ -716,9 +709,8 @@ export function ComponentExamples({ component }: { component: ComponentPreviewId
                 ]}
                 value={selectValue}
               />
-            </div>
-            <div className="space-y-2">
-              <p className="text-sm font-medium">Placeholder</p>
+            </AppField>
+            <AppField label="Placeholder" optional>
               <AppSelect
                 options={[
                   { label: "Weekly", value: "weekly" },
@@ -726,7 +718,7 @@ export function ComponentExamples({ component }: { component: ComponentPreviewId
                 ]}
                 placeholder="Choose a period"
               />
-            </div>
+            </AppField>
           </div>
         </ExampleFrame>
       </div>
@@ -741,17 +733,18 @@ export function ComponentExamples({ component }: { component: ComponentPreviewId
           title="Combobox"
         />
         <ExampleFrame>
-          <div className="max-w-md space-y-2">
-            <p className="text-sm font-medium">Choose a wallet</p>
-            <AppCombobox
-              onValueChange={setComboboxValue}
-              options={[
-                { label: "Cash wallet", value: "cash" },
-                { label: "bKash account", value: "bkash" },
-                { label: "BRAC Bank savings", value: "brac" },
-              ]}
-              value={comboboxValue}
-            />
+          <div className="max-w-md">
+            <AppField label="Choose a wallet" optional>
+              <AppCombobox
+                onValueChange={setComboboxValue}
+                options={[
+                  { label: "Cash wallet", value: "cash" },
+                  { label: "bKash account", value: "bkash" },
+                  { label: "BRAC Bank savings", value: "brac" },
+                ]}
+                value={comboboxValue}
+              />
+            </AppField>
           </div>
         </ExampleFrame>
       </div>

@@ -57,7 +57,7 @@ export function AppButton({
       {...props}
       className={cn(
         dimensions,
-        'rounded-md bg-clip-border font-medium transition-[transform,background-color,border-color,filter] active:scale-[.98]',
+        'rounded-md bg-clip-border font-medium transition-[transform,background-color,border-color,filter] active:scale-[.98] disabled:cursor-not-allowed',
         resolvedTone === 'primary' &&
           'border-0! bg-clip-border ui-gradient-primary focus-visible:border-0! focus-visible:ring-0 hover:text-primary-foreground! hover:brightness-[.98]',
         resolvedTone === 'secondary' &&

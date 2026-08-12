@@ -56,14 +56,15 @@ export function AppMultiSelect({
       />
       <PopoverContent
         align="start"
-        className="w-max min-w-(--anchor-width) max-w-[calc(100vw-2rem)] gap-1.5 rounded-lg p-1.5"
+        className="w-max min-w-(--anchor-width) max-w-[calc(100vw-2rem)] gap-1.5 rounded-lg border border-border p-0 ring-0 data-open:animate-none data-closed:animate-none"
       >
         <AppInput
+          className="h-9! w-full rounded-none! border-0! border-b! border-border! bg-transparent! px-3! text-xs! shadow-none! outline-none! ring-0! focus-visible:border-0! focus-visible:border-b! focus-visible:border-b-border! focus-visible:ring-0!"
           onChange={(event) => setQuery(event.target.value)}
           placeholder="Search options..."
           value={query}
         />
-        <div className="max-h-56 w-full space-y-0.5 overflow-y-auto">
+        <div className="max-h-56 w-full space-y-0.5 overflow-y-auto p-1.5">
           {filtered.map((option) => {
             const selected = currentValue.includes(option.value);
             return (
@@ -101,14 +102,16 @@ export function AppMultiSelect({
           })}
         </div>
         {currentValue.length ? (
-          <button
-            className="flex items-center gap-1 px-2 py-1 text-xs text-muted-foreground hover:text-foreground"
-            onClick={() => update([])}
-            type="button"
-          >
-            <X className="size-3" />
-            Clear selection
-          </button>
+          <div className=" flex justify-center">
+            <button
+              className="flex items-center gap-1 px-2 py-1 text-xs text-muted-foreground hover:text-foreground"
+              onClick={() => update([])}
+              type="button"
+            >
+              <X className="size-3" />
+              Clear selection
+            </button>
+          </div>
         ) : null}
       </PopoverContent>
     </Popover>

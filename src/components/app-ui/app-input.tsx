@@ -31,7 +31,7 @@ export function AppInput({
       <Input
         {...props}
         className={cn(
-          'h-10 rounded-md border-border bg-background! px-3 shadow-none transition-[color,border-color,box-shadow] duration-100 hover:border-border focus-visible:border-primary focus-visible:ring-3 focus-visible:ring-primary/15 aria-invalid:border-destructive! aria-invalid:focus-visible:border-destructive! aria-invalid:focus-visible:ring-3 aria-invalid:focus-visible:ring-destructive/20',
+          'h-10 rounded-md border-border bg-background! px-3 shadow-none transition-[color,border-color,box-shadow] duration-100 hover:border-border focus-visible:border-primary focus-visible:ring-3 focus-visible:ring-primary/15 aria-invalid:border-destructive! aria-invalid:focus-visible:border-destructive! aria-invalid:focus-visible:ring-4 aria-invalid:focus-visible:ring-destructive/10 disabled:cursor-not-allowed',
           leading && 'pl-10',
           trailing && 'pr-11',
           className,

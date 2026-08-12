@@ -81,7 +81,7 @@ export function AppSelect({
         align="start"
         alignItemWithTrigger={false}
         className={cn(
-          'w-max min-w-(--anchor-width) max-w-[calc(100vw-2rem)] rounded-lg border border-border bg-popover p-1 shadow-none ring-0 **:data-[slot=select-item]:w-full',
+          'w-max min-w-(--anchor-width) max-w-[calc(100vw-2rem)] rounded-lg border border-border bg-popover p-1 shadow-none ring-0 data-open:animate-none data-closed:animate-none **:data-[slot=select-item]:w-full',
           size === 'sm' && 'p-0.5',
           size === 'lg' && 'p-1.5',
           contentClassName,
@@ -91,7 +91,7 @@ export function AppSelect({
         {options.map((option) => (
           <SelectItem
             className={cn(
-              'w-full max-w-none whitespace-normal rounded-md pr-9 focus:bg-primary/10 focus:text-primary **:whitespace-normal',
+              'w-full max-w-none whitespace-normal rounded-md pr-9 transition-none! animate-none! focus:bg-primary/10 focus:text-primary **:whitespace-normal [&_[data-slot=select-item-indicator]]:!transition-none [&_[data-slot=select-item-indicator]]:!animate-none [&_[data-slot=select-item-indicator]]:!opacity-100 [&_[data-slot=select-item-indicator]]:!transform-none [&_[data-slot=select-item-indicator]_svg]:!transition-none [&_[data-slot=select-item-indicator]_svg]:!animate-none [&_[data-slot=select-item-indicator]_svg]:!opacity-100 [&_[data-slot=select-item-indicator]_svg]:!transform-none',
               {
                 sm: 'min-h-6 px-1.5 py-0.5 text-xs pr-7 **:data-[slot=select-item-indicator]:right-1 **:data-[slot=select-item-indicator]:size-3',
                 default: 'min-h-8 px-2.5 py-1 text-sm',

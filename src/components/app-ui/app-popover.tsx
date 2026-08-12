@@ -41,7 +41,7 @@ export function AppPopover({
         align={align}
         side={side}
         sideOffset={sideOffset}
-        className={cn('w-80 rounded-lg border-border p-4 shadow-none', contentClassName)}
+        className={cn('w-80 rounded-lg border border-border ring-0 shadow-none', contentClassName)}
       >
         {title || description ? (
           <PopoverHeader>

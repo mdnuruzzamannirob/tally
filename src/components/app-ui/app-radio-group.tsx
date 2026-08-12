@@ -17,11 +17,11 @@ export function AppRadioGroup({
     <RadioGroup {...props} className={cn('gap-2', className)}>
       {options.map((option) => (
         <label
-          className="flex cursor-pointer items-start gap-3 rounded-lg border border-border p-3 hover:bg-muted/50 has-data-checked:border-primary has-data-checked:bg-primary/5"
+          className="flex cursor-pointer items-start gap-3 rounded-lg border border-border p-3 transition-colors duration-100 hover:border-primary/40 hover:bg-primary/5 has-data-checked:border-primary has-data-checked:bg-primary/10 has-disabled:cursor-not-allowed has-disabled:opacity-60"
           key={option.value}
         >
           <RadioGroupItem
-            className="ui-checked-gradient mt-0.5 border-border bg-card data-checked:border-0! focus-visible:border-0! focus-visible:ring-0"
+            className="mt-0.5 border-primary/50 bg-background data-checked:border-primary data-checked:bg-primary data-checked:text-primary-foreground focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-primary/20"
             disabled={option.disabled}
             value={option.value}
           />

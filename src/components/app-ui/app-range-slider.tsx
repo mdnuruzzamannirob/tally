@@ -40,6 +40,9 @@ export function AppRangeSlider({
         }}
         type="range"
         value={current}
+        style={{
+          background: `linear-gradient(to right, var(--color-primary) 0%, var(--color-primary) ${((current - min) / (max - min)) * 100}%, var(--color-surface-2) ${((current - min) / (max - min)) * 100}%, var(--color-surface-2) 100%)`,
+        }}
       />
       <div className="mt-1 flex justify-between text-[11px] text-muted-foreground">
         <span>

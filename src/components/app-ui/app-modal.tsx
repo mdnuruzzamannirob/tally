@@ -28,11 +28,11 @@ export function AppModal({
 }: AppModalProps) {
   return (
     <Dialog {...props}>
-      <DialogContent className="gap-0 overflow-visible rounded-lg p-0 max-sm:rounded-b-none">
-        <DialogHeader className="rounded-t-lg py-3.5 pl-4 pr-16 sm:pl-5 sm:pr-16">
-          <DialogTitle className="leading-5 wrap-break-word">{title}</DialogTitle>
+      <DialogContent className="gap-0 overflow-visible rounded-lg p-0 max-sm:rounded-b-none [&>button]:top-3 [&>button]:right-4 [&>button]:size-8">
+        <DialogHeader className="min-w-0 rounded-t-lg px-4 py-4 pr-16 sm:px-5 sm:pr-16">
+          <DialogTitle className="min-w-0 text-lg leading-6 wrap-break-word">{title}</DialogTitle>
           {description ? (
-            <DialogDescription className="leading-5 wrap-break-word">
+            <DialogDescription className="text-sm leading-5 wrap-break-word">
               {description}
             </DialogDescription>
           ) : null}

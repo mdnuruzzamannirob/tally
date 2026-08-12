@@ -31,13 +31,21 @@ export function AppConfirmDialog({
 }) {
   return (
     <AlertDialog onOpenChange={onOpenChange} open={open}>
-      <AlertDialogContent className="gap-0 overflow-hidden rounded-xl p-6">
-        <AlertDialogHeader>
-          <AlertDialogTitle>{title}</AlertDialogTitle>
-          <AlertDialogDescription>{description}</AlertDialogDescription>
+      <AlertDialogContent className="gap-0 overflow-hidden rounded-lg p-0">
+        <AlertDialogHeader className="min-w-0 items-start gap-1 rounded-t-lg px-4 py-4 text-left sm:px-5">
+          <AlertDialogTitle className="min-w-0 text-lg leading-6 wrap-break-word">
+            {title}
+          </AlertDialogTitle>
         </AlertDialogHeader>
-        <AlertDialogFooter className="-mx-6 -mb-6 mt-6 border-t border-border bg-secondary px-6 py-4">
-          <AlertDialogCancel className="bg-card hover:bg-card/80">{cancelLabel}</AlertDialogCancel>
+        <div className="px-4 pb-4 sm:px-5">
+          <AlertDialogDescription className="text-sm leading-5 wrap-break-word">
+            {description}
+          </AlertDialogDescription>
+        </div>
+        <AlertDialogFooter className="m-0 rounded-b-lg border-t border-border bg-secondary px-4 py-3 sm:px-5">
+          <AlertDialogCancel className="border-transparent! bg-muted/35! text-foreground hover:bg-muted! hover:text-foreground" variant="ghost">
+            {cancelLabel}
+          </AlertDialogCancel>
           <AlertDialogAction
             className={
               variant === 'danger'
