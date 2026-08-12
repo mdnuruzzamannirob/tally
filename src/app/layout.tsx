@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
-import { Ubuntu_Sans } from "next/font/google";
 import { ThemeProvider } from "next-themes";
+import { Ubuntu_Sans } from "next/font/google";
 import type { ReactNode } from "react";
 
 import { ServiceWorkerRegistration } from "@/components/providers/ServiceWorkerRegistration";
@@ -35,8 +35,8 @@ export const viewport = {
 
 export default function RootLayout({ children }: Readonly<{ children: ReactNode }>) {
   return (
-    <html lang="en">
-      <body className={ubuntu.variable}>
+    <html lang="en" suppressHydrationWarning>
+      <body className={ubuntu.variable} suppressHydrationWarning>
         <a className="skip-link" href="#main-content">
           Skip to content
         </a>
