@@ -5,11 +5,11 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/ui/table';
-import { cn } from '@/lib/utils';
-import type { ReactNode } from 'react';
+} from "@/components/ui/table";
+import { cn } from "@/lib/utils";
+import type { ReactNode } from "react";
 export type AppTableColumn<T> = {
-  align?: 'left' | 'right';
+  align?: "left" | "right";
   header: ReactNode;
   key: string;
   render: (row: T) => ReactNode;
@@ -17,7 +17,7 @@ export type AppTableColumn<T> = {
 export function AppTable<T>({
   className,
   columns,
-  empty = 'No records found',
+  empty = "No records found",
   getRowKey,
   rows,
 }: {
@@ -28,17 +28,17 @@ export function AppTable<T>({
   rows: readonly T[];
 }) {
   return (
-    <div className={cn('overflow-hidden bg-card text-card-foreground', className)}>
+    <div className={cn("overflow-hidden bg-card text-card-foreground", className)}>
       <div className="overflow-x-auto">
         <Table className="min-w-180">
-          <TableHeader className="border-b border-border/70 bg-muted/40">
+          <TableHeader className="border-b border-border bg-secondary">
             <TableRow className="border-b border-border/70 hover:bg-transparent">
               {columns.map((column, index) => (
                 <TableHead
                   className={cn(
-                    'h-auto px-4 py-3 text-xs font-medium uppercase tracking-wide text-muted-foreground',
-                    index === 0 && 'pl-5',
-                    column.align === 'right' && 'text-right',
+                    "h-auto px-4 py-3 text-xs font-medium uppercase tracking-wide text-muted-foreground",
+                    index === 0 && "pl-5",
+                    column.align === "right" && "text-right",
                   )}
                   key={column.key}
                 >
@@ -51,15 +51,15 @@ export function AppTable<T>({
             {rows.length ? (
               rows.map((row) => (
                 <TableRow
-                  className="border-b border-border/55 transition-colors last:border-b-0 hover:bg-muted/45"
+                  className="border-b border-border/55 transition-colors last:border-b-0 hover:bg-muted/40"
                   key={getRowKey(row)}
                 >
                   {columns.map((column, index) => (
                     <TableCell
                       className={cn(
-                        'px-4 py-3.5 text-sm',
-                        index === 0 && 'pl-5',
-                        column.align === 'right' && 'text-right',
+                        "px-4 py-3.5 text-sm",
+                        index === 0 && "pl-5",
+                        column.align === "right" && "text-right",
                       )}
                       key={column.key}
                     >

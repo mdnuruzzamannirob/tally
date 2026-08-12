@@ -1,7 +1,7 @@
-'use client';
-import type { ReactNode } from 'react';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { cn } from '@/lib/utils';
+"use client";
+import type { ReactNode } from "react";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { cn } from "@/lib/utils";
 export type AppRadioOption = {
   description?: string;
   disabled?: boolean;
@@ -14,19 +14,22 @@ export function AppRadioGroup({
   ...props
 }: React.ComponentProps<typeof RadioGroup> & { options: readonly AppRadioOption[] }) {
   return (
-    <RadioGroup {...props} className={cn('gap-2', className)}>
+    <RadioGroup {...props} className={cn("gap-3", className)}>
       {options.map((option) => (
         <label
-          className="flex cursor-pointer items-start gap-3 rounded-lg border border-border p-3 transition-colors duration-100 hover:border-primary/40 hover:bg-primary/5 has-data-checked:border-primary has-data-checked:bg-primary/10 has-disabled:cursor-not-allowed has-disabled:opacity-60"
+          className={cn(
+            "flex cursor-pointer select-none items-center gap-3 text-sm has-disabled:cursor-not-allowed has-disabled:opacity-60",
+            option.description && "items-start",
+          )}
           key={option.value}
         >
           <RadioGroupItem
-            className="mt-0.5 border-primary/50 bg-background data-checked:border-primary data-checked:bg-primary data-checked:text-primary-foreground focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-primary/20"
+            className="ui-checked-gradient size-5 rounded-full border-border bg-card bg-clip-border data-checked:border-0! focus-visible:border-0! focus-visible:ring-0"
             disabled={option.disabled}
             value={option.value}
           />
-          <span>
-            <span className="block text-sm font-medium">{option.label}</span>
+          <span className={cn("min-w-0", option.description && "mt-0.5")}>
+            <span className="block text-sm font-medium leading-5">{option.label}</span>
             {option.description ? (
               <span className="mt-0.5 block text-xs text-muted-foreground">
                 {option.description}

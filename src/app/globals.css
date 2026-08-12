@@ -1,6 +1,6 @@
-@import 'tailwindcss';
-@import 'tw-animate-css';
-@import 'shadcn/tailwind.css';
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -269,6 +269,32 @@
     font-family: inherit;
   }
 
+  * {
+    scrollbar-color: var(--color-border) transparent;
+    scrollbar-width: thin;
+  }
+
+  *::-webkit-scrollbar {
+    width: 0.5rem;
+    height: 0.5rem;
+  }
+
+  *::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  *::-webkit-scrollbar-thumb {
+    border: 2px solid transparent;
+    border-radius: 9999px;
+    background: var(--color-border);
+    background-clip: padding-box;
+  }
+
+  *::-webkit-scrollbar-thumb:hover {
+    background: var(--color-primary);
+    background-clip: padding-box;
+  }
+
   button {
     @apply cursor-pointer;
   }
@@ -349,7 +375,7 @@
   }
 
   .ui-checked-gradient[data-checked],
-  .ui-active-gradient[data-state='on'],
+  .ui-active-gradient[data-state="on"],
   .ui-active-gradient[data-active],
   .ui-active-gradient[data-pressed] {
     background: linear-gradient(
@@ -387,5 +413,4 @@
   .font-ubuntu {
     font-family: var(--font-ubuntu), ui-sans-serif, system-ui, sans-serif;
   }
-
 }

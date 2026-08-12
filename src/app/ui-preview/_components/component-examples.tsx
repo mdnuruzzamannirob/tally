@@ -114,6 +114,7 @@ export function ComponentExamples({ component }: { component: ComponentPreviewId
   const [numberValue, setNumberValue] = useState(3);
   const [rangeValue, setRangeValue] = useState(40);
   const [segment, setSegment] = useState("month");
+  const [timeValue, setTimeValue] = useState("14:30");
   const [selectedCategories, setSelectedCategories] = useState(["career"]);
 
   if (component === "breadcrumb") {
@@ -560,7 +561,10 @@ export function ComponentExamples({ component }: { component: ComponentPreviewId
         <PreviewHeader description="Time selection in 30-minute increments." title="Time picker" />
         <ExampleFrame>
           <div className="max-w-sm">
-            <AppTimePicker value="14:30" />
+            <AppTimePicker
+              onValueChange={(value) => setTimeValue(value ?? "14:30")}
+              value={timeValue}
+            />
           </div>
         </ExampleFrame>
       </div>
