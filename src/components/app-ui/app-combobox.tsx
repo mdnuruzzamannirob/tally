@@ -66,7 +66,7 @@ export function AppCombobox({
           {filtered.map((option) => (
             <button
               className={cn(
-                "flex w-full items-center gap-2 rounded-sm px-2.5 py-2 text-left text-sm hover:bg-primary/10",
+                "flex w-full items-center gap-2 rounded-md px-2.5 py-2 text-left text-sm hover:bg-primary/10",
                 currentValue === option.value && "bg-primary/10 text-primary",
               )}
               key={option.value}

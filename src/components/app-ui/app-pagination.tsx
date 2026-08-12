@@ -26,8 +26,8 @@ export function AppPagination({
         <button
           className={
             number === page
-              ? "ui-gradient-primary grid size-8 place-items-center rounded-sm text-xs font-medium"
-              : "grid size-8 place-items-center rounded-sm text-xs font-medium text-muted-foreground hover:bg-muted"
+              ? "ui-gradient-primary grid size-8 place-items-center rounded-md text-xs font-medium"
+              : "grid size-8 place-items-center rounded-md text-xs font-medium text-muted-foreground hover:bg-muted"
           }
           key={number}
           onClick={() => onPageChange?.(number)}

@@ -70,7 +70,7 @@ export function AppMultiSelect({
             return (
               <button
                 className={cn(
-                  "flex w-full items-start gap-2 rounded-sm px-2.5 py-2 text-left transition-colors hover:bg-primary/10",
+                  "flex w-full items-start gap-2 rounded-md px-2.5 py-2 text-left transition-colors hover:bg-primary/10",
                   selected && "bg-primary/10 text-primary",
                 )}
                 disabled={option.disabled}

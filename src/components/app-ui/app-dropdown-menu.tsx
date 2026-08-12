@@ -33,7 +33,7 @@ export function AppDropdownMenu({
           <span key={index}>
             {item.separatorBefore ? <DropdownMenuSeparator /> : null}
             <DropdownMenuItem
-              className="rounded-sm"
+              className="rounded-md"
               disabled={item.disabled}
               onClick={item.onSelect}
               variant={item.variant}
