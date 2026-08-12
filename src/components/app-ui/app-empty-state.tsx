@@ -1,5 +1,5 @@
-import type { ReactNode } from 'react';
-import { cn } from '@/lib/utils';
+import type { ReactNode } from "react";
+import { cn } from "@/lib/utils";
 
 export function AppEmptyState({
   action,
@@ -16,10 +16,10 @@ export function AppEmptyState({
 }) {
   return (
     <div
-      className={cn('flex flex-col items-center justify-center px-6 py-12 text-center', className)}
+      className={cn("flex flex-col items-center justify-center px-6 py-12 text-center", className)}
     >
       {icon ? (
-        <span className="grid size-11 place-items-center rounded-lg bg-muted text-muted-foreground [&>svg]:size-5">
+        <span className="grid size-11 place-items-center rounded-md bg-muted text-muted-foreground [&>svg]:size-5">
           {icon}
         </span>
       ) : null}

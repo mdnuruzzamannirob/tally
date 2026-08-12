@@ -1,14 +1,14 @@
-'use client';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { cn } from '@/lib/utils';
-import { Check, ChevronDown, X } from 'lucide-react';
-import { useMemo, useState } from 'react';
-import { AppInput } from './app-input';
-import type { AppSelectOption } from './app-select';
+"use client";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { cn } from "@/lib/utils";
+import { Check, ChevronDown, X } from "lucide-react";
+import { useMemo, useState } from "react";
+import { AppInput } from "./app-input";
+import type { AppSelectOption } from "./app-select";
 export function AppMultiSelect({
   onValueChange,
   options,
-  placeholder = 'Select options',
+  placeholder = "Select options",
   value,
 }: {
   onValueChange?: (values: string[]) => void;
@@ -16,7 +16,7 @@ export function AppMultiSelect({
   placeholder?: string;
   value?: string[];
 }) {
-  const [query, setQuery] = useState('');
+  const [query, setQuery] = useState("");
   const [internalValue, setInternalValue] = useState<string[]>([]);
   const currentValue = value ?? internalValue;
   const filtered = useMemo(
@@ -44,8 +44,8 @@ export function AppMultiSelect({
           >
             <span
               className={cn(
-                'min-w-0 flex-1 truncate text-left',
-                currentValue.length ? 'text-foreground' : 'text-muted-foreground',
+                "min-w-0 flex-1 truncate text-left",
+                currentValue.length ? "text-foreground" : "text-muted-foreground",
               )}
             >
               {currentValue.length ? `${currentValue.length} selected` : placeholder}
@@ -70,8 +70,8 @@ export function AppMultiSelect({
             return (
               <button
                 className={cn(
-                  'flex w-full items-start gap-2 rounded-md px-2.5 py-2 text-left transition-colors hover:bg-primary/10',
-                  selected && 'bg-primary/10 text-primary',
+                  "flex w-full items-start gap-2 rounded-sm px-2.5 py-2 text-left transition-colors hover:bg-primary/10",
+                  selected && "bg-primary/10 text-primary",
                 )}
                 disabled={option.disabled}
                 key={option.value}
@@ -88,8 +88,8 @@ export function AppMultiSelect({
                   {option.description ? (
                     <span
                       className={cn(
-                        'mt-0.5 block wrap-break-word text-xs',
-                        selected ? 'text-primary/80' : 'text-muted-foreground',
+                        "mt-0.5 block wrap-break-word text-xs",
+                        selected ? "text-primary/80" : "text-muted-foreground",
                       )}
                     >
                       {option.description}

@@ -1,12 +1,12 @@
-'use client';
-import { useState } from 'react';
+"use client";
+import { useState } from "react";
 export function AppRangeSlider({
   defaultValue = 50,
   label,
   max = 100,
   min = 0,
   onValueChange,
-  suffix = '',
+  suffix = "",
   value,
 }: {
   defaultValue?: number;
@@ -23,7 +23,7 @@ export function AppRangeSlider({
     <div>
       <div className="mb-2 flex items-center justify-between text-sm">
         <span className="font-medium">{label}</span>
-        <span className="rounded-md bg-muted px-2 py-1 text-xs font-medium">
+        <span className="rounded-sm bg-muted px-2 py-1 text-xs font-medium">
           {current}
           {suffix}
         </span>

@@ -1,14 +1,14 @@
-'use client';
-import { Check, ChevronsUpDown } from 'lucide-react';
-import { useMemo, useState } from 'react';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { cn } from '@/lib/utils';
-import { AppInput } from './app-input';
-import type { AppSelectOption } from './app-select';
+"use client";
+import { Check, ChevronsUpDown } from "lucide-react";
+import { useMemo, useState } from "react";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { cn } from "@/lib/utils";
+import { AppInput } from "./app-input";
+import type { AppSelectOption } from "./app-select";
 export function AppCombobox({
   onValueChange,
   options,
-  placeholder = 'Search and select',
+  placeholder = "Search and select",
   value,
 }: {
   onValueChange?: (value: string | null) => void;
@@ -16,7 +16,7 @@ export function AppCombobox({
   placeholder?: string;
   value?: string | null;
 }) {
-  const [query, setQuery] = useState('');
+  const [query, setQuery] = useState("");
   const [internalValue, setInternalValue] = useState<string | null>(null);
   const [open, setOpen] = useState(false);
   const currentValue = value === undefined ? internalValue : value;
@@ -29,7 +29,7 @@ export function AppCombobox({
   const choose = (next: string) => {
     if (value === undefined) setInternalValue(next);
     onValueChange?.(next);
-    setQuery('');
+    setQuery("");
     setOpen(false);
   };
   return (
@@ -42,8 +42,8 @@ export function AppCombobox({
           >
             <span
               className={cn(
-                'min-w-0 flex-1 truncate text-left',
-                selected ? 'text-foreground' : 'text-muted-foreground',
+                "min-w-0 flex-1 truncate text-left",
+                selected ? "text-foreground" : "text-muted-foreground",
               )}
             >
               {selected?.label ?? placeholder}
@@ -66,8 +66,8 @@ export function AppCombobox({
           {filtered.map((option) => (
             <button
               className={cn(
-                'flex w-full items-center gap-2 rounded-md px-2.5 py-2 text-left text-sm hover:bg-primary/10',
-                currentValue === option.value && 'bg-primary/10 text-primary',
+                "flex w-full items-center gap-2 rounded-sm px-2.5 py-2 text-left text-sm hover:bg-primary/10",
+                currentValue === option.value && "bg-primary/10 text-primary",
               )}
               key={option.value}
               onClick={() => choose(option.value)}
