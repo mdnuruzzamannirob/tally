@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { ArrowLeft } from "lucide-react";
 import { useState, type FormEvent } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -166,7 +167,7 @@ export function RegisterForm() {
 
   return (
     <AuthLayout>
-      <AuthCard wide>
+      <AuthCard>
         <AuthHeader
           description="Start tracking your job search in minutes."
           title="Create your account"
@@ -242,13 +243,15 @@ export function RegisterForm() {
 export function ForgotPasswordForm() {
   const [forgotPassword, { isLoading }] = useForgotPasswordMutation();
   const [email, setEmail] = useState("");
+  const [emailError, setEmailError] = useState<string | null>(null);
   const submit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const parsed = emailSchema.safeParse(email);
     if (!parsed.success) {
-      toast.error(parsed.error.issues[0]?.message ?? "Enter a valid email address.");
+      setEmailError(parsed.error.issues[0]?.message ?? "Enter a valid email address.");
       return;
     }
+    setEmailError(null);
     try {
       await forgotPassword({ email: parsed.data }).unwrap();
       toast.success("If an account exists for this email, a reset link has been sent.");
@@ -266,10 +269,14 @@ export function ForgotPasswordForm() {
           title="Forgot your password?"
         />
         <form className="space-y-4" noValidate onSubmit={submit}>
-          <AppField label="Email" required>
+          <AppField error={emailError ?? undefined} label="Email" required>
             <EmailInput
+              aria-invalid={Boolean(emailError)}
               autoComplete="email"
-              onChange={(event) => setEmail(event.target.value)}
+              onChange={(event) => {
+                setEmail(event.target.value);
+                setEmailError(null);
+              }}
               placeholder="you@company.com"
               value={email}
             />
@@ -280,7 +287,10 @@ export function ForgotPasswordForm() {
         </form>
         <AuthFooter>
           <Link className="font-medium text-primary hover:underline" href="/login">
-            ← Back to sign in
+            <span className="inline-flex items-center gap-1.5">
+              <ArrowLeft className="size-4" />
+              Back to sign in
+            </span>
           </Link>
         </AuthFooter>
       </AuthCard>
@@ -293,15 +303,17 @@ export function ResetPasswordForm() {
   const [resetPassword, { isLoading }] = useResetPasswordMutation();
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
+  const [passwordError, setPasswordError] = useState<string | null>(null);
   const submit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const parsed = passwordSchema.safeParse(password);
     if (!parsed.success) {
-      toast.error(parsed.error.issues[0]?.message ?? "Enter a valid password.");
+      const message = parsed.error.issues[0]?.message ?? "Enter a valid password.";
+      setPasswordError(message);
       return;
     }
+    setPasswordError(null);
     if (password !== confirm) {
-      toast.error("Passwords don't match.");
       return;
     }
     const token = new URLSearchParams(window.location.search).get("token");
@@ -326,18 +338,27 @@ export function ResetPasswordForm() {
         />
         <form className="space-y-4" noValidate onSubmit={submit}>
           <AppField
-            description="Use at least 8 characters, one uppercase letter, one number, and one special character."
+            description={
+              passwordError
+                ? undefined
+                : "Use at least 8 characters, one uppercase letter, one number, and one special character."
+            }
+            error={passwordError ?? undefined}
             label="New password"
             required
           >
             <PasswordInput
+              aria-invalid={Boolean(passwordError)}
               autoComplete="new-password"
-              onChange={(event) => setPassword(event.target.value)}
+              onChange={(event) => {
+                setPassword(event.target.value);
+                setPasswordError(null);
+              }}
               placeholder="Create a password"
               value={password}
             />
+            <PasswordStrength password={password} />
           </AppField>
-          <PasswordStrength password={password} />
           <AppField
             error={confirm && password !== confirm ? "Passwords don't match." : undefined}
             label="Confirm new password"

@@ -11,12 +11,9 @@ export function AuthLayout({ children }: { children: ReactNode }) {
   );
 }
 
-export function AuthCard({ children, wide = false }: { children: ReactNode; wide?: boolean }) {
+export function AuthCard({ children }: { children: ReactNode }) {
   return (
-    <AppCard
-      padding="none"
-      className={cn("w-full p-6 sm:p-8", wide ? "max-w-lg" : "max-w-[420px]")}
-    >
+    <AppCard padding="none" className="w-full max-w-[420px] p-6 sm:p-8">
       {children}
     </AppCard>
   );

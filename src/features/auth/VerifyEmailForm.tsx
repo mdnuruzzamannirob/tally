@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Check, Info, MailCheck } from "lucide-react";
+import { ArrowLeft, Check, Info, MailCheck } from "lucide-react";
 import { useEffect, useRef, useState, useSyncExternalStore, type FormEvent } from "react";
 
 import { AppButton, AppField, toast } from "@/components/app-ui";
@@ -105,7 +105,10 @@ export function VerifyEmailForm() {
           </form>
           <AuthFooter>
             <Link className="font-medium text-primary hover:underline" href="/login">
-              ← Back to sign in
+              <span className="inline-flex items-center gap-1.5">
+                <ArrowLeft className="size-4" />
+                Back to sign in
+              </span>
             </Link>
           </AuthFooter>
         </AuthCard>
@@ -158,7 +161,10 @@ export function VerifyEmailForm() {
         </div>
         <AuthFooter>
           <Link className="font-medium text-primary hover:underline" href="/login">
-            ← Back to sign in
+            <span className="inline-flex items-center gap-1.5">
+              <ArrowLeft className="size-4" />
+              Back to sign in
+            </span>
           </Link>
         </AuthFooter>
         {isVerifying ? (
