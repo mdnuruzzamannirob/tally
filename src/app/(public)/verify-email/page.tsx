@@ -1,8 +1,8 @@
+import type { Metadata } from "next";
+import { VerifyEmailForm } from "@/features/auth/VerifyEmailForm";
+
+export const metadata: Metadata = { referrer: "no-referrer" };
+
 export default function VerifyEmailPage() {
-  return (
-    <section>
-      <h1>Verify your email</h1>
-      <p className="muted">Use the verification link sent to your inbox.</p>
-    </section>
-  );
+  return <VerifyEmailForm />;
 }

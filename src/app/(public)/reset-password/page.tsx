@@ -1,7 +1,8 @@
+import type { Metadata } from "next";
+import { ResetPasswordForm } from "@/features/auth/AuthForms";
+
+export const metadata: Metadata = { referrer: "no-referrer" };
+
 export default function ResetPasswordPage() {
-  return (
-    <section>
-      <h1>Choose a new password</h1>
-    </section>
-  );
+  return <ResetPasswordForm />;
 }

@@ -1,5 +1,5 @@
-import { Children, isValidElement, type ReactNode } from 'react';
-import { Field, FieldDescription, FieldError, FieldLabel } from '@/components/ui/field';
+import { Children, isValidElement, type ReactNode } from "react";
+import { Field, FieldDescription, FieldError, FieldLabel } from "@/components/ui/field";
 
 export type AppFieldProps = {
   children: ReactNode;
@@ -21,7 +21,7 @@ export function AppField({
     (child) => isValidElement<{ disabled?: boolean }>(child) && child.props.disabled,
   );
   return (
-    <Field className="gap-2" data-disabled={disabled || undefined} data-invalid={Boolean(error)}>
+    <Field className="gap-1.5" data-disabled={disabled || undefined} data-invalid={Boolean(error)}>
       <FieldLabel className="gap-1 group-data-[disabled=true]/field:cursor-not-allowed">
         {label}
         {required ? (
@@ -38,7 +38,11 @@ export function AppField({
           {description}
         </FieldDescription>
       ) : null}
-      {error ? <FieldError className="text-xs leading-4" role="alert">{error}</FieldError> : null}
+      {error ? (
+        <FieldError className="text-xs leading-4" role="alert">
+          {error}
+        </FieldError>
+      ) : null}
     </Field>
   );
 }
