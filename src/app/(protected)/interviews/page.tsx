@@ -1,8 +1,3 @@
-export default function InterviewsPage() {
-  return (
-    <section>
-      <h1>Interviews</h1>
-      <p className="muted">Your scheduled interviews will appear here.</p>
-    </section>
-  );
-}
+import { CalendarDays, Plus } from "lucide-react";
+import { AppButton, AppCard, AppEmptyState, AppPageHeader, AppTabs } from "@/components/app-ui";
+export default function InterviewsPage() { const empty = <AppCard><AppEmptyState description="Add an interview from an application to keep every conversation and preparation note together." icon={<CalendarDays />} title="No interviews scheduled" action={<AppButton><Plus /> Add interview</AppButton>} /></AppCard>; return <section className="space-y-6"><AppPageHeader title="Interviews" description="Plan each conversation and keep interview details close to the application." actions={<AppButton><Plus /> Add interview</AppButton>} /><AppTabs items={[{ value: "upcoming", label: "Upcoming", content: empty }, { value: "past", label: "Past", content: <AppCard><AppEmptyState description="Completed, cancelled, and no-show interviews will be kept here." icon={<CalendarDays />} title="No past interviews" /></AppCard> }]} /></section>; }
