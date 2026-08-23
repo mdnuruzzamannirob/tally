@@ -8,6 +8,9 @@ const user: CurrentUser = {
   name: "Test User",
   email: "test@example.com",
   emailVerified: true,
+  hasPassword: true,
+  providers: [],
+  preferences: { theme: "system", defaultLandingPage: "dashboard", timeZone: "UTC", notificationsEnabled: false },
 };
 
 const session: AuthSession = { accessToken: "test-access-token", user };
@@ -22,7 +25,7 @@ export const handlers = [
   http.post("*/auth/login", async () =>
     HttpResponse.json(success(session, "Signed in successfully.")),
   ),
-  http.get("*/auth/me", async () => HttpResponse.json(success({ user }, "Current user loaded."))),
+  http.get("*/auth/me", async () => HttpResponse.json(success(user, "Current user loaded."))),
   http.post("*/auth/refresh", async () =>
     HttpResponse.json(success({ accessToken: session.accessToken }, "Session refreshed.")),
   ),

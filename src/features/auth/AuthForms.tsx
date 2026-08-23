@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
-import { useState, type FormEvent } from "react";
+import { useEffect, useRef, useState, type FormEvent } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -17,6 +17,7 @@ import {
   useResetPasswordMutation,
 } from "@/store/api/auth.api";
 import { setSession } from "@/store/slices/auth.slice";
+import { webEnv } from "@/lib/env";
 
 import { AuthCard, AuthDivider, AuthFooter, AuthHeader, AuthLayout } from "./AuthLayout";
 import { EmailInput, PasswordInput, PasswordStrength, SocialButtons } from "./AuthControls";
@@ -44,8 +45,7 @@ function getErrorMessage(error: unknown, fallback: string) {
 
 function SocialLogin() {
   const startProvider = (provider: "google" | "github") => {
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-    if (apiUrl) window.location.replace(`${apiUrl}/auth/${provider}`);
+    window.location.replace(`${webEnv.NEXT_PUBLIC_API_URL}/auth/${provider}`);
   };
   return <SocialButtons onProvider={startProvider} />;
 }
@@ -301,9 +301,15 @@ export function ForgotPasswordForm() {
 export function ResetPasswordForm() {
   const router = useRouter();
   const [resetPassword, { isLoading }] = useResetPasswordMutation();
+  const tokenRef = useRef<string | null>(null);
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
   const [passwordError, setPasswordError] = useState<string | null>(null);
+  useEffect(() => {
+    const value = new URLSearchParams(window.location.search).get("token");
+    tokenRef.current = value;
+    window.history.replaceState(null, "", "/reset-password");
+  }, []);
   const submit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const parsed = passwordSchema.safeParse(password);
@@ -316,7 +322,7 @@ export function ResetPasswordForm() {
     if (password !== confirm) {
       return;
     }
-    const token = new URLSearchParams(window.location.search).get("token");
+    const token = tokenRef.current;
     if (!token) {
       toast.error("This reset link is invalid or has expired.");
       return;

@@ -14,7 +14,7 @@ import {
   Target,
 } from "lucide-react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import type { ReactNode } from "react";
 import { useState } from "react";
 import { OfflineBanner } from "./OfflineBanner";
@@ -26,6 +26,7 @@ const navigation = [
 ];
 export function AppShell({ children }: { children: ReactNode }) {
   const pathname = usePathname();
+  const router = useRouter();
   const { data: user } = useCurrentUserQuery();
   const [logout, { isLoading }] = useLogoutMutation();
   const [searchOpen, setSearchOpen] = useState(false);
@@ -41,7 +42,7 @@ export function AppShell({ children }: { children: ReactNode }) {
   const pageName = navigation.find(({ href }) => isActive(href))?.label ?? "Tally";
   const handleLogout = async () => {
     await logout().unwrap();
-    window.location.href = "/login";
+    router.replace("/login");
   };
   return (
     <div className="min-h-dvh bg-background">

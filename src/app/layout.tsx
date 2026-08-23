@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { ThemeProvider } from "next-themes";
-import { Ubuntu_Sans } from "next/font/google";
 import type { ReactNode } from "react";
 
 import { AppToaster, AppTooltipProvider } from "@/components/app-ui";
@@ -8,12 +7,6 @@ import { ServiceWorkerRegistration } from "@/components/providers/ServiceWorkerR
 import { StoreProvider } from "@/components/providers/StoreProvider";
 import { SessionBootstrap } from "@/features/auth/SessionBootstrap";
 import "./globals.css";
-
-const ubuntu = Ubuntu_Sans({
-  subsets: ["latin"],
-  variable: "--font-ubuntu",
-  display: "swap",
-});
 
 export const metadata: Metadata = {
   title: { default: "Tally", template: "%s | Tally" },
@@ -34,7 +27,7 @@ export const viewport = {
 
 export default function RootLayout({ children }: Readonly<{ children: ReactNode }>) {
   return (
-    <html className={ubuntu.variable} lang="en" suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning>
       <body className="font-sans" suppressHydrationWarning>
         <StoreProvider>
           <ThemeProvider attribute="class" defaultTheme="system" enableSystem>

@@ -17,11 +17,12 @@ export interface Application {
   employmentType?: Nullable<EmploymentType>;
   source?: Nullable<string>;
   appliedAt?: Nullable<ISODateString>;
-  salaryMin?: Nullable<number>;
-  salaryMax?: Nullable<number>;
+  salaryMin?: Nullable<number | string>;
+  salaryMax?: Nullable<number | string>;
   currency?: Nullable<string>;
   nextFollowUpAt?: Nullable<ISODateTimeString>;
-  tags?: Tag[];
+  archivedAt?: Nullable<ISODateTimeString>;
+  tags: Tag[];
   createdAt: ISODateTimeString;
   updatedAt: ISODateTimeString;
 }
@@ -44,10 +45,48 @@ export interface CreateApplicationInput {
   initialNote?: string;
 }
 
-export type UpdateApplicationInput = Partial<Omit<CreateApplicationInput, "company" | "role">> &
-  Partial<Pick<CreateApplicationInput, "company" | "role">>;
+export interface UpdateApplicationInput {
+  company?: string;
+  role?: string;
+  jobUrl?: string | null;
+  location?: string | null;
+  remoteType?: RemoteType | null;
+  employmentType?: EmploymentType | null;
+  source?: string | null;
+  appliedAt?: ISODateString | null;
+  salaryMin?: number | null;
+  salaryMax?: number | null;
+  currency?: string | null;
+  nextFollowUpAt?: ISODateTimeString | null;
+  tagIds?: string[];
+}
 
 export interface ChangeApplicationStatusInput {
   toStatus: ApplicationStatus;
   note?: string;
+}
+
+export interface StatusHistoryEntry {
+  id: string;
+  fromStatus: ApplicationStatus;
+  toStatus: ApplicationStatus;
+  note: string | null;
+  changedAt: ISODateTimeString;
+}
+
+export interface ApplicationListQuery {
+  page?: number;
+  pageSize?: number;
+  search?: string;
+  status?: ApplicationStatus;
+  tag?: string;
+  remoteType?: RemoteType;
+  employmentType?: EmploymentType;
+  source?: string;
+  appliedFrom?: ISODateString;
+  appliedTo?: ISODateString;
+  followUp?: "overdue" | "today" | "upcoming" | "none";
+  includeArchived?: boolean;
+  sort?: "updatedAt" | "createdAt" | "company" | "role" | "appliedAt" | "nextFollowUpAt" | "status";
+  order?: "asc" | "desc";
 }

@@ -16,7 +16,7 @@ export interface ApiSuccess<T> {
 export interface ApiFailure {
   success: false;
   message: string;
-  error: { code: string; details?: Record<string, string[]> };
+  error: { code: string; details?: Record<string, string[]>; stack?: string };
   meta: { requestId: string };
 }
 
@@ -25,3 +25,9 @@ export type ApiEnvelope<T> = ApiSuccess<T> | ApiFailure;
 export function isApiFailure<T>(response: ApiEnvelope<T>): response is ApiFailure {
   return !response.success;
 }
+
+export type ApiErrorShape = {
+  status?: number | string;
+  data?: ApiFailure;
+  error?: string;
+};

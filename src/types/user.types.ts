@@ -8,13 +8,16 @@ export interface User {
   name: Nullable<string>;
   email: string;
   emailVerified: boolean;
+  hasPassword: boolean;
+  providers: string[];
+  preferences: UserPreferences;
 }
 
 export interface UserPreferences {
-  theme?: ThemePreference;
-  defaultLandingPage?: DefaultLandingPage;
-  timeZone?: string;
-  notificationsEnabled?: boolean;
+  theme: ThemePreference;
+  defaultLandingPage: DefaultLandingPage;
+  timeZone: string;
+  notificationsEnabled: boolean;
 }
 
 export interface UpdateProfileInput {

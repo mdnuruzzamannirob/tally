@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
+import { PublicOnlyRoute } from "@/features/auth/PublicOnlyRoute";
 
 export default function PublicLayout({ children }: { children: ReactNode }) {
-  return <main>{children}</main>;
+  return <PublicOnlyRoute><main>{children}</main></PublicOnlyRoute>;
 }

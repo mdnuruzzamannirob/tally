@@ -5,9 +5,9 @@ import type { User, UserPreferences } from "./user.types";
 export interface ExportBackup {
   version: 1;
   exportedAt: string;
-  profile: Pick<User, "name" | "email"> & { preferences?: UserPreferences };
-  tags: Tag[];
-  applications: Application[];
+  profile: { name: string | null; preferences: UserPreferences };
+  tags: Array<{ ref: string; name: string; color: string | null }>;
+  applications: Array<Record<string, unknown>>;
 }
 
 export interface ImportBackupInput extends ExportBackup {}

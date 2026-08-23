@@ -1,5 +1,5 @@
-import { redirect } from "next/navigation";
+import { RootRedirect } from "@/features/auth/RootRedirect";
 
 export default function HomePage() {
-  redirect("/dashboard");
+  return <RootRedirect />;
 }

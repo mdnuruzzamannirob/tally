@@ -13,6 +13,9 @@ export interface Interview {
   location: Nullable<string>;
   notes: Nullable<string>;
   status: InterviewStatus;
+  createdAt: ISODateTimeString;
+  updatedAt: ISODateTimeString;
+  application?: { id: string; company: string; role: string; archivedAt?: Nullable<ISODateTimeString> };
 }
 
 export interface CreateInterviewInput {
@@ -27,3 +30,10 @@ export interface CreateInterviewInput {
 
 export type UpdateInterviewInput = Partial<Omit<CreateInterviewInput, "type" | "scheduledAt">> &
   Partial<Pick<CreateInterviewInput, "type" | "scheduledAt">>;
+
+export interface InterviewListQuery {
+  range?: "upcoming" | "past";
+  page?: number;
+  pageSize?: number;
+  includeArchived?: boolean;
+}

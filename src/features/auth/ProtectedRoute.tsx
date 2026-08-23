@@ -14,5 +14,15 @@ export function ProtectedRoute({ children }: { children: ReactNode }) {
   // }, [initialized, pathname, router, user]);
   // if (!initialized || !user) return <p aria-live="polite">Loading your session…</p>;
   // if (!user.emailVerified) return <p>Your email must be verified before accessing Tally.</p>;
+  useEffect(() => {
+    if (!initialized) return;
+    if (!user) {
+      router.replace(`/login?redirect=${encodeURIComponent(pathname)}`);
+      return;
+    }
+    if (!user.emailVerified) router.replace(`/verify-email?email=${encodeURIComponent(user.email)}`);
+  }, [initialized, pathname, router, user]);
+  if (!initialized || !user) return <p aria-live="polite">Loading your session...</p>;
+  if (!user.emailVerified) return <p aria-live="polite">Redirecting to email verification...</p>;
   return <>{children}</>;
 }
