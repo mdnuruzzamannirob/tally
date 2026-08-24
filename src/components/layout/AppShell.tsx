@@ -164,14 +164,14 @@ export function AppShell({ children }: { children: ReactNode }) {
         </header>
         <OfflineBanner />
         <main
-          className="mx-auto w-full max-w-360 px-4 pb-6 pt-21 sm:px-6 lg:px-8 lg:pb-8 lg:pt-23"
+          className="w-full px-4 pb-6 pt-21 sm:px-6 lg:px-8 lg:pb-8 lg:pt-23"
           id="main-content"
         >
           {children}
         </main>
       </div>
       <Dialog open={searchOpen} onOpenChange={setSearchOpen}>
-        <DialogContent className="top-16! translate-y-0! gap-0 overflow-hidden rounded-xl border-border bg-card p-0 shadow-2xl sm:top-20! sm:max-w-xl">
+        <DialogContent className="top-16! translate-y-0! gap-0 overflow-hidden rounded-xl border-border bg-card p-0 shadow-2xl sm:top-20!">
           <div className="flex items-center gap-3 border-b border-border px-4">
             <Search className="size-5 shrink-0 text-primary" />
             <AppInput autoFocus aria-label="Search applications" className="h-13 border-0! bg-transparent! px-0 text-sm shadow-none focus-visible:ring-0" placeholder="Search applications, companies, notes..." />
