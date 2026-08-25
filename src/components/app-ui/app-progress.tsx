@@ -30,10 +30,10 @@ export function AppProgress({
           className={cn(
             'h-full rounded-full transition-[width]',
             {
-              primary: 'ui-gradient-primary',
-              success: 'ui-gradient-success',
-              warning: 'ui-gradient-warning',
-              danger: 'ui-gradient-danger',
+              primary: 'bg-primary',
+              success: 'bg-success',
+              warning: 'bg-warning',
+              danger: 'bg-danger',
             }[tone],
           )}
           style={{ width: `${safe}%` }}

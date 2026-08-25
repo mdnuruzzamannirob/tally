@@ -34,7 +34,7 @@ export function AppSheet({
 }) {
   return (
     <Sheet {...props}>
-      <SheetContent className={cn('border-border shadow-none!', contentClassName)} side={side}>
+      <SheetContent className={cn('border-border bg-card shadow-modal', contentClassName)} side={side}>
         <SheetHeader className={cn('min-w-0 pr-16', headerClassName)}>
           <SheetTitle className="min-w-0 text-lg leading-6 wrap-break-word">{title}</SheetTitle>
           {description ? (

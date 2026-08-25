@@ -22,7 +22,7 @@ export function AppStatCard({
         {
           default: 'bg-card p-4',
           compact: 'bg-card p-3',
-          featured: 'border-primary ui-gradient-primary p-4',
+          featured: 'border-primary bg-primary text-primary-foreground p-4',
         }[variant],
       )}
     >
@@ -34,23 +34,23 @@ export function AppStatCard({
               primary:
                 variant === 'featured'
                   ? 'bg-primary-foreground/15 text-primary-foreground'
-                  : 'ui-gradient-primary',
+                  : 'border border-primary-border bg-primary-soft text-primary-text',
               success:
                 variant === 'featured'
                   ? 'bg-primary-foreground/15 text-primary-foreground'
-                  : 'ui-gradient-success',
+                  : 'border border-success-border bg-success-soft text-success-text',
               warning:
                 variant === 'featured'
                   ? 'bg-primary-foreground/15 text-primary-foreground'
-                  : 'ui-gradient-warning',
+                  : 'border border-warning-border bg-warning-soft text-warning-text',
               danger:
                 variant === 'featured'
                   ? 'bg-primary-foreground/15 text-primary-foreground'
-                  : 'ui-gradient-danger',
+                  : 'border border-danger-border bg-danger-soft text-danger-text',
               info:
                 variant === 'featured'
                   ? 'bg-primary-foreground/15 text-primary-foreground'
-                  : 'ui-gradient-info',
+                  : 'border border-info-border bg-info-soft text-info-text',
             }[tone],
           )}
         >

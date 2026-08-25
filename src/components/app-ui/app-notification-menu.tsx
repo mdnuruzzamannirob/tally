@@ -30,7 +30,7 @@ export function AppNotificationMenu({
       >
         <Bell className="size-4" />
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="w-72 p-2">
+      <DropdownMenuContent align="end" className="w-72 rounded-md border-border p-2 shadow-popover">
         <DropdownMenuGroup>
           <DropdownMenuLabel className="flex items-center justify-between px-2 py-2 text-sm text-foreground">
             <span>Notifications</span>

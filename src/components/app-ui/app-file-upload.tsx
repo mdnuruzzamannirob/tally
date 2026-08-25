@@ -20,7 +20,7 @@ export function AppFileUpload({
   return (
     <div className="rounded-lg border border-dashed border-border bg-background px-4 py-6 transition-colors duration-100 hover:bg-muted/40 sm:px-6 sm:py-8">
       <label className="flex cursor-pointer flex-col items-center text-center">
-        <span className="ui-gradient-primary grid size-10 place-items-center rounded-md">
+        <span className="grid size-10 place-items-center rounded-md border border-primary-border bg-primary-soft text-primary-text">
           <UploadCloud className="size-5" />
         </span>
         <span className="mt-3 text-sm font-medium">{label}</span>

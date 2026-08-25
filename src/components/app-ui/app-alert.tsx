@@ -20,13 +20,13 @@ export function AppAlert({
   return (
     <div
       className={cn(
-        "flex rounded-lg border",
+        "flex rounded-md border",
         { sm: "gap-2 p-2.5", md: "gap-3 p-3.5", lg: "gap-4 p-5" }[size],
         {
-          info: "border-info/20 bg-info-soft text-info",
-          success: "border-success/20 bg-success-soft text-success",
-          warning: "border-warning/20 bg-warning-soft text-warning",
-          danger: "border-danger/20 bg-danger-soft text-danger",
+          info: "border-info-border bg-info-soft text-info-text",
+          success: "border-success-border bg-success-soft text-success-text",
+          warning: "border-warning-border bg-warning-soft text-warning-text",
+          danger: "border-danger-border bg-danger-soft text-danger-text",
         }[tone],
       )}
     >

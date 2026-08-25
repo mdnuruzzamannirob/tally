@@ -62,7 +62,7 @@ export function AppSelect({
       <SelectTrigger
         aria-label={ariaLabel}
         className={cn(
-          "h-10 min-h-10 w-full gap-2 rounded-md border-border! bg-background! px-3 text-foreground shadow-none transition-[color,border-color,box-shadow] duration-100 hover:border-border! focus:border-primary! focus:ring-3 focus:ring-primary/15 focus-visible:border-primary! focus-visible:ring-3 focus-visible:ring-primary/15 data-[size=default]:h-10 data-[size=sm]:h-8 data-popup-open:border-primary! data-popup-open:ring-3 data-popup-open:ring-primary/15 aria-invalid:border-destructive! aria-invalid:focus-visible:border-destructive! aria-invalid:focus-visible:ring-destructive/20",
+          "h-10 min-h-10 w-full gap-2 rounded-md border-border! bg-background! px-3 text-foreground shadow-none transition-[color,border-color,box-shadow] duration-100 hover:border-border! focus:border-primary! focus:ring-3 focus:ring-primary/25 focus-visible:border-primary! focus-visible:ring-3 focus-visible:ring-primary/25 data-[size=default]:h-10 data-[size=sm]:h-8 data-popup-open:border-primary! data-popup-open:ring-3 data-popup-open:ring-primary/25 aria-invalid:border-destructive! aria-invalid:focus-visible:border-destructive! aria-invalid:focus-visible:ring-destructive/25",
           { sm: "text-xs h-8! min-h-8", default: "text-sm", lg: "text-base h-11! min-h-11" }[size],
           triggerClassName,
         )}
@@ -81,7 +81,7 @@ export function AppSelect({
         align="start"
         alignItemWithTrigger={false}
         className={cn(
-          "w-max min-w-(--anchor-width) max-w-[calc(100vw-2rem)] rounded-lg border border-border bg-popover p-1 shadow-none ring-0 data-open:animate-none data-closed:animate-none **:data-[slot=select-item]:w-full",
+          "w-max min-w-(--anchor-width) max-w-[calc(100vw-2rem)] rounded-md border border-border bg-popover p-1 shadow-popover ring-0 data-open:animate-none data-closed:animate-none **:data-[slot=select-item]:w-full",
           size === "sm" && "p-0.5",
           size === "lg" && "p-1.5",
           contentClassName,

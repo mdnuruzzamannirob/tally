@@ -59,7 +59,7 @@ export function AppButton({
         dimensions,
         'rounded-md bg-clip-border font-medium transition-[transform,background-color,border-color,filter] active:scale-[.98] disabled:cursor-not-allowed',
         resolvedTone === 'primary' &&
-          'border-0! bg-clip-border ui-gradient-primary focus-visible:border-0! focus-visible:ring-0 hover:text-primary-foreground! hover:brightness-[.98]',
+          'border-primary! bg-primary! text-primary-foreground hover:bg-primary-hover! hover:text-primary-foreground',
         resolvedTone === 'secondary' &&
           'border-border! bg-secondary! text-secondary-foreground hover:bg-muted! hover:text-foreground',
         resolvedTone === 'outline' &&
@@ -67,11 +67,11 @@ export function AppButton({
         resolvedTone === 'ghost' && 'border-transparent! bg-transparent! hover:bg-muted!',
         resolvedTone === 'link' && 'h-auto! bg-transparent! px-0! text-primary hover:underline',
         resolvedTone === 'success' &&
-          'border-0! ui-gradient-success hover:text-primary-foreground! hover:brightness-[.98]',
+          'border-success! bg-success! text-white hover:bg-success-hover!',
         resolvedTone === 'danger' &&
-          'border-0! ui-gradient-danger focus-visible:border-0! focus-visible:ring-0 hover:text-primary-foreground! hover:brightness-[.98]',
+          'border-danger! bg-danger! text-white hover:bg-danger-hover!',
         resolvedTone === 'info' &&
-          'border-0! ui-gradient-info focus-visible:border-0! focus-visible:ring-0 hover:text-primary-foreground! hover:brightness-[.98]',
+          'border-info! bg-info! text-white hover:bg-info-hover!',
         className,
       )}
       disabled={props.disabled || loading}

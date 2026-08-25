@@ -56,7 +56,7 @@ export function AppMultiSelect({
       />
       <PopoverContent
         align="start"
-        className="w-max min-w-(--anchor-width) max-w-[calc(100vw-2rem)] gap-1.5 rounded-lg border border-border p-0 ring-0 data-open:animate-none data-closed:animate-none"
+        className="w-max min-w-(--anchor-width) max-w-[calc(100vw-2rem)] gap-1.5 rounded-md border border-border bg-popover p-0 shadow-popover ring-0 data-open:animate-none data-closed:animate-none"
       >
         <AppInput
           className="h-9! w-full rounded-none! border-0! border-b! border-border! bg-transparent! px-3! text-xs! shadow-none! outline-none! ring-0! focus-visible:border-0! focus-visible:border-b! focus-visible:border-b-border! focus-visible:ring-0!"

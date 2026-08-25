@@ -7,7 +7,7 @@ import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { cn } from '@/lib/utils';
 const triggerClass =
-  'flex h-10 w-full items-center gap-2 rounded-md border border-border bg-background! px-3 text-sm shadow-none outline-none transition-[color,border-color,box-shadow] duration-100 hover:border-border focus:border-border focus:ring-0 focus-visible:border-border focus-visible:ring-0 data-popup-open:border-border data-popup-open:ring-0 aria-expanded:border-border aria-expanded:ring-0';
+  'flex h-10 w-full items-center gap-2 rounded-md border border-border bg-background! px-3 text-sm shadow-none outline-none transition-[color,border-color,box-shadow] duration-100 hover:border-border focus:border-primary focus:ring-3 focus:ring-primary/25 focus-visible:border-primary focus-visible:ring-3 focus-visible:ring-primary/25 data-popup-open:border-primary data-popup-open:ring-3 data-popup-open:ring-primary/25 aria-expanded:border-primary aria-expanded:ring-3 aria-expanded:ring-primary/25';
 const calendarClass =
   '[--cell-radius:var(--radius-md)] [&_.rdp-dropdown_root]:rounded-md [&_.rdp_caption_label]:rounded-md [&_.rdp-day_button:focus]:!border-0 [&_.rdp-day_button:focus]:!outline-none [&_.rdp-day_button:focus]:!ring-0 [&_.rdp-day_button:focus]:!ring-transparent [&_.rdp-day[data-focused=true]_button]:!border-0 [&_.rdp-day[data-focused=true]_button]:!outline-none [&_.rdp-day[data-focused=true]_button]:!ring-0 [&_.rdp-day[data-focused=true]_button]:!ring-transparent [&_.rdp-day_button[data-range-start=true]:hover]:!bg-primary [&_.rdp-day_button[data-range-start=true]:hover]:!text-primary-foreground [&_.rdp-day_button[data-range-end=true]:hover]:!bg-primary [&_.rdp-day_button[data-range-end=true]:hover]:!text-primary-foreground [&_.rdp-day_button[data-range-middle=true]:hover]:!bg-muted [&_.rdp-day_button[data-range-middle=true]:hover]:!text-foreground [&_.rdp-day_button[data-selected-single=true]:hover]:!bg-primary [&_.rdp-day_button[data-selected-single=true]:hover]:!text-primary-foreground';
 export function AppDatePicker({
@@ -35,7 +35,7 @@ export function AppDatePicker({
       />
       <PopoverContent
         align="start"
-        className="w-auto overflow-visible rounded-lg border border-border p-0 shadow-none ring-0"
+        className="w-auto overflow-visible rounded-lg border border-border bg-popover p-0 shadow-popover ring-0"
       >
         <Calendar
           className={calendarClass}
@@ -87,7 +87,7 @@ export function AppDateRangePicker({
       />
       <PopoverContent
         align="start"
-        className="w-auto overflow-visible rounded-lg border border-border p-0 shadow-none ring-0"
+        className="w-auto overflow-visible rounded-lg border border-border bg-popover p-0 shadow-popover ring-0"
       >
         <Calendar
           className={calendarClass}

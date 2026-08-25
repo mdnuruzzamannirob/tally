@@ -24,7 +24,7 @@ export function AppRadioGroup({
           key={option.value}
         >
           <RadioGroupItem
-            className="ui-checked-gradient size-5 rounded-full border-border bg-card bg-clip-border data-checked:border-0! focus-visible:border-0! focus-visible:ring-0"
+            className="size-5 rounded-full border-border bg-card data-checked:border-primary! data-checked:bg-primary! data-checked:text-primary-foreground focus-visible:ring-2 focus-visible:ring-primary/25"
             disabled={option.disabled}
             value={option.value}
           />

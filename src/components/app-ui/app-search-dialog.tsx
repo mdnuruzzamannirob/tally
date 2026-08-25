@@ -16,7 +16,7 @@ export function AppSearchDialog({
 }) {
   return (
     <Dialog onOpenChange={onOpenChange} open={open}>
-      <DialogContent className="top-16! translate-y-0! gap-0 overflow-hidden rounded-lg border-border bg-card p-0 shadow-xl sm:top-20!">
+      <DialogContent className="top-16! translate-y-0! gap-0 overflow-hidden rounded-lg border-border bg-card p-0 shadow-modal sm:top-20!">
         <div className="flex items-center gap-3 border-b border-border px-4">
           <Search className="size-5 shrink-0 text-primary" />
           <AppInput

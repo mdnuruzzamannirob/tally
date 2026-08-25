@@ -36,7 +36,7 @@ export function AppCheckbox({
         {...props}
         className={cn(
           { sm: 'size-4', md: 'size-5', lg: 'size-6' }[size],
-          'rounded-sm border-border bg-card bg-clip-border ui-checked-gradient data-checked:border-0! focus-visible:border-0! focus-visible:ring-0',
+          'rounded-sm border-border bg-card data-checked:border-primary! data-checked:bg-primary! data-checked:text-primary-foreground focus-visible:ring-2 focus-visible:ring-primary/25',
           description && 'mt-0.5',
           className,
         )}

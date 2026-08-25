@@ -46,7 +46,7 @@ export function AppSwitch({
       <SwitchPrimitive.Root
         checked={checked}
         className={cn(
-          "ui-checked-gradient relative inline-flex shrink-0 items-center rounded-full border-0! bg-input p-0.5 outline-none transition-[background-color,box-shadow,filter] focus-visible:ring-0 disabled:cursor-not-allowed disabled:opacity-45 disabled:saturate-0",
+          "relative inline-flex shrink-0 items-center rounded-full border border-border bg-input p-0.5 outline-none transition-[background-color,box-shadow,filter] data-checked:border-primary data-checked:bg-primary focus-visible:ring-2 focus-visible:ring-primary/25 disabled:cursor-not-allowed disabled:opacity-45 disabled:saturate-0",
           tracks[size],
         )}
         defaultChecked={defaultChecked}

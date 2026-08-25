@@ -22,7 +22,7 @@ export function AppTooltip({
         <TooltipTrigger render={children} />
         <TooltipContent
           className={cn(
-            "rounded-sm! shadow-none!",
+            "rounded-sm! border border-border shadow-popover",
             {
               sm: "gap-1 px-2 py-1 text-[11px] leading-4",
               md: "gap-1.5 px-3 py-1.5 text-xs leading-4",

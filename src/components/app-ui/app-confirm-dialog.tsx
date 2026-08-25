@@ -31,7 +31,7 @@ export function AppConfirmDialog({
 }) {
   return (
     <AlertDialog onOpenChange={onOpenChange} open={open}>
-      <AlertDialogContent className="gap-0 overflow-hidden rounded-lg p-0">
+      <AlertDialogContent className="gap-0 overflow-hidden rounded-lg border-border bg-card p-0 shadow-modal">
         <AlertDialogHeader className="min-w-0 items-start gap-1 rounded-t-lg px-4 py-4 text-left sm:px-5">
           <AlertDialogTitle className="min-w-0 text-lg leading-6 wrap-break-word">
             {title}
@@ -49,8 +49,8 @@ export function AppConfirmDialog({
           <AlertDialogAction
             className={
               variant === 'danger'
-                ? 'ui-gradient-danger border-0! hover:brightness-[.98]'
-                : 'ui-gradient-primary border-0! hover:brightness-[.98]'
+                ? 'border-danger! bg-danger! text-white hover:bg-danger-hover!'
+                : 'border-primary! bg-primary! text-primary-foreground hover:bg-primary-hover!'
             }
             onClick={onConfirm}
             variant="default"
