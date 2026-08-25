@@ -10,11 +10,11 @@ import { AppConfirmDialog } from "@/components/app-ui/app-confirm-dialog";
 import { cn } from "@/lib/utils";
 import { useCurrentUserQuery, useLogoutMutation } from "@/store/api/auth.api";
 import {
-  Bell,
   BriefcaseBusiness,
   CalendarDays,
   LayoutDashboard,
   LogOut,
+  Menu,
   Search,
   Settings,
   Target,
@@ -22,9 +22,10 @@ import {
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useTheme } from "next-themes";
-import type { ReactNode } from "react";
-import { useState } from "react";
+import type { CSSProperties, ReactNode } from "react";
+import { useLayoutEffect, useRef, useState } from "react";
 import { OfflineBanner } from "./OfflineBanner";
+import { InstallPrompt } from "./InstallPrompt";
 const navigation = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { href: "/applications", label: "Applications", icon: BriefcaseBusiness },
@@ -39,6 +40,9 @@ export function AppShell({ children }: { children: ReactNode }) {
   const [searchOpen, setSearchOpen] = useState(false);
   const [notificationsOpen, setNotificationsOpen] = useState(false);
   const [confirmLogout, setConfirmLogout] = useState(false);
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const noticeRef = useRef<HTMLDivElement>(null);
+  const [noticeHeight, setNoticeHeight] = useState(0);
   const { resolvedTheme, setTheme, theme } = useTheme();
   const initials =
     user?.name
@@ -50,6 +54,7 @@ export function AppShell({ children }: { children: ReactNode }) {
   const isActive = (href: string) =>
     pathname === href || (href !== "/dashboard" && pathname.startsWith(`${href}/`));
   const pageName = navigation.find(({ href }) => isActive(href))?.label ?? "Tally";
+  const closeDrawer = () => setDrawerOpen(false);
   const handleLogout = async () => {
     try {
       await logout().unwrap();
@@ -58,9 +63,25 @@ export function AppShell({ children }: { children: ReactNode }) {
       setConfirmLogout(false);
     }
   };
+  useLayoutEffect(() => {
+    const element = noticeRef.current;
+    if (!element) return;
+    const syncHeight = () => setNoticeHeight(element.getBoundingClientRect().height);
+    syncHeight();
+    const observer = new ResizeObserver(syncHeight);
+    observer.observe(element);
+    return () => observer.disconnect();
+  }, []);
   return (
-    <div className="min-h-dvh bg-background">
-      <aside className="fixed inset-y-0 left-0 z-30 hidden w-[15.5rem] border-r border-border bg-card lg:flex lg:flex-col">
+    <div className="min-h-dvh bg-background" style={{ "--shell-notice-height": `${noticeHeight}px` } as CSSProperties}>
+      <a className="fixed top-2 left-2 z-[70] -translate-y-20 rounded-md bg-primary px-3 py-2 text-sm font-medium text-primary-foreground transition-transform focus:translate-y-0" href="#main-content">Skip to content</a>
+      <div className="fixed inset-x-0 top-0 z-50 space-y-0 bg-background" ref={noticeRef}>
+        <OfflineBanner />
+        <InstallPrompt />
+      </div>
+      <div className="min-h-dvh bg-background" style={{ paddingTop: noticeHeight }}>
+      {drawerOpen ? <button aria-label="Close navigation" className="fixed inset-x-0 bottom-0 z-30 bg-foreground/50 lg:hidden" onClick={closeDrawer} style={{ top: "var(--shell-notice-height)" }} type="button" /> : null}
+      <aside className={cn("fixed inset-y-0 left-0 z-40 flex w-[260px] -translate-x-full flex-col border-r border-border bg-card transition-transform duration-200 lg:w-[240px] lg:translate-x-0", drawerOpen && "translate-x-0")} style={{ top: "var(--shell-notice-height)" }}>
         <Link
           className="flex h-15 shrink-0 items-center gap-2 border-b border-border px-4 text-lg font-semibold tracking-tight"
           href="/dashboard"
@@ -78,6 +99,7 @@ export function AppShell({ children }: { children: ReactNode }) {
                 isActive(href) && "bg-primary/10 text-primary hover:bg-primary/10 hover:text-primary",
               )}
               href={href}
+              onClick={closeDrawer}
               key={href}
             >
               <Icon className="size-4" />
@@ -99,24 +121,22 @@ export function AppShell({ children }: { children: ReactNode }) {
           </Link>
         </div>
       </aside>
-      <div className="min-w-0 pb-18 lg:pl-62 lg:pb-0">
-        <header className="fixed inset-x-0 top-0 z-20 h-15 border-b border-border bg-card/95 backdrop-blur lg:left-62 lg:bg-card">
+      <div className="min-w-0 pb-18 lg:pl-60 lg:pb-0">
+        <header className="fixed inset-x-0 z-20 h-15 border-b border-border bg-card/95 backdrop-blur lg:left-60 lg:bg-card" style={{ top: "var(--shell-notice-height)" }}>
           <div className="flex h-full items-center gap-3 px-4 sm:px-6 lg:px-8">
+            <AppButton aria-label="Open navigation" className="hidden md:inline-flex lg:hidden" onClick={() => setDrawerOpen(true)} size="icon-sm" tone="ghost"><Menu className="size-4" /></AppButton>
             <Link className="flex items-center gap-2 font-semibold lg:hidden" href="/dashboard"><span className="grid size-7 place-items-center rounded-md bg-primary text-primary-foreground"><Target className="size-3.5" /></span><span className="hidden sm:inline">Tally</span></Link>
             <h1 className="hidden text-base font-semibold sm:block">{pageName}</h1>
             <div className="ml-auto flex items-center gap-2">
               <AppButton aria-label="Open search" className="h-8 w-8 justify-center gap-2 overflow-hidden border-border! bg-background! px-2.5 text-muted-foreground hover:bg-muted! sm:w-56 sm:justify-start" onClick={() => setSearchOpen(true)} onKeyDown={(event) => { if (event.key === "Enter" || event.key === " ") setSearchOpen(true); }} size="sm" tone="outline"><Search className="size-4 shrink-0" /><span className="hidden truncate sm:inline">Search applications...</span></AppButton>
+              <Link aria-label="Add application" className="hidden h-8 items-center rounded-md bg-primary px-3 text-xs font-medium text-primary-foreground hover:bg-primary-hover sm:inline-flex" href="/applications?create=1"><span className="hidden md:inline">Add application</span><span className="md:hidden">Add</span></Link>
               <AppNotificationMenu onOpenChange={setNotificationsOpen} open={notificationsOpen} />
               <AppThemeMenu onThemeChange={setTheme} resolvedTheme={resolvedTheme} theme={theme} />
               <AppButton aria-label="Log out" className="text-destructive hover:bg-destructive/10! hover:text-destructive!" onClick={() => setConfirmLogout(true)} loading={isLoading} size="icon-sm" tone="ghost"><LogOut className="size-4" /></AppButton>
             </div>
           </div>
         </header>
-        <OfflineBanner />
-        <main
-          className="w-full px-4 pb-6 pt-21 sm:px-6 lg:px-8 lg:pb-8 lg:pt-23"
-          id="main-content"
-        >
+        <main className="w-full px-4 pb-6 pt-21 sm:px-6 lg:px-8 lg:pb-8 lg:pt-23" id="main-content">
           {children}
         </main>
       </div>
@@ -141,6 +161,7 @@ export function AppShell({ children }: { children: ReactNode }) {
               isActive(href) && "text-primary",
             )}
             href={href}
+            onClick={closeDrawer}
             key={href}
           >
             <Icon className="size-4" />
@@ -148,6 +169,7 @@ export function AppShell({ children }: { children: ReactNode }) {
           </Link>
         ))}
       </nav>
+      </div>
     </div>
   );
 }

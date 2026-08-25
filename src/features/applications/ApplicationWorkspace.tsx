@@ -41,7 +41,7 @@ export function ApplicationWorkspace() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const read = useCallback((key: string) => queryValue(searchParams, key), [searchParams]);
-  const [createOpen, setCreateOpen] = useState(false);
+  const [createOpen, setCreateOpen] = useState(() => queryValue(searchParams, "create") === "1");
   const [searchInput, setSearchInput] = useState(searchParams.get("search") ?? "");
   const [company, setCompany] = useState("");
   const [role, setRole] = useState("");

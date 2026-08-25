@@ -5,15 +5,18 @@ import { cn } from "@/lib/utils";
 
 export function AuthLayout({ children }: { children: ReactNode }) {
   return (
-    <main className="flex min-h-[100dvh] items-center justify-center bg-background px-5 py-10 sm:px-6">
+    <main className="relative flex min-h-[100dvh] items-center justify-center bg-background px-4 py-8 sm:px-6 sm:py-10">
+      <a className="fixed top-2 left-2 z-50 -translate-y-20 rounded-md bg-primary px-3 py-2 text-sm font-medium text-primary-foreground transition-transform focus:translate-y-0" href="#auth-content">Skip to content</a>
+      <div className="w-full" id="auth-content">
       {children}
+      </div>
     </main>
   );
 }
 
 export function AuthCard({ children }: { children: ReactNode }) {
   return (
-    <AppCard padding="none" className="w-full max-w-[420px] p-6 sm:p-8">
+    <AppCard padding="none" className="mx-auto w-full max-w-[420px] p-5 sm:p-8">
       {children}
     </AppCard>
   );
@@ -32,7 +35,7 @@ export function AuthHeader({
     <header className="mb-6 text-center">
       <div
         className={cn(
-          "mx-auto mb-3 grid size-12 place-items-center rounded-lg bg-primary text-lg font-bold text-primary-foreground",
+          "mx-auto mb-4 grid size-12 place-items-center rounded-lg bg-primary text-lg font-bold text-primary-foreground",
           icon && "bg-primary-soft text-primary ring-1 ring-primary/20",
         )}
       >

@@ -10,7 +10,8 @@ Last updated: 2026-08-25
 | Phase 1 — Folder Structure and Integration Boundary | COMPLETED | Feature-owned route entries are used directly; dashboard/interviews/settings/application detail composition lives in `features/`; application toolbar and board are real feature components; shell-specific shadcn composition is behind app-ui components; unused compatibility shims were removed. |
 | Phase 2 — Global CSS | COMPLETED — shadcn-compatible | `globals.css` keeps the generated shadcn imports and semantic variable contract, adds prototype-aligned light/dark/status tokens, 4px spacing, typography scale, compact radii, popover/modal shadow tokens, focus/disabled/reduced-motion behavior, and `next/font` Inter wiring. Raw `components/ui` remains unchanged. |
 | Phase 3 — `app-ui` Design System | COMPLETED | Added app-owned reusable primitives and patterns, typed application/interview status variants, responsive section and mobile-list APIs, offline banner, and expanded `ui-preview` examples while preserving existing App* APIs. |
-| Phase 4–12 | PENDING | Not started. |
+| Phase 4 — App Shell and Public Screens | COMPLETED | Added prototype-aligned responsive shell with desktop sidebar, tablet drawer/scrim, mobile bottom navigation, sticky topbar actions, skip links, install prompt, offline fallback/banner, and redesigned public error/loading/not-found/auth surfaces without changing routes or API behavior. |
+| Phase 5–12 | PENDING | Not started. |
 
 Phase 1-এর deeper visual redesign of the applications form and application-detail tabs remains in Phases 6–7; the route and ownership boundaries are already real feature boundaries. No raw shadcn component or backend/API contract was changed.
 
