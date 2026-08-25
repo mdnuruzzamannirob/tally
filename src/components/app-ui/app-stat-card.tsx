@@ -18,39 +18,39 @@ export function AppStatCard({
   return (
     <article
       className={cn(
-        'rounded-lg border border-border',
+        'relative flex min-h-33 w-full flex-col gap-0 overflow-hidden rounded-lg border border-border',
         {
           default: 'bg-card p-4',
           compact: 'bg-card p-3',
-          featured: 'border-primary bg-primary text-primary-foreground p-4',
+          featured: 'border-primary bg-primary p-4 text-primary-foreground',
         }[variant],
       )}
     >
-      <div className="flex items-start justify-between">
+      <div className="flex shrink-0 items-start justify-between">
         <span
           className={cn(
-            'grid size-8 place-items-center rounded-md [&>svg]:size-4',
+            'grid size-9 place-items-center rounded-md transition-colors [&>svg]:size-4.5',
             {
               primary:
                 variant === 'featured'
-                  ? 'bg-primary-foreground/15 text-primary-foreground'
-                  : 'bg-primary-soft text-primary-text',
+                  ? 'bg-primary-foreground text-primary'
+                  : 'bg-primary text-primary-foreground',
               success:
                 variant === 'featured'
-                  ? 'bg-primary-foreground/15 text-primary-foreground'
-                  : 'bg-success-soft text-success-text',
+                  ? 'bg-primary-foreground text-success'
+                  : 'bg-success text-white',
               warning:
                 variant === 'featured'
-                  ? 'bg-primary-foreground/15 text-primary-foreground'
-                  : 'bg-warning-soft text-warning-text',
+                  ? 'bg-primary-foreground text-warning'
+                  : 'bg-warning text-white',
               danger:
                 variant === 'featured'
-                  ? 'bg-primary-foreground/15 text-primary-foreground'
-                  : 'bg-danger-soft text-danger-text',
+                  ? 'bg-primary-foreground text-danger'
+                  : 'bg-danger text-white',
               info:
                 variant === 'featured'
-                  ? 'bg-primary-foreground/15 text-primary-foreground'
-                  : 'bg-info-soft text-info-text',
+                  ? 'bg-primary-foreground text-info'
+                  : 'bg-info text-white',
             }[tone],
           )}
         >
@@ -59,8 +59,10 @@ export function AppStatCard({
         {change ? (
           <span
             className={cn(
-              'text-xs font-medium',
-              variant === 'featured' ? 'text-primary-foreground/80' : 'text-muted-foreground',
+          'text-xs font-medium',
+              variant === 'featured'
+                ? 'bg-primary-foreground/15 text-primary-foreground/90'
+                : 'text-muted-foreground',
             )}
           >
             {change}
@@ -69,13 +71,13 @@ export function AppStatCard({
       </div>
       <p
         className={cn(
-          'mt-2 text-sm',
+          'mt-3 shrink-0 text-sm leading-4',
           variant === 'featured' ? 'text-primary-foreground/80' : 'text-muted-foreground',
         )}
       >
         {label}
       </p>
-      <p className="mt-1 text-3xl font-semibold tracking-tight">{value}</p>
+      <p className="mt-1.5 shrink-0 text-2xl font-semibold leading-none tracking-tight">{value}</p>
     </article>
   );
 }

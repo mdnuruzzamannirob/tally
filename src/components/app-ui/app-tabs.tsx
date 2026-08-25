@@ -24,7 +24,7 @@ export function AppTabs({
           "grid w-full grid-flow-col shadow-none",
           variant === "line"
             ? "h-auto! rounded-none! border-0! border-b! border-border bg-transparent! p-0!"
-            : "h-10! rounded-md! border border-border! bg-muted! p-1!",
+            : "h-10! rounded-md! border border-border! bg-background! p-1!",
         )}
         style={{ gridTemplateColumns: `repeat(${items.length}, minmax(0, 1fr))` }}
       >
