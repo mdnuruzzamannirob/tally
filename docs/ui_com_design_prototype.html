@@ -1,0 +1,1547 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tally UI — Component Library</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ============ TOKENS (UI/UX Spec v1.1 · shadcn-style naming) ============ */
+:root{
+  --background:#f8fafc; --foreground:#0f172a;
+  --card:#ffffff; --card-foreground:#0f172a;
+  --muted:#f8fafc; --muted-foreground:#64748b;
+  --subtle:#94a3b8;
+  --border:#e2e8f0; --border-strong:#cbd5e1; --input:#e2e8f0;
+  --primary:#6366f1; --primary-hover:#4f46e5; --primary-active:#4338ca;
+  --primary-foreground:#ffffff;
+  --primary-subtle:#eef2ff; --primary-border:#c7d2fe; --primary-text:#4338ca;
+  --ring:rgba(99,102,241,.25);
+  --secondary:#f1f5f9; --secondary-foreground:#0f172a;
+  --accent:#eef2ff; --accent-foreground:#4338ca;
+  --destructive:#dc2626; --destructive-hover:#b91c1c; --destructive-foreground:#fff;
+  --success:#16a34a; --warning:#d97706; --info:#0891b2;
+  --overlay:rgba(15,23,42,.45);
+  --shadow-pop:0 8px 24px rgba(15,23,42,.08);
+  --shadow-modal:0 12px 32px rgba(15,23,42,.12);
+  --err-bg:#fef2f2;--err-bd:#fecaca;--err-tx:#b91c1c;
+  --warn-bg:#fffbeb;--warn-bd:#fde68a;--warn-tx:#92400e;
+  --info-bg:#ecfeff;--info-bd:#a5f3fc;--info-tx:#0e7490;
+  --ok-bg:#f0fdf4;--ok-bd:#bbf7d0;--ok-tx:#15803d;
+  --radius-lg:8px; --radius-md:6px; --radius-sm:4px;
+  --st-wishlist-bg:#f1f5f9;--st-wishlist-tx:#475569;--st-wishlist-bd:#e2e8f0;
+  --st-applied-bg:#eef2ff;--st-applied-tx:#4338ca;--st-applied-bd:#c7d2fe;
+  --st-screening-bg:#ecfeff;--st-screening-tx:#0e7490;--st-screening-bd:#a5f3fc;
+  --st-interview-bg:#f5f3ff;--st-interview-tx:#6d28d9;--st-interview-bd:#ddd6fe;
+  --st-offer-bg:#f0fdf4;--st-offer-tx:#15803d;--st-offer-bd:#bbf7d0;
+  --st-rejected-bg:#fef2f2;--st-rejected-tx:#b91c1c;--st-rejected-bd:#fecaca;
+  --st-withdrawn-bg:#f9fafb;--st-withdrawn-tx:#6b7280;--st-withdrawn-bd:#e5e7eb;
+  --iv-scheduled-bg:#eff6ff;--iv-scheduled-tx:#1d4ed8;--iv-scheduled-bd:#bfdbfe;
+  --iv-completed-bg:#f0fdf4;--iv-completed-tx:#15803d;--iv-completed-bd:#bbf7d0;
+  --iv-cancelled-bg:#f9fafb;--iv-cancelled-tx:#6b7280;--iv-cancelled-bd:#e5e7eb;
+  --iv-noshow-bg:#fef2f2;--iv-noshow-tx:#b91c1c;--iv-noshow-bd:#fecaca;
+}
+[data-theme="dark"]{
+  --background:#0b1220; --foreground:#f8fafc;
+  --card:#111827; --card-foreground:#f8fafc;
+  --muted:#1f2937; --muted-foreground:#94a3b8; --subtle:#64748b;
+  --border:#1f2937; --border-strong:#374151; --input:#1f2937;
+  --primary-hover:#818cf8; --primary-text:#c7d2fe;
+  --primary-subtle:rgba(99,102,241,.14); --primary-border:rgba(129,140,248,.35);
+  --secondary:#1f2937; --secondary-foreground:#f8fafc;
+  --accent:rgba(99,102,241,.14); --accent-foreground:#c7d2fe;
+  --destructive:#ef4444; --destructive-hover:#dc2626;
+  --success:#22c55e; --warning:#f59e0b; --info:#38bdf8;
+  --overlay:rgba(2,6,23,.6); --shadow-pop:0 8px 24px rgba(0,0,0,.4); --shadow-modal:0 12px 32px rgba(0,0,0,.5);
+  --err-bg:rgba(239,68,68,.12);--err-bd:rgba(239,68,68,.3);--err-tx:#fecaca;
+  --warn-bg:rgba(245,158,11,.1);--warn-bd:rgba(245,158,11,.3);--warn-tx:#fde68a;
+  --info-bg:rgba(56,189,248,.1);--info-bd:rgba(56,189,248,.3);--info-tx:#bae6fd;
+  --ok-bg:rgba(34,197,94,.1);--ok-bd:rgba(34,197,94,.3);--ok-tx:#bbf7d0;
+  --st-wishlist-bg:rgba(148,163,184,.12);--st-wishlist-tx:#cbd5e1;--st-wishlist-bd:rgba(148,163,184,.25);
+  --st-applied-bg:rgba(99,102,241,.16);--st-applied-tx:#c7d2fe;--st-applied-bd:rgba(129,140,248,.35);
+  --st-screening-bg:rgba(34,211,238,.12);--st-screening-tx:#a5f3fc;--st-screening-bd:rgba(34,211,238,.25);
+  --st-interview-bg:rgba(167,139,250,.14);--st-interview-tx:#ddd6fe;--st-interview-bd:rgba(167,139,250,.3);
+  --st-offer-bg:rgba(34,197,94,.14);--st-offer-tx:#bbf7d0;--st-offer-bd:rgba(34,197,94,.3);
+  --st-rejected-bg:rgba(239,68,68,.14);--st-rejected-tx:#fecaca;--st-rejected-bd:rgba(239,68,68,.3);
+  --st-withdrawn-bg:rgba(156,163,175,.12);--st-withdrawn-tx:#e5e7eb;--st-withdrawn-bd:rgba(156,163,175,.25);
+  --iv-scheduled-bg:rgba(59,130,246,.16);--iv-scheduled-tx:#bfdbfe;--iv-scheduled-bd:rgba(59,130,246,.35);
+  --iv-completed-bg:rgba(34,197,94,.14);--iv-completed-tx:#bbf7d0;--iv-completed-bd:rgba(34,197,94,.3);
+  --iv-cancelled-bg:rgba(156,163,175,.12);--iv-cancelled-tx:#e5e7eb;--iv-cancelled-bd:rgba(156,163,175,.25);
+  --iv-noshow-bg:rgba(239,68,68,.14);--iv-noshow-tx:#fecaca;--iv-noshow-bd:rgba(239,68,68,.3);
+}
+/* ============ BASE ============ */
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;background:var(--background);color:var(--foreground);font-size:14px;line-height:1.55;-webkit-font-smoothing:antialiased}
+button{font-family:inherit}
+a{color:var(--primary-text);text-decoration:none}
+a:hover{text-decoration:underline}
+[hidden]{display:none!important}
+.ic{width:16px;height:16px;flex-shrink:0}
+.ic-sm{width:14px;height:14px}
+.ic-lg{width:20px;height:20px}
+.ic-xl{width:24px;height:24px}
+.muted{color:var(--muted-foreground)} .small{font-size:12px}
+.vh{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+kbd.k{font-family:inherit;font-size:11px;color:var(--muted-foreground);border:1px solid var(--border);border-bottom-width:2px;border-radius:4px;padding:1px 6px;background:var(--card);font-weight:500}
+.skip{position:absolute;left:-9999px;top:8px;z-index:999;background:var(--primary);color:#fff;padding:8px 14px;border-radius:6px}
+.skip:focus{left:8px}
+:focus-visible{outline:2px solid var(--primary);outline-offset:2px}
+/* ============ DOCS SHELL ============ */
+.topbar{position:sticky;top:0;z-index:200;height:56px;display:flex;align-items:center;gap:12px;padding:0 24px;background:var(--card);border-bottom:1px solid var(--border)}
+.brand{display:flex;align-items:center;gap:10px;font-weight:600;font-size:15px;letter-spacing:-.01em}
+.logo{width:26px;height:26px;border-radius:6px;background:var(--primary);color:#fff;display:flex;align-items:center;justify-content:center}
+.docchip{font-size:11px;font-weight:600;color:var(--primary-text);background:var(--primary-subtle);border:1px solid var(--primary-border);border-radius:9999px;padding:2px 10px}
+.layout{display:grid;grid-template-columns:232px minmax(0,1fr)}
+.snav{position:sticky;top:56px;height:calc(100vh - 56px);overflow:auto;padding:20px 14px;border-right:1px solid var(--border)}
+.snav .grp{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--subtle);padding:14px 10px 6px}
+.snav a{display:flex;align-items:center;gap:8px;padding:6px 10px;border-radius:6px;color:var(--muted-foreground);font-size:13px;font-weight:500;text-decoration:none;margin-bottom:1px}
+.snav a:hover{background:var(--muted);color:var(--foreground)}
+.snav a.active{background:var(--primary-subtle);color:var(--primary-text)}
+[data-theme="dark"] .snav a.active{background:rgba(99,102,241,.14);color:#c7d2fe}
+.doc{padding:32px 36px 80px;width:100%}
+.section{margin-bottom:72px;scroll-margin-top:76px}
+.section-head{margin-bottom:22px;max-width:860px}
+.section-head h2{font-size:22px;font-weight:600;letter-spacing:-.02em;margin-bottom:4px}
+.section-head p{font-size:13px;color:var(--muted-foreground)}
+.spec-ref{font-size:11px;color:var(--subtle);font-family:ui-monospace,monospace;margin-top:6px}
+.demo{margin-bottom:28px}
+.demo-label{font-size:12px;font-weight:600;color:var(--muted-foreground);margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.demo-label::after{content:"";height:1px;flex:1;background:var(--border)}
+.box{border:1px solid var(--border);border-radius:8px;background:var(--card);padding:24px}
+.row{display:flex;flex-wrap:wrap;gap:12px;align-items:center}
+.row-top{display:flex;flex-wrap:wrap;gap:20px;align-items:flex-start}
+.col{display:flex;flex-direction:column;gap:12px}
+.sep{height:1px;background:var(--border);margin:20px 0}
+/* ============ BUTTON (shadcn variants) ============ */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:36px;padding:0 14px;border-radius:var(--radius-md);font-size:14px;font-weight:500;border:1px solid transparent;cursor:pointer;transition:background .15s,border-color .15s,color .15s;white-space:nowrap}
+.btn:disabled{opacity:.5;cursor:not-allowed;pointer-events:none}
+.btn-sm{height:32px;padding:0 12px;font-size:13px;border-radius:6px}
+.btn-xs{height:28px;padding:0 8px;font-size:12px;border-radius:6px}
+.btn-lg{height:40px;padding:0 20px;font-size:14px}
+.btn-icon{width:36px;padding:0}
+.btn-icon.btn-sm{width:32px}.btn-icon.btn-xs{width:28px}
+.btn-default{background:var(--primary);color:var(--primary-foreground)}
+.btn-default:hover{background:var(--primary-hover)}
+.btn-default:active{background:var(--primary-active)}
+.btn-secondary{background:var(--secondary);color:var(--secondary-foreground);border-color:transparent}
+.btn-secondary:hover{background:var(--border)}
+[data-theme="dark"] .btn-secondary:hover{background:var(--border-strong)}
+.btn-outline{background:var(--card);color:var(--foreground);border-color:var(--input)}
+.btn-outline:hover{background:var(--muted)}
+.btn-ghost{background:transparent;color:var(--foreground)}
+.btn-ghost:hover{background:var(--muted)}
+.btn-destructive{background:var(--destructive);color:var(--destructive-foreground)}
+.btn-destructive:hover{background:var(--destructive-hover)}
+.btn-link{background:none;border:none;color:var(--primary-text);padding:0;height:auto;text-decoration:underline;text-underline-offset:4px}
+.btn-link:hover{color:var(--primary-active)}
+.spinner{width:14px;height:14px;border:2px solid rgba(255,255,255,.35);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;display:inline-block}
+.spinner.dark{border-color:var(--border-strong);border-top-color:var(--foreground)}
+.spinner.lg{width:22px;height:22px;border-width:2.5px;border-color:var(--primary-border);border-top-color:var(--primary)}
+@keyframes spin{to{transform:rotate(360deg)}}
+/* tooltip */
+.tip{position:relative;display:inline-flex}
+.tip::after{content:attr(data-tip);position:absolute;bottom:calc(100% + 6px);left:50%;transform:translateX(-50%);background:var(--foreground);color:var(--background);font-size:11px;font-weight:500;padding:4px 8px;border-radius:5px;white-space:nowrap;opacity:0;pointer-events:none;transition:opacity .15s;z-index:80}
+.tip:hover::after,.tip:focus-within::after{opacity:1}
+/* ============ FORM CONTROLS ============ */
+.form-item{display:flex;flex-direction:column;gap:6px;margin-bottom:16px;max-width:360px}
+.form-item.wide{max-width:520px}
+.label{font-size:14px;font-weight:500;line-height:1}
+.label .req{color:var(--destructive)}
+.form-desc{font-size:13px;color:var(--muted-foreground)}
+.form-error{font-size:13px;color:var(--destructive);display:flex;align-items:center;gap:5px}
+.input,.textarea{width:100%;background:var(--card);border:1px solid var(--input);border-radius:var(--radius-md);padding:8px 12px;font-size:14px;color:var(--foreground);font-family:inherit;transition:border-color .15s,box-shadow .15s}
+.input::placeholder,.textarea::placeholder{color:var(--subtle)}
+.input:focus,.textarea:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 3px var(--ring)}
+.input:disabled,.textarea:disabled{background:var(--muted);color:var(--subtle);cursor:not-allowed}
+.input.err{border-color:var(--destructive)}
+.input.err:focus{box-shadow:0 0 0 3px rgba(220,38,38,.15)}
+.textarea{min-height:84px;resize:vertical}
+.in-wrap{position:relative}
+.in-wrap .input{padding-right:38px}
+.in-wrap .sfx{position:absolute;right:6px;top:50%;transform:translateY(-50%);background:none;border:0;color:var(--muted-foreground);cursor:pointer;padding:5px;border-radius:5px;display:flex}
+.in-wrap .sfx:hover{color:var(--foreground);background:var(--muted)}
+.in-wrap .pfx{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--subtle);display:flex}
+.in-wrap .pfx+.input{padding-left:33px}
+.in-wrap kbd.k{position:absolute;right:8px;top:50%;transform:translateY(-50%)}
+.strength{display:flex;gap:4px;margin-top:6px}
+.strength span{height:4px;flex:1;border-radius:2px;background:var(--border)}
+.strength span.ok{background:var(--warning)}
+.strength span.good{background:var(--success)}
+.char-count{font-size:11px;color:var(--subtle);text-align:right}
+/* custom select */
+.cs{position:relative;display:inline-block;min-width:220px}
+.cs-btn{display:flex;align-items:center;justify-content:space-between;gap:8px;width:100%;background:var(--card);border:1px solid var(--input);border-radius:var(--radius-md);padding:8px 12px;font-size:14px;color:var(--foreground);cursor:pointer;transition:border-color .15s,box-shadow .15s;text-align:left}
+.cs-btn:hover{border-color:var(--border-strong)}
+.cs-btn:focus-visible{outline:none;border-color:var(--primary);box-shadow:0 0 0 3px var(--ring)}
+.cs.open .cs-btn{border-color:var(--primary);box-shadow:0 0 0 3px var(--ring)}
+.cs-btn .ph{color:var(--subtle)}
+.cs-btn .chev{color:var(--subtle);transition:transform .15s}
+.cs.open .chev{transform:rotate(180deg)}
+.cs.disabled .cs-btn{background:var(--muted);color:var(--subtle);cursor:not-allowed}
+.cs-pop{position:absolute;top:calc(100% + 6px);left:0;right:0;background:var(--card);border:1px solid var(--border);border-radius:var(--radius-md);padding:4px;box-shadow:var(--shadow-pop);opacity:0;transform:translateY(-4px);pointer-events:none;transition:opacity .15s,transform .15s;z-index:150;max-height:240px;overflow:auto}
+.cs.open .cs-pop{opacity:1;transform:none;pointer-events:auto}
+.cs-opt{display:flex;align-items:center;gap:8px;width:100%;padding:7px 10px;border-radius:5px;font-size:14px;background:none;border:0;cursor:pointer;text-align:left;color:var(--foreground)}
+.cs-opt:hover,.cs-opt.hl{background:var(--muted)}
+.cs-opt .ck{margin-left:auto;color:var(--primary);opacity:0}
+.cs-opt.sel .ck{opacity:1}
+.cs-opt.dis{color:var(--subtle);cursor:not-allowed}
+/* tag multi-select */
+.ts{position:relative;max-width:420px}
+.ts-btn{display:flex;align-items:center;gap:6px;flex-wrap:wrap;min-height:38px;width:100%;background:var(--card);border:1px solid var(--input);border-radius:var(--radius-md);padding:5px 8px;cursor:pointer;text-align:left;transition:border-color .15s,box-shadow .15s}
+.ts-btn:focus-visible{outline:none;border-color:var(--primary);box-shadow:0 0 0 3px var(--ring)}
+.ts.open .ts-btn{border-color:var(--primary);box-shadow:0 0 0 3px var(--ring)}
+.ts-ph{color:var(--subtle);font-size:14px}
+.tchip{display:inline-flex;align-items:center;gap:5px;border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--muted);font-size:12px;padding:2px 6px;color:var(--foreground)}
+.tchip .dot{width:7px;height:7px;border-radius:50%}
+.tchip button{background:none;border:0;color:var(--muted-foreground);cursor:pointer;display:flex;padding:0}
+.tchip button:hover{color:var(--destructive)}
+.ts-pop{position:absolute;top:calc(100% + 6px);left:0;right:0;background:var(--card);border:1px solid var(--border);border-radius:var(--radius-md);padding:6px;box-shadow:var(--shadow-pop);opacity:0;transform:translateY(-4px);pointer-events:none;transition:opacity .15s,transform .15s;z-index:150}
+.ts.open .ts-pop{opacity:1;transform:none;pointer-events:auto}
+.ts-opt{display:flex;align-items:center;gap:9px;width:100%;padding:7px 9px;border-radius:5px;font-size:13px;cursor:pointer;background:none;border:0;color:var(--foreground);text-align:left}
+.ts-opt:hover{background:var(--muted)}
+.mbox{width:14px;height:14px;border-radius:4px;border:1px solid var(--border-strong);display:inline-flex;align-items:center;justify-content:center;color:#fff;flex-shrink:0;transition:background .12s}
+.mbox svg{width:9px;height:9px;opacity:0}
+.ts-opt.sel .mbox{background:var(--primary);border-color:var(--primary)}
+.ts-opt.sel .mbox svg{opacity:1}
+/* checkbox / radio */
+.ck-row{display:inline-flex;gap:10px;align-items:flex-start;cursor:pointer;font-size:14px}
+.ck-row.dis{cursor:not-allowed;color:var(--subtle)}
+.ckbox{width:16px;height:16px;border:1px solid var(--border-strong);border-radius:4px;background:var(--card);display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px;transition:background .12s,border-color .12s;position:relative}
+.ckbox svg{opacity:0;color:#fff;width:11px;height:11px;transition:opacity .1s}
+.vh:checked ~ .ckbox{background:var(--primary);border-color:var(--primary)}
+.vh:checked ~ .ckbox svg{opacity:1}
+.ckbox.ind{background:var(--primary);border-color:var(--primary)}
+.ckbox.ind svg{opacity:0}
+.ckbox.ind::after{content:"";position:absolute;width:8px;height:2px;background:#fff;border-radius:1px}
+.vh:disabled ~ .ckbox{opacity:.5}
+.vh:focus-visible ~ .ckbox{outline:2px solid var(--primary);outline-offset:2px}
+.rdbox{width:16px;height:16px;border-radius:50%;border:1px solid var(--border-strong);background:var(--card);display:inline-flex;align-items:center;justify-content:center;margin-top:2px;flex-shrink:0;transition:background .12s,border-color .12s}
+.rdbox::after{content:"";width:8px;height:8px;border-radius:50%;background:#fff;transform:scale(0);transition:transform .12s}
+.vh:checked ~ .rdbox{background:var(--primary);border-color:var(--primary)}
+.vh:checked ~ .rdbox::after{transform:scale(1)}
+.vh:disabled ~ .rdbox{opacity:.5}
+.vh:focus-visible ~ .rdbox{outline:2px solid var(--primary);outline-offset:2px}
+/* switch */
+.sw{width:36px;height:20px;border-radius:9999px;background:var(--border-strong);position:relative;cursor:pointer;border:0;transition:background .15s;flex-shrink:0}
+.sw::after{content:"";position:absolute;top:2px;left:2px;width:16px;height:16px;border-radius:9999px;background:#fff;transition:left .15s;box-shadow:0 1px 2px rgba(0,0,0,.2)}
+.sw.on{background:var(--primary)}
+.sw.on::after{left:18px}
+.sw:disabled{opacity:.5;cursor:not-allowed}
+/* date picker */
+.dp{position:relative;display:inline-block}
+.dp-pop{position:absolute;top:calc(100% + 6px);left:0;width:302px;background:var(--card);border:1px solid var(--border);border-radius:var(--radius-lg);box-shadow:var(--shadow-pop);padding:12px;z-index:160;opacity:0;transform:translateY(-4px);pointer-events:none;transition:opacity .15s,transform .15s}
+.dp.open .dp-pop{opacity:1;transform:none;pointer-events:auto}
+.dp-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.dp-month{font-size:14px;font-weight:600}
+.dp-nav{background:none;border:0;color:var(--muted-foreground);cursor:pointer;padding:5px;border-radius:6px;display:flex}
+.dp-nav:hover{background:var(--muted);color:var(--foreground)}
+.dp-wd{display:grid;grid-template-columns:repeat(7,1fr);margin-bottom:4px}
+.dp-wd span{text-align:center;font-size:11px;color:var(--subtle);font-weight:600;padding:4px 0}
+.dp-days{display:grid;grid-template-columns:repeat(7,1fr);gap:2px}
+.dp-day{border:0;background:none;border-radius:6px;font-size:13px;color:var(--foreground);cursor:pointer;aspect-ratio:1;display:flex;align-items:center;justify-content:center;padding:0}
+.dp-day:hover{background:var(--muted)}
+.dp-day.out{color:var(--subtle)}
+.dp-day.today{border:1px solid var(--primary);color:var(--primary-text);font-weight:600}
+.dp-day.sel{background:var(--primary);color:#fff;font-weight:600}
+.dp-foot{display:flex;justify-content:space-between;margin-top:10px;padding-top:10px;border-top:1px solid var(--border)}
+.tp-row{display:flex;align-items:center;justify-content:center;gap:10px;padding:10px 0 2px;border-top:1px solid var(--border);margin-top:8px}
+.tp-label{font-size:12px;color:var(--muted-foreground);margin-right:auto}
+.tp-seg{display:flex;flex-direction:column;align-items:center;border:1px solid var(--border);border-radius:6px;overflow:hidden;background:var(--card)}
+.tp-seg button{border:0;background:none;cursor:pointer;color:var(--muted-foreground);padding:1px 12px;display:flex;justify-content:center}
+.tp-seg button:hover{background:var(--muted);color:var(--foreground)}
+.tp-seg .tp-val{font-size:15px;font-weight:600;font-variant-numeric:tabular-nums;padding:1px 0;border-top:1px solid var(--border);border-bottom:1px solid var(--border);width:100%;text-align:center}
+.tp-colon{font-weight:600;color:var(--muted-foreground)}
+/* dropzone + palette */
+.dz{border:1px dashed var(--border-strong);border-radius:8px;padding:28px;text-align:center;cursor:pointer;background:var(--card);transition:border-color .15s,background .15s;max-width:480px}
+.dz:hover,.dz.drag{border-color:var(--primary);background:var(--primary-subtle)}
+.dz .dzi{width:40px;height:40px;border-radius:8px;background:var(--muted);border:1px solid var(--border);display:inline-flex;align-items:center;justify-content:center;color:var(--muted-foreground);margin-bottom:10px}
+.swatches{display:flex;gap:8px;flex-wrap:wrap}
+.swb{width:26px;height:26px;border-radius:6px;border:1px solid var(--border);cursor:pointer;transition:transform .1s}
+.swb:hover{transform:scale(1.08)}
+.swb.sel{outline:2px solid var(--primary);outline-offset:2px}
+/* ============ BADGES / TAGS / AVATAR ============ */
+.badge{display:inline-flex;align-items:center;gap:4px;border-radius:var(--radius-sm);border:1px solid transparent;font-size:12px;font-weight:500;padding:2px 8px;white-space:nowrap}
+.badge-wishlist{background:var(--st-wishlist-bg);color:var(--st-wishlist-tx);border-color:var(--st-wishlist-bd)}
+.badge-applied{background:var(--st-applied-bg);color:var(--st-applied-tx);border-color:var(--st-applied-bd)}
+.badge-screening{background:var(--st-screening-bg);color:var(--st-screening-tx);border-color:var(--st-screening-bd)}
+.badge-interview{background:var(--st-interview-bg);color:var(--st-interview-tx);border-color:var(--st-interview-bd)}
+.badge-offer{background:var(--st-offer-bg);color:var(--st-offer-tx);border-color:var(--st-offer-bd)}
+.badge-rejected{background:var(--st-rejected-bg);color:var(--st-rejected-tx);border-color:var(--st-rejected-bd)}
+.badge-withdrawn{background:var(--st-withdrawn-bg);color:var(--st-withdrawn-tx);border-color:var(--st-withdrawn-bd)}
+.badge-scheduled{background:var(--iv-scheduled-bg);color:var(--iv-scheduled-tx);border-color:var(--iv-scheduled-bd)}
+.badge-completed{background:var(--iv-completed-bg);color:var(--iv-completed-tx);border-color:var(--iv-completed-bd)}
+.badge-cancelled{background:var(--iv-cancelled-bg);color:var(--iv-cancelled-tx);border-color:var(--iv-cancelled-bd)}
+.badge-noshow{background:var(--iv-noshow-bg);color:var(--iv-noshow-tx);border-color:var(--iv-noshow-bd)}
+.badge-outline{background:transparent;color:var(--foreground);border-color:var(--border)}
+.badge-count{background:var(--muted);border:1px solid var(--border);color:var(--muted-foreground);font-size:11px;padding:0 6px;border-radius:4px;font-variant-numeric:tabular-nums}
+.tag{display:inline-flex;align-items:center;gap:5px;border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--muted);font-size:12px;padding:3px 8px;color:var(--foreground);cursor:pointer;transition:background .15s,border-color .15s}
+.tag.sel{background:var(--primary-subtle);border-color:var(--primary-border);color:var(--primary-text)}
+[data-theme="dark"] .tag.sel{background:rgba(99,102,241,.16);border-color:rgba(129,140,248,.35);color:#c7d2fe}
+.tag .dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.tag .rm{background:none;border:0;color:inherit;opacity:.6;cursor:pointer;display:flex;padding:0}
+.tag .rm:hover{opacity:1}
+.chip{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--border);background:var(--card);border-radius:var(--radius-sm);font-size:12px;padding:4px 8px;color:var(--foreground)}
+.chip button{background:none;border:0;color:var(--muted-foreground);cursor:pointer;display:flex;padding:0}
+.chip button:hover{color:var(--destructive)}
+.chip strong{font-weight:500;color:var(--muted-foreground)}
+.avatar{border-radius:9999px;background:var(--primary);color:#fff;display:inline-flex;align-items:center;justify-content:center;font-weight:600;flex-shrink:0}
+.av-24{width:24px;height:24px;font-size:10px}.av-28{width:28px;height:28px;font-size:11px}
+.av-32{width:32px;height:32px;font-size:12px}.av-40{width:40px;height:40px;font-size:14px}
+.av-alt{background:#0891b2}.av-alt2{background:#d97706}
+.av-group{display:flex}
+.av-group .avatar{border:2px solid var(--card);margin-left:-8px}
+.av-group .avatar:first-child{margin-left:0}
+.flag-overdue{color:var(--destructive);font-weight:500;display:inline-flex;align-items:center;gap:4px}
+.flag-today{color:var(--warning);font-weight:500;display:inline-flex;align-items:center;gap:4px}
+/* ============ CARD ============ */
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius-lg)}
+.card.clickable{cursor:pointer;transition:border-color .15s,background .15s}
+.card.clickable:hover{border-color:var(--primary-border);background:var(--muted)}
+[data-theme="dark"] .card.clickable:hover{border-color:rgba(129,140,248,.35)}
+.card-h{padding:18px 20px 0}
+.card-title{font-size:15px;font-weight:600;letter-spacing:-.01em}
+.card-desc{font-size:13px;color:var(--muted-foreground);margin-top:2px}
+.card-c{padding:18px 20px}
+.card-f{padding:14px 20px;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:8px}
+.stat{background:var(--card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:18px;cursor:pointer;transition:border-color .15s,background .15s;text-align:left;min-width:210px}
+.stat:hover{border-color:var(--primary-border);background:var(--muted)}
+[data-theme="dark"] .stat:hover{border-color:rgba(129,140,248,.35)}
+.stat .s-ic{width:32px;height:32px;border-radius:6px;background:var(--primary-subtle);color:var(--primary-text);display:flex;align-items:center;justify-content:center;margin-bottom:12px}
+.stat .s-label{font-size:13px;color:var(--muted-foreground)}
+.stat .s-val{font-size:30px;font-weight:600;letter-spacing:-.02em;margin-top:2px;font-variant-numeric:tabular-nums}
+.stat .s-sub{font-size:12px;color:var(--muted-foreground);margin-top:2px}
+.cell-t{font-weight:500}.cell-s{font-size:12px;color:var(--muted-foreground)}
+.board-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:12px;width:230px;cursor:pointer;transition:border-color .15s}
+.board-card:hover{border-color:var(--primary-border)}
+.board-card.drag{border-color:var(--primary)}
+.note{border:1px solid var(--border);border-radius:var(--radius-lg);padding:12px 14px;background:var(--card);max-width:520px}
+.note .n-h{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
+.note .n-a{display:flex;gap:2px;opacity:0;transition:opacity .15s}
+.note:hover .n-a,.note:focus-within .n-a{opacity:1}
+.iv-row{display:flex;align-items:center;gap:12px;border:1px solid var(--border);border-radius:var(--radius-lg);padding:12px 14px;background:var(--card);flex-wrap:wrap;max-width:760px}
+.iv-ic{width:36px;height:36px;border-radius:6px;background:var(--primary-subtle);color:var(--primary-text);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.fu-item{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);cursor:pointer}
+.fu-item:last-child{border-bottom:0}
+.fu-d{margin-left:auto;font-size:12px;display:flex;align-items:center;gap:4px;white-space:nowrap}
+.fu-d.overdue{color:var(--destructive);font-weight:500}
+.fu-d.today{color:var(--warning);font-weight:500}
+.l-row{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);cursor:pointer}
+.l-row:last-child{border-bottom:0}
+.set-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 0;border-bottom:1px solid var(--border);flex-wrap:wrap}
+.set-row:last-child{border-bottom:0}
+.sr-l{font-size:14px;font-weight:500}
+.sr-s{font-size:12px;color:var(--muted-foreground)}
+.prov-logo{width:32px;height:32px;border-radius:6px;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;background:var(--card)}
+/* ============ TABLE ============ */
+.tbl-wrap{overflow-x:auto}
+.tbl{width:100%;border-collapse:collapse;font-size:14px;min-width:780px}
+.tbl th{text-align:left;font-size:12px;color:var(--muted-foreground);font-weight:500;padding:10px 12px;border-bottom:1px solid var(--border);white-space:nowrap}
+.tbl td{padding:12px;border-bottom:1px solid var(--border);vertical-align:middle}
+.tbl tbody tr{cursor:pointer;transition:background .1s}
+.tbl tbody tr:hover{background:var(--muted)}
+.tbl tbody tr.sel{background:var(--primary-subtle)}
+[data-theme="dark"] .tbl tbody tr.sel{background:rgba(99,102,241,.14)}
+/* timeline */
+.tl{position:relative;padding-left:20px}
+.tl::before{content:"";position:absolute;left:5px;top:6px;bottom:6px;width:1px;background:var(--border)}
+.tl-i{position:relative;padding-bottom:16px}
+.tl-i:last-child{padding-bottom:0}
+.tl-i::before{content:"";position:absolute;left:-19px;top:5px;width:9px;height:9px;border-radius:50%;background:var(--primary);border:2px solid var(--card)}
+.tl-time{font-size:11px;color:var(--subtle);margin-top:2px}
+/* donut */
+.donut-w{display:flex;align-items:center;gap:20px;flex-wrap:wrap}
+.donut{width:150px;height:150px;flex-shrink:0}
+.legend{display:flex;flex-direction:column;gap:6px;font-size:13px;min-width:160px}
+.legend .li{display:flex;align-items:center;gap:8px}
+.legend .ld{width:8px;height:8px;border-radius:2px;flex-shrink:0}
+.legend .lc{margin-left:auto;color:var(--muted-foreground)}
+/* ============ ALERTS / TOAST / BANNER ============ */
+.alert{display:flex;gap:10px;align-items:flex-start;border-radius:var(--radius-md);padding:12px 14px;font-size:13px;border:1px solid;max-width:640px;background:var(--card)}
+.alert .a-t{font-weight:600;margin-bottom:1px}
+.alert-info{border-color:var(--info-bd);background:var(--info-bg);color:var(--info-tx)}
+.alert-ok{border-color:var(--ok-bd);background:var(--ok-bg);color:var(--ok-tx)}
+.alert-warn{border-color:var(--warn-bd);background:var(--warn-bg);color:var(--warn-tx)}
+.alert-err{border-color:var(--err-bd);background:var(--err-bg);color:var(--err-tx)}
+.offline-b{background:var(--muted);border:1px solid var(--border);border-left:3px solid var(--warning);border-radius:var(--radius-md);padding:10px 14px;font-size:13px;display:flex;gap:8px;align-items:center;max-width:640px}
+.toast{display:flex;gap:10px;align-items:flex-start;background:var(--card);border:1px solid var(--border);border-left:3px solid var(--info);border-radius:var(--radius-md);padding:12px 14px;min-width:300px;max-width:380px}
+.toast-success{border-left-color:var(--success)} .toast-error{border-left-color:var(--destructive)}
+.toast-warn{border-left-color:var(--warning)} .toast-info{border-left-color:var(--info)}
+.toast .tt{font-size:13px;font-weight:600}
+.toast .tm{font-size:12px;color:var(--muted-foreground);margin-top:1px}
+.toast .tx{margin-left:auto;background:none;border:0;color:var(--muted-foreground);cursor:pointer;padding:2px;border-radius:4px;display:flex}
+.toast .tx:hover{color:var(--foreground);background:var(--muted)}
+.toast-live{position:fixed;bottom:16px;right:16px;display:flex;flex-direction:column;gap:8px;z-index:500}
+.toast.anim{animation:tin .2s ease}
+@keyframes tin{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+/* skeleton / empty */
+.skel{background:var(--muted);border-radius:6px;position:relative;overflow:hidden}
+.skel::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.4),transparent);animation:shm 1.4s infinite}
+[data-theme="dark"] .skel::after{background:linear-gradient(90deg,transparent,rgba(255,255,255,.05),transparent)}
+@keyframes shm{from{transform:translateX(-100%)}to{transform:translateX(100%)}}
+.empty{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:36px 20px;gap:6px}
+.empty .e-ic{width:44px;height:44px;border-radius:8px;background:var(--muted);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:var(--subtle);margin-bottom:6px}
+.empty h4{font-size:15px;font-weight:600;letter-spacing:-.01em}
+.empty p{font-size:13px;color:var(--muted-foreground);max-width:320px}
+/* ============ MENUS / DIALOG / SHEET / COMMAND ============ */
+.menu-w{position:relative;display:inline-block}
+.menu-pop{position:absolute;top:calc(100% + 6px);right:0;min-width:220px;background:var(--card);border:1px solid var(--border);border-radius:var(--radius-md);padding:4px;box-shadow:var(--shadow-pop);opacity:0;transform:translateY(-4px);pointer-events:none;transition:opacity .12s,transform .12s;z-index:180}
+.menu-w.open .menu-pop{opacity:1;transform:none;pointer-events:auto}
+.menu-pop.left{right:auto;left:0}
+.m-item{display:flex;align-items:center;gap:9px;width:100%;padding:7px 10px;border-radius:5px;font-size:13px;color:var(--foreground);background:none;border:0;cursor:pointer;text-align:left}
+.m-item:hover,.m-item:focus{background:var(--muted);outline:none}
+.m-item.danger{color:var(--destructive)}
+.m-item.dis{color:var(--subtle);cursor:not-allowed}
+.m-item .kbd{margin-left:auto}
+.m-item .ck{margin-left:auto;color:var(--primary);opacity:0}
+.m-item.sel .ck{opacity:1}
+.m-sep{height:1px;background:var(--border);margin:4px 0}
+.m-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--subtle);padding:6px 10px 4px}
+.pop-wide{min-width:340px;padding:14px}
+.pop-wide h5{font-size:13px;font-weight:600;margin-bottom:8px}
+.fg{margin-bottom:12px}
+.fg .fgl{font-size:12px;color:var(--muted-foreground);margin-bottom:6px;font-weight:500}
+.fg .opts{display:flex;flex-wrap:wrap;gap:6px}
+.ov{position:fixed;inset:0;background:var(--overlay);display:flex;align-items:center;justify-content:center;padding:16px;opacity:0;pointer-events:none;transition:opacity .15s;z-index:400}
+.ov.open{opacity:1;pointer-events:auto}
+.dialog{background:var(--card);border:1px solid var(--border);border-radius:var(--radius-lg);width:100%;max-width:520px;max-height:calc(100vh - 32px);display:flex;flex-direction:column;transform:scale(.97);transition:transform .15s;box-shadow:var(--shadow-modal)}
+.dialog.lg{max-width:640px}.dialog.sm{max-width:420px}
+.ov.open .dialog{transform:scale(1)}
+.dg-h{display:flex;align-items:flex-start;justify-content:space-between;padding:20px 24px 0}
+.dg-title{font-size:16px;font-weight:600;letter-spacing:-.01em}
+.dg-desc{font-size:13px;color:var(--muted-foreground);margin-top:4px}
+.dg-x{background:none;border:0;color:var(--muted-foreground);cursor:pointer;padding:6px;border-radius:6px;display:flex;margin:-6px -8px 0 0}
+.dg-x:hover{background:var(--muted);color:var(--foreground)}
+.dg-b{padding:16px 24px;overflow-y:auto}
+.dg-f{display:flex;justify-content:flex-end;gap:8px;padding:16px 24px 20px}
+.dg-f.spread{justify-content:space-between}
+/* sheet */
+.ov.sheet-ov{align-items:stretch;justify-content:flex-end;padding:0}
+.sheet{background:var(--card);border-left:1px solid var(--border);width:100%;max-width:380px;height:100%;display:flex;flex-direction:column;transform:translateX(24px);transition:transform .2s}
+.ov.open .sheet{transform:none}
+.sheet-h{display:flex;align-items:flex-start;justify-content:space-between;padding:20px 20px 0}
+.sheet-b{padding:12px 12px 20px;overflow-y:auto;flex:1}
+/* command */
+.cmd-dialog{background:var(--card);border:1px solid var(--border);border-radius:var(--radius-lg);width:100%;max-width:520px;overflow:hidden;transform:scale(.97);transition:transform .15s;box-shadow:var(--shadow-modal)}
+.ov.open .cmd-dialog{transform:scale(1)}
+.cmd-in{display:flex;align-items:center;gap:10px;padding:0 16px;border-bottom:1px solid var(--border)}
+.cmd-in input{flex:1;border:0;background:none;font-size:14px;color:var(--foreground);padding:14px 0;font-family:inherit}
+.cmd-in input:focus{outline:none}
+.cmd-in input::placeholder{color:var(--subtle)}
+.cmd-list{max-height:320px;overflow-y:auto;padding:8px}
+.cmd-g{font-size:11px;font-weight:600;color:var(--subtle);padding:8px 10px 4px;text-transform:uppercase;letter-spacing:.05em}
+.cmd-i{display:flex;align-items:center;gap:10px;width:100%;padding:8px 10px;border-radius:6px;font-size:13px;color:var(--foreground);background:none;border:0;cursor:pointer;text-align:left}
+.cmd-i:hover,.cmd-i.hl{background:var(--muted)}
+.cmd-i .kbd{margin-left:auto}
+.cmd-empty{padding:24px;text-align:center;font-size:13px;color:var(--muted-foreground)}
+/* ============ TABS / SEGMENTED / BREADCRUMB / PAGINATION ============ */
+.tabs{display:flex;gap:4px;border-bottom:1px solid var(--border);overflow-x:auto}
+.tab{padding:9px 14px;font-size:14px;font-weight:500;color:var(--muted-foreground);border:0;border-bottom:2px solid transparent;margin-bottom:-1px;cursor:pointer;background:none;white-space:nowrap}
+.tab:hover{color:var(--foreground)}
+.tab.active{color:var(--primary);border-bottom-color:var(--primary)}
+[data-theme="dark"] .tab.active{color:#c7d2fe;border-bottom-color:#c7d2fe}
+.seg{display:inline-flex;background:var(--muted);border:1px solid var(--border);border-radius:7px;padding:2px;gap:2px}
+.seg button{padding:5px 12px;border-radius:5px;font-size:13px;border:1px solid transparent;background:none;color:var(--muted-foreground);cursor:pointer;display:inline-flex;align-items:center;gap:6px;font-weight:500}
+.seg button.active{background:var(--card);color:var(--foreground);border-color:var(--border);box-shadow:0 1px 2px rgba(15,23,42,.04)}
+.crumb{display:flex;align-items:center;gap:6px;font-size:13px;flex-wrap:wrap}
+.crumb a{color:var(--muted-foreground)}
+.crumb a:hover{color:var(--foreground);text-decoration:none}
+.crumb .sep-i{color:var(--subtle)}
+.crumb .cur{color:var(--foreground);font-weight:500}
+.pg{display:flex;align-items:center;gap:6px}
+.pg button{min-width:32px;height:32px;padding:0 8px;border-radius:6px;border:1px solid transparent;background:none;color:var(--muted-foreground);font-size:13px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:4px;font-weight:500}
+.pg button:hover:not(:disabled){background:var(--muted);color:var(--foreground)}
+.pg button.active{background:var(--primary-subtle);color:var(--primary-text);border-color:var(--primary-border)}
+[data-theme="dark"] .pg button.active{background:rgba(99,102,241,.16);color:#c7d2fe;border-color:rgba(129,140,248,.35)}
+.pg button:disabled{opacity:.4;cursor:not-allowed}
+.pg .gap{color:var(--subtle);padding:0 2px}
+/* nav items */
+.nav-i{display:flex;gap:10px;align-items:center;padding:8px 10px;border-radius:6px;color:var(--muted-foreground);font-size:14px;font-weight:500;cursor:pointer;border:0;background:none;width:100%;text-align:left}
+.nav-i:hover{background:var(--muted);color:var(--foreground)}
+.nav-i.active{background:var(--primary-subtle);color:var(--primary-text)}
+[data-theme="dark"] .nav-i.active{background:rgba(99,102,241,.14);color:#c7d2fe}
+.bnav{display:grid;grid-template-columns:repeat(4,1fr);border:1px solid var(--border);border-radius:8px;background:var(--card);padding:6px 4px;max-width:360px}
+.bnav button{display:flex;flex-direction:column;align-items:center;gap:3px;font-size:10.5px;font-weight:500;color:var(--muted-foreground);background:none;border:0;cursor:pointer;padding:4px 0}
+.bnav button.active{color:var(--primary)}
+[data-theme="dark"] .bnav button.active{color:#c7d2fe}
+/* tokens swatches */
+.sw-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}
+.swc{border:1px solid var(--border);border-radius:8px;overflow:hidden;background:var(--card)}
+.swc .c{height:46px;border-bottom:1px solid var(--border)}
+.swc .i{padding:8px 10px}
+.swc .n{font-size:12px;font-weight:600}
+.swc .t{font-size:11px;color:var(--subtle);font-family:ui-monospace,monospace}
+.type-row{display:flex;align-items:baseline;gap:16px;padding:7px 0;border-bottom:1px solid var(--border)}
+.type-row:last-child{border-bottom:0}
+.type-row .tmeta{width:200px;font-size:11px;color:var(--subtle);font-family:ui-monospace,monospace;flex-shrink:0}
+.rad-row{display:flex;gap:16px;flex-wrap:wrap;align-items:flex-end}
+.rad-box{width:66px;height:66px;border:1px solid var(--border-strong);background:var(--muted);display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--muted-foreground)}
+/* mobile */
+@media (max-width:920px){
+  .layout{grid-template-columns:1fr}
+  .snav{display:none}
+  .doc{padding:20px 16px 100px}
+  .toast-live{top:12px;bottom:auto;left:16px;right:16px}
+  .toast{max-width:none;width:100%}
+  .ov{padding:0;align-items:flex-end}
+  .dialog{max-width:none;height:100dvh;max-height:100dvh;border-radius:0;border:0;transform:translateY(16px)}
+  .ov.open .dialog{transform:none}
+  .cmd-wrap{align-items:flex-start;padding-top:10vh}
+  .form-grid2{grid-template-columns:1fr!important}
+}
+@media (min-width:921px){.mob-only{display:none}}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+</style>
+</head>
+<body>
+<a class="skip" href="#doc">Skip to content</a>
+
+<!-- ICONS (Lucide) -->
+<svg xmlns="http://www.w3.org/2000/svg" style="display:none">
+  <symbol id="i-grid" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></symbol>
+  <symbol id="i-briefcase" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></symbol>
+  <symbol id="i-calendar" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></symbol>
+  <symbol id="i-settings" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/><line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/><line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/><line x1="1" y1="14" x2="7" y2="14"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="17" y1="16" x2="23" y2="16"/></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></symbol>
+  <symbol id="i-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></symbol>
+  <symbol id="i-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></symbol>
+  <symbol id="i-chevron-down" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></symbol>
+  <symbol id="i-chevron-up" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></symbol>
+  <symbol id="i-chevron-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></symbol>
+  <symbol id="i-chevron-left" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></symbol>
+  <symbol id="i-alert-triangle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></symbol>
+  <symbol id="i-alert-circle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></symbol>
+  <symbol id="i-info" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></symbol>
+  <symbol id="i-user" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></symbol>
+  <symbol id="i-log-out" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></symbol>
+  <symbol id="i-more" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></symbol>
+  <symbol id="i-pencil" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></symbol>
+  <symbol id="i-trash" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></symbol>
+  <symbol id="i-archive" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="21 8 21 21 3 21 3 8"/><rect x="1" y="3" width="22" height="5"/><line x1="10" y1="12" x2="14" y2="12"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></symbol>
+  <symbol id="i-download" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></symbol>
+  <symbol id="i-upload" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></symbol>
+  <symbol id="i-eye" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></symbol>
+  <symbol id="i-eye-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></symbol>
+  <symbol id="i-filter" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></symbol>
+  <symbol id="i-sort" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5h10M11 9h7M11 13h4"/><path d="M3 17l3 3 3-3"/><path d="M6 18V4"/></symbol>
+  <symbol id="i-tag" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></symbol>
+  <symbol id="i-video" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></symbol>
+  <symbol id="i-phone" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></symbol>
+  <symbol id="i-arrow-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></symbol>
+  <symbol id="i-inbox" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 16 12 14 15 10 15 8 12 2 12"/><path d="M5.45 5.11L2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/></symbol>
+  <symbol id="i-check-circle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></symbol>
+  <symbol id="i-x-circle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></symbol>
+  <symbol id="i-mail" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><polyline points="22 6 12 13 2 6"/></symbol>
+  <symbol id="i-external" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></symbol>
+  <symbol id="i-command" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 3a3 3 0 0 0-3 3v12a3 3 0 1 0 3-3H6a3 3 0 1 0 3 3V6a3 3 0 1 0-3 3h12a3 3 0 1 0-3-3"/></symbol>
+  <symbol id="i-bell" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></symbol>
+  <symbol id="i-file" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></symbol>
+  <symbol id="i-wifi-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="1" y1="1" x2="23" y2="23"/><path d="M16.72 11.06A10.94 10.94 0 0 1 19 12.55"/><path d="M5 12.55a10.94 10.94 0 0 1 5.17-2.39"/><path d="M10.71 5.05A16 16 0 0 1 22.58 9"/><path d="M1.42 9a15.91 15.91 0 0 1 4.7-2.88"/><path d="M8.53 16.11a6 6 0 0 1 6.95 0"/><line x1="12" y1="20" x2="12.01" y2="20"/></symbol>
+  <symbol id="i-board" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="9" y1="3" x2="9" y2="21"/><line x1="15" y1="3" x2="15" y2="21"/></symbol>
+  <symbol id="i-list" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></symbol>
+  <symbol id="i-google" viewBox="0 0 24 24"><path fill="#4285F4" d="M23.49 12.27c0-.79-.07-1.54-.19-2.27H12v4.51h6.47a5.57 5.57 0 0 1-2.4 3.58v3h3.86c2.26-2.09 3.56-5.17 3.56-8.82z"/><path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.86-3c-1.08.72-2.45 1.16-4.07 1.16-3.13 0-5.78-2.11-6.73-4.96H1.29v3.09A11.99 11.99 0 0 0 12 24z"/><path fill="#FBBC05" d="M5.27 14.29A7.12 7.12 0 0 1 4.89 12c0-.8.14-1.57.38-2.29V6.62H1.29a11.86 11.86 0 0 0 0 10.76l3.98-3.09z"/><path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42A11.97 11.97 0 0 0 12 0 11.99 11.99 0 0 0 1.29 6.62l3.98 3.09C6.22 6.86 8.87 4.75 12 4.75z"/></symbol>
+  <symbol id="i-github" viewBox="0 0 24 24"><path fill="currentColor" d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.58.11.79-.25.79-.56 0-.27-.01-1.17-.02-2.12-3.2.7-3.87-1.36-3.87-1.36-.52-1.33-1.28-1.68-1.28-1.68-1.04-.71.08-.7.08-.7 1.15.08 1.76 1.19 1.76 1.19 1.03 1.76 2.69 1.25 3.35.96.1-.75.4-1.25.72-1.54-2.55-.29-5.24-1.28-5.24-5.69 0-1.26.45-2.28 1.19-3.09-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.76 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.83 1.19 3.09 0 4.42-2.7 5.39-5.26 5.68.41.35.77 1.05.77 2.12 0 1.53-.01 2.76-.01 3.14 0 .31.21.67.8.56A10.52 10.52 0 0 0 23.5 12C23.5 5.65 18.35.5 12 .5z"/></symbol>
+</svg>
+
+<!-- TOPBAR -->
+<header class="topbar">
+  <div class="brand"><span class="logo"><svg class="ic"><use href="#i-briefcase"/></svg></span>Tally UI<span class="docchip">Component Library v1.1</span></div>
+  <div style="margin-left:auto;display:flex;gap:10px;align-items:center">
+    <button class="btn btn-outline btn-sm" id="cmd-open"><svg class="ic-sm ic"><use href="#i-search"/></svg>Search…<kbd class="k" style="margin-left:2px">⌘K</kbd></button>
+    <div class="seg" id="theme-seg">
+      <button data-t="light" class="active" aria-label="Light theme"><svg class="ic-sm ic"><use href="#i-sun"/></svg></button>
+      <button data-t="dark" aria-label="Dark theme"><svg class="ic-sm ic"><use href="#i-moon"/></svg></button>
+    </div>
+  </div>
+</header>
+
+<div class="layout">
+  <!-- SIDEBAR -->
+  <nav class="snav" aria-label="Components">
+    <div class="grp">Foundations</div>
+    <a href="#tokens">Tokens</a>
+    <div class="grp">Forms</div>
+    <a href="#buttons">Button</a>
+    <a href="#inputs">Input &amp; Textarea</a>
+    <a href="#selection">Selection controls</a>
+    <a href="#datetime">Date &amp; time</a>
+    <div class="grp">Display</div>
+    <a href="#badges">Badge</a>
+    <a href="#tags">Tag &amp; chip</a>
+    <a href="#avatars">Avatar</a>
+    <a href="#cards">Card</a>
+    <a href="#data">Data display</a>
+    <div class="grp">Feedback</div>
+    <a href="#feedback">Alert, toast &amp; states</a>
+    <div class="grp">Overlays</div>
+    <a href="#overlays">Dialog, menu &amp; popover</a>
+    <div class="grp">Navigation</div>
+    <a href="#navigation">Tabs, pagination &amp; nav</a>
+    <div class="grp">Patterns</div>
+    <a href="#blocks">App blocks</a>
+  </nav>
+
+  <!-- MAIN -->
+  <main class="doc" id="doc">
+
+  <!-- TOKENS -->
+  <section class="section" id="tokens">
+    <div class="section-head"><h2>Design tokens</h2><p>Primary <code>#6366f1</code> · flat surfaces with 1px borders · compact radius (max 8px) · depth from contrast, never shadow. Toggle dark mode to audit both themes.</p><div class="spec-ref">UI/UX Spec v1.1 — §3</div></div>
+    <div class="demo"><div class="demo-label">Core palette</div>
+      <div class="sw-grid">
+        <div class="swc"><div class="c" style="background:var(--background)"></div><div class="i"><div class="n">background</div><div class="t">page</div></div></div>
+        <div class="swc"><div class="c" style="background:var(--card)"></div><div class="i"><div class="n">card</div><div class="t">surface</div></div></div>
+        <div class="swc"><div class="c" style="background:var(--muted)"></div><div class="i"><div class="n">muted</div><div class="t">hover rows</div></div></div>
+        <div class="swc"><div class="c" style="background:var(--border)"></div><div class="i"><div class="n">border</div><div class="t">1px lines</div></div></div>
+        <div class="swc"><div class="c" style="background:var(--foreground)"></div><div class="i"><div class="n">foreground</div><div class="t">text-primary</div></div></div>
+        <div class="swc"><div class="c" style="background:var(--muted-foreground)"></div><div class="i"><div class="n">muted-foreground</div><div class="t">text-secondary</div></div></div>
+      </div>
+    </div>
+    <div class="demo"><div class="demo-label">Brand &amp; semantic</div>
+      <div class="sw-grid">
+        <div class="swc"><div class="c" style="background:#6366f1"></div><div class="i"><div class="n">primary</div><div class="t">#6366f1</div></div></div>
+        <div class="swc"><div class="c" style="background:#4f46e5"></div><div class="i"><div class="n">primary-hover</div><div class="t">#4f46e5</div></div></div>
+        <div class="swc"><div class="c" style="background:#4338ca"></div><div class="i"><div class="n">primary-active</div><div class="t">#4338ca</div></div></div>
+        <div class="swc"><div class="c" style="background:var(--primary-subtle)"></div><div class="i"><div class="n">primary-subtle</div><div class="t">selected bg</div></div></div>
+        <div class="swc"><div class="c" style="background:var(--success)"></div><div class="i"><div class="n">success</div><div class="t">#16a34a</div></div></div>
+        <div class="swc"><div class="c" style="background:var(--warning)"></div><div class="i"><div class="n">warning</div><div class="t">#d97706</div></div></div>
+        <div class="swc"><div class="c" style="background:var(--destructive)"></div><div class="i"><div class="n">destructive</div><div class="t">#dc2626</div></div></div>
+        <div class="swc"><div class="c" style="background:var(--info)"></div><div class="i"><div class="n">info</div><div class="t">#0891b2</div></div></div>
+      </div>
+    </div>
+    <div class="demo"><div class="demo-label">Typography · Inter</div>
+      <div class="box">
+        <div class="type-row"><div class="tmeta">text-3xl · 30 · semibold</div><div style="font-size:30px;font-weight:600;letter-spacing:-.02em">Dashboard numbers</div></div>
+        <div class="type-row"><div class="tmeta">text-2xl · 24 · semibold</div><div style="font-size:24px;font-weight:600;letter-spacing:-.02em">Page title</div></div>
+        <div class="type-row"><div class="tmeta">text-xl · 20 · semibold</div><div style="font-size:20px;font-weight:600;letter-spacing:-.02em">Section heading</div></div>
+        <div class="type-row"><div class="tmeta">text-lg · 18 · medium</div><div style="font-size:18px;font-weight:500">Card title</div></div>
+        <div class="type-row"><div class="tmeta">text-base · 16</div><div style="font-size:16px">Body and form inputs</div></div>
+        <div class="type-row"><div class="tmeta">text-sm · 14</div><div style="font-size:14px">Secondary text, table cells</div></div>
+        <div class="type-row"><div class="tmeta">text-xs · 12</div><div style="font-size:12px" class="muted">Captions, metadata, badges</div></div>
+      </div>
+    </div>
+    <div class="demo"><div class="demo-label">Radius &amp; elevation</div>
+      <div class="row-top">
+        <div class="rad-row">
+          <div><div class="rad-box" style="border-radius:2px">2px</div><div class="small muted" style="margin-top:6px">xs</div></div>
+          <div><div class="rad-box" style="border-radius:4px">4px</div><div class="small muted" style="margin-top:6px">badge · tag</div></div>
+          <div><div class="rad-box" style="border-radius:6px">6px</div><div class="small muted" style="margin-top:6px">button · input</div></div>
+          <div><div class="rad-box" style="border-radius:8px">8px</div><div class="small muted" style="margin-top:6px">card · dialog</div></div>
+          <div><div class="rad-box" style="border-radius:9999px">full</div><div class="small muted" style="margin-top:6px">avatar only</div></div>
+        </div>
+        <div class="card card-c small muted" style="max-width:340px">Shadow rule — <code>shadow-none</code> by default. Optional: popover <code>0 8px 24px rgba(15,23,42,.08)</code>, modal <code>0 12px 32px rgba(15,23,42,.12)</code>. Depth = border + surface contrast.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- BUTTONS -->
+  <section class="section" id="buttons">
+    <div class="section-head"><h2>Button</h2><p>Variants map 1:1 to shadcn <code>Button</code> — default · secondary · outline · ghost · destructive · link. Sizes: xs · sm · default · lg · icon. Radius 6px, no shadow, 2px focus ring.</p><div class="spec-ref">UI/UX Spec v1.1 — §9.1</div></div>
+    <div class="demo"><div class="demo-label">Variants</div>
+      <div class="row">
+        <button class="btn btn-default">Add application</button>
+        <button class="btn btn-secondary">Secondary</button>
+        <button class="btn btn-outline">Outline</button>
+        <button class="btn btn-ghost">Ghost</button>
+        <button class="btn btn-destructive">Delete</button>
+        <button class="btn btn-link">Forgot password?</button>
+      </div>
+    </div>
+    <div class="demo"><div class="demo-label">With icons</div>
+      <div class="row">
+        <button class="btn btn-default"><svg class="ic"><use href="#i-plus"/></svg>New application</button>
+        <button class="btn btn-outline"><svg class="ic"><use href="#i-download"/></svg>Export JSON</button>
+        <button class="btn btn-secondary">Continue<svg class="ic"><use href="#i-arrow-right"/></svg></button>
+        <button class="btn btn-outline" style="color:var(--destructive)"><svg class="ic"><use href="#i-trash"/></svg>Delete</button>
+      </div>
+    </div>
+    <div class="demo"><div class="demo-label">Sizes</div>
+      <div class="row">
+        <button class="btn btn-default btn-xs">Extra small</button>
+        <button class="btn btn-default btn-sm">Small</button>
+        <button class="btn btn-default">Default</button>
+        <button class="btn btn-default btn-lg">Large</button>
+      </div>
+    </div>
+    <div class="demo"><div class="demo-label">States &amp; icon-only (tooltip + aria-label)</div>
+      <div class="row">
+        <button class="btn btn-default" style="background:var(--primary-hover)">Hover</button>
+        <button class="btn btn-default" style="background:var(--primary-active)">Active</button>
+        <button class="btn btn-default" disabled>Disabled</button>
+        <button class="btn btn-default" disabled><span class="spinner"></span>Saving…</button>
+        <button class="btn btn-outline" disabled><span class="spinner dark"></span>Loading…</button>
+        <span class="tip" data-tip="Edit"><button class="btn btn-outline btn-icon" aria-label="Edit"><svg class="ic"><use href="#i-pencil"/></svg></button></span>
+        <span class="tip" data-tip="Archive"><button class="btn btn-outline btn-icon" aria-label="Archive"><svg class="ic"><use href="#i-archive"/></svg></button></span>
+        <span class="tip" data-tip="Delete"><button class="btn btn-ghost btn-icon" aria-label="Delete" style="color:var(--destructive)"><svg class="ic"><use href="#i-trash"/></svg></button></span>
+        <span class="tip" data-tip="More"><button class="btn btn-ghost btn-icon" aria-label="More"><svg class="ic"><use href="#i-more"/></svg></button></span>
+      </div>
+    </div>
+    <div class="demo"><div class="demo-label">Full width (auth &amp; sheets)</div>
+      <div class="col" style="max-width:380px">
+        <button class="btn btn-default btn-lg" style="width:100%">Sign in</button>
+        <button class="btn btn-outline" style="width:100%"><svg class="ic"><use href="#i-google"/></svg>Continue with Google</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- INPUTS -->
+  <section class="section" id="inputs">
+    <div class="section-head"><h2>Input &amp; form fields</h2><p>Label on top, description below, error under the field linked with <code>aria-describedby</code>. Focus: primary border + 3px indigo ring. Submit shows spinner &amp; prevents double submit.</p><div class="spec-ref">UI/UX Spec v1.1 — §9.2, §10</div></div>
+    <div class="demo"><div class="demo-label">States</div>
+      <div class="row-top">
+        <div class="form-item"><label class="label" for="in1">Company <span class="req">*</span></label><input class="input" id="in1" placeholder="Acme Corp"><p class="form-desc">Required · 1–100 characters</p></div>
+        <div class="form-item"><label class="label" for="in2">Role</label><input class="input" id="in2" value="Frontend Engineer"></div>
+        <div class="form-item"><label class="label" for="in3">Email</label><input class="input err" id="in3" value="john@example" aria-describedby="in3e"><p class="form-error" id="in3e"><svg class="ic-sm ic"><use href="#i-alert-circle"/></svg>Enter a valid email address.</p></div>
+        <div class="form-item"><label class="label" for="in4">Job URL</label><input class="input" id="in4" placeholder="https://…" disabled><p class="form-desc">Disabled state</p></div>
+      </div>
+    </div>
+    <div class="demo"><div class="demo-label">Password (show/hide + strength) · Search · Textarea counter</div>
+      <div class="row-top">
+        <div class="form-item"><label class="label" for="pw1">Password</label>
+          <div class="in-wrap"><input class="input" id="pw1" type="password" value="password123"><button type="button" class="sfx" data-pw="pw1" aria-label="Show password"><svg class="ic"><use href="#i-eye"/></svg></button></div>
+          <div class="strength" id="pw1s"><span class="good"></span><span class="good"></span><span class="good"></span><span></span></div>
+          <p class="form-desc">Minimum 8 characters.</p>
+        </div>
+        <div class="form-item"><label class="label" for="se1">Search applications</label>
+          <div class="in-wrap"><span class="pfx"><svg class="ic"><use href="#i-search"/></svg></span><input class="input" id="se1" placeholder="Company, role, tag, note…"><kbd class="k">/</kbd></div>
+          <p class="form-desc">Debounced 300ms</p>
+        </div>
+        <div class="form-item wide"><label class="label" for="ta1">Initial note</label>
+          <textarea class="textarea" id="ta1" placeholder="Applied through the company careers page…"></textarea>
+          <div class="char-count"><span id="ta1c">0</span>/5000</div>
+        </div>
+      </div>
+    </div>
+    <div class="demo"><div class="demo-label">File (custom dropzone) &amp; color palette</div>
+      <div class="row-top">
+        <div class="dz" id="dz1" tabindex="0" role="button" aria-label="Upload backup file">
+          <div class="dzi"><svg class="ic-lg ic"><use href="#i-upload"/></svg></div>
+          <div style="font-weight:500">Drag &amp; drop your backup JSON, or <span style="color:var(--primary-text)">browse</span></div>
+          <div class="small muted" style="margin-top:4px">Maximum 1 MB · .json only</div>
+          <input type="file" class="vh" accept=".json">
+        </div>
+        <div>
+          <div class="form-desc" style="margin-bottom:8px">Tag color</div>
+          <div class="swatches" id="pal">
+            <button class="swb sel" style="background:#6366f1" aria-label="Indigo"></button>
+            <button class="swb" style="background:#0891b2" aria-label="Cyan"></button>
+            <button class="swb" style="background:#16a34a" aria-label="Green"></button>
+            <button class="swb" style="background:#d97706" aria-label="Amber"></button>
+            <button class="swb" style="background:#dc2626" aria-label="Red"></button>
+            <button class="swb" style="background:#8b5cf6" aria-label="Violet"></button>
+            <button class="swb" style="background:#64748b" aria-label="Slate"></button>
+          </div>
+          <div id="dz-file" style="margin-top:12px"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SELECTION -->
+  <section class="section" id="selection">
+    <div class="section-head"><h2>Selection controls</h2><p>Fully custom — no native <code>&lt;select&gt;</code>, checkbox or radio rendering. Keyboard complete: arrows, Enter, Esc, Home/End. Visible focus rings throughout.</p><div class="spec-ref">UI/UX Spec v1.1 — §9, §13</div></div>
+    <div class="demo"><div class="demo-label">Select</div>
+      <div class="row">
+        <div class="cs" data-cselect>
+          <button type="button" class="cs-btn" aria-haspopup="listbox" aria-expanded="false"><span class="cs-val">Remote</span><svg class="ic-sm ic chev"><use href="#i-chevron-down"/></svg></button>
+          <div class="cs-pop" role="listbox">
+            <button type="button" class="cs-opt" role="option" data-v="ONSITE">Onsite<svg class="ic-sm ic ck"><use href="#i-check"/></svg></button>
+            <button type="button" class="cs-opt sel" role="option" data-v="REMOTE" aria-selected="true">Remote<svg class="ic-sm ic ck"><use href="#i-check"/></svg></button>
+            <button type="button" class="cs-opt" role="option" data-v="HYBRID">Hybrid<svg class="ic-sm ic ck"><use href="#i-check"/></svg></button>
+          </div>
+        </div>
+        <div class="cs" data-cselect>
+          <button type="button" class="cs-btn" aria-haspopup="listbox" aria-expanded="false"><span class="cs-val ph">Select employment type…</span><svg class="ic-sm ic chev"><use href="#i-chevron-down"/></svg></button>
+          <div class="cs-pop" role="listbox">
+            <button type="button" class="cs-opt" role="option">Full-time<svg class="ic-sm ic ck"><use href="#i-check"/></svg></button>
+            <button type="button" class="cs-opt" role="option">Contract<svg class="ic-sm ic ck"><use href="#i-check"/></svg></button>
+            <button type="button" class="cs-opt" role="option">Internship<svg class="ic-sm ic ck"><use href="#i-check"/></svg></button>
+          </div>
+        </div>
+        <div class="cs disabled"><button type="button" class="cs-btn" disabled><span class="cs-val">LinkedIn</span><svg class="ic-sm ic chev"><use href="#i-chevron-down"/></svg></button></div>
+      </div>
+      <p class="small muted" style="margin-top:10px"><kbd class="k">↑</kbd> <kbd class="k">↓</kbd> navigate · <kbd class="k">Enter</kbd> select · <kbd class="k">Esc</kbd> close</p>
+    </div>
+    <div class="demo"><div class="demo-label">Tag multi-select</div>
+      <div class="ts" data-tagselect>
+        <button type="button" class="ts-btn" aria-haspopup="true" aria-expanded="false">
+          <span class="ts-val" style="display:flex;gap:6px;flex-wrap:wrap;align-items:center"><span class="ts-ph">Select tags…</span></span>
+          <svg class="ic-sm ic" style="margin-left:auto;color:var(--subtle)"><use href="#i-chevron-down"/></svg>
+        </button>
+        <div class="ts-pop">
+          <button type="button" class="ts-opt" data-v="t1" data-label="priority" data-color="#6366f1"><span class="mbox"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span><span class="dot" style="width:8px;height:8px;border-radius:50%;background:#6366f1"></span>priority</button>
+          <button type="button" class="ts-opt" data-v="t2" data-label="remote" data-color="#0891b2"><span class="mbox"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span><span class="dot" style="width:8px;height:8px;border-radius:50%;background:#0891b2"></span>remote</button>
+          <button type="button" class="ts-opt" data-v="t3" data-label="referral" data-color="#d97706"><span class="mbox"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span><span class="dot" style="width:8px;height:8px;border-radius:50%;background:#d97706"></span>referral</button>
+          <button type="button" class="ts-opt" data-v="t4" data-label="fintech" data-color="#16a34a"><span class="mbox"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span><span class="dot" style="width:8px;height:8px;border-radius:50%;background:#16a34a"></span>fintech</button>
+        </div>
+      </div>
+    </div>
+    <div class="demo"><div class="demo-label">Checkbox</div>
+      <div class="row" style="gap:24px">
+        <label class="ck-row"><input type="checkbox" class="vh"><span class="ckbox"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span><span>Remember me</span></label>
+        <label class="ck-row"><input type="checkbox" class="vh" checked><span class="ckbox"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span><span>Checked</span></label>
+        <label class="ck-row"><input type="checkbox" class="vh" id="ind1"><span class="ckbox ind" id="ind1b"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span><span>Indeterminate</span></label>
+        <label class="ck-row dis"><input type="checkbox" class="vh" disabled><span class="ckbox"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span><span>Disabled</span></label>
+        <label class="ck-row" style="max-width:300px"><input type="checkbox" class="vh" checked><span class="ckbox"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span><span style="display:flex;flex-direction:column;gap:2px">Include archived<span class="small muted">Show archived applications in list views</span></span></label>
+      </div>
+    </div>
+    <div class="demo"><div class="demo-label">Radio group &amp; switch</div>
+      <div class="row-top">
+        <div class="col" style="gap:10px" role="radiogroup" aria-label="Default landing page">
+          <label class="ck-row"><input type="radio" name="land" class="vh" checked><span class="rdbox"></span><span>Dashboard</span></label>
+          <label class="ck-row"><input type="radio" name="land" class="vh"><span class="rdbox"></span><span>Applications</span></label>
+          <label class="ck-row dis"><input type="radio" name="land" class="vh" disabled><span class="rdbox"></span><span>Interviews (unavailable)</span></label>
+        </div>
+        <div class="row" style="gap:20px">
+          <button class="sw" role="switch" aria-checked="false" aria-label="Off"></button>
+          <button class="sw on" role="switch" aria-checked="true" aria-label="On"></button>
+          <button class="sw" disabled aria-label="Disabled"></button>
+          <div class="card" style="display:flex;align-items:center;justify-content:space-between;gap:14px;padding:12px 16px;min-width:300px">
+            <div><div class="sr-l">Email notifications</div><div class="sr-s">Optional product updates</div></div>
+            <button class="sw on" role="switch" aria-checked="true" aria-label="Email notifications"></button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- DATE TIME -->
+  <section class="section" id="datetime">
+    <div class="section-head"><h2>Date &amp; time</h2><p>Custom calendar popover (shadcn-style) — month navigation, today outline, selected fill, keyboard arrows. Datetime variant adds hour/minute steppers for follow-ups and interviews.</p><div class="spec-ref">UI/UX Spec v1.1 — §8.1, §10</div></div>
+    <div class="demo"><div class="demo-label">Date picker (applied date)</div>
+      <div class="dp" data-datepicker>
+        <div class="in-wrap" style="width:230px"><span class="pfx"><svg class="ic"><use href="#i-calendar"/></svg></span><input class="input dp-in" placeholder="Select date" readonly aria-haspopup="dialog"></div>
+        <div class="dp-pop" role="dialog" aria-label="Choose date">
+          <div class="dp-head"><button type="button" class="dp-nav" data-dpnav="-1" aria-label="Previous month"><svg class="ic"><use href="#i-chevron-left"/></svg></button><div class="dp-month">Month</div><button type="button" class="dp-nav" data-dpnav="1" aria-label="Next month"><svg class="ic"><use href="#i-chevron-right"/></svg></button></div>
+          <div class="dp-wd"><span>Su</span><span>Mo</span><span>Tu</span><span>We</span><span>Th</span><span>Fr</span><span>Sa</span></div>
+          <div class="dp-days"></div>
+          <div class="dp-foot"><button type="button" class="btn btn-ghost btn-xs" data-dptoday>Today</button><button type="button" class="btn btn-ghost btn-xs" data-dpclear>Clear</button></div>
+        </div>
+      </div>
+    </div>
+    <div class="demo"><div class="demo-label">Datetime picker (follow-up / interview)</div>
+      <div class="dp" data-datepicker data-with-time>
+        <div class="in-wrap" style="width:270px"><span class="pfx"><svg class="ic"><use href="#i-clock"/></svg></span><input class="input dp-in" placeholder="Select date &amp; time" readonly aria-haspopup="dialog"></div>
+        <div class="dp-pop" role="dialog" aria-label="Choose date and time">
+          <div class="dp-head"><button type="button" class="dp-nav" data-dpnav="-1" aria-label="Previous month"><svg class="ic"><use href="#i-chevron-left"/></svg></button><div class="dp-month">Month</div><button type="button" class="dp-nav" data-dpnav="1" aria-label="Next month"><svg class="ic"><use href="#i-chevron-right"/></svg></button></div>
+          <div class="dp-wd"><span>Su</span><span>Mo</span><span>Tu</span><span>We</span><span>Th</span><span>Fr</span><span>Sa</span></div>
+          <div class="dp-days"></div>
+          <div class="tp-row"><span class="tp-label">Time</span>
+            <div class="tp-seg"><button type="button" data-tp="h+" aria-label="Hour up"><svg class="ic-sm ic"><use href="#i-chevron-up"/></svg></button><span class="tp-val tp-h">09</span><button type="button" data-tp="h-" aria-label="Hour down"><svg class="ic-sm ic"><use href="#i-chevron-down"/></svg></button></div>
+            <span class="tp-colon">:</span>
+            <div class="tp-seg"><button type="button" data-tp="m+" aria-label="Minute up"><svg class="ic-sm ic"><use href="#i-chevron-up"/></svg></button><span class="tp-val tp-m">00</span><button type="button" data-tp="m-" aria-label="Minute down"><svg class="ic-sm ic"><use href="#i-chevron-down"/></svg></button></div>
+          </div>
+          <div class="dp-foot"><button type="button" class="btn btn-ghost btn-xs" data-dpclear>Clear</button><button type="button" class="btn btn-default btn-xs" data-dpdone>Done</button></div>
+        </div>
+      </div>
+      <p class="small muted" style="margin-top:8px">Hour ±1 · minute ±5 · stored as UTC at the API boundary</p>
+    </div>
+  </section>
+
+  <!-- BADGES -->
+  <section class="section" id="badges">
+    <div class="section-head"><h2>Badge</h2><p>4px radius · subtle background + colored text + 1px border · never pill-shaped. All 7 application statuses + 4 interview statuses.</p><div class="spec-ref">UI/UX Spec v1.1 — §3.6, §3.7, §9.4</div></div>
+    <div class="demo"><div class="demo-label">Application status</div>
+      <div class="row"><span class="badge badge-wishlist">Wishlist</span><span class="badge badge-applied">Applied</span><span class="badge badge-screening">Screening</span><span class="badge badge-interview">Interview</span><span class="badge badge-offer">Offer</span><span class="badge badge-rejected">Rejected</span><span class="badge badge-withdrawn">Withdrawn</span></div>
+    </div>
+    <div class="demo"><div class="demo-label">Interview status</div>
+      <div class="row"><span class="badge badge-scheduled">Scheduled</span><span class="badge badge-completed">Completed</span><span class="badge badge-cancelled">Cancelled</span><span class="badge badge-noshow">No-show</span></div>
+    </div>
+    <div class="demo"><div class="demo-label">Outline, count &amp; follow-up flags</div>
+      <div class="row">
+        <span class="badge badge-outline">Archived</span>
+        <span class="badge badge-outline">Beta</span>
+        <span class="badge-count">12</span>
+        <span class="flag-overdue"><svg class="ic-sm ic"><use href="#i-alert-triangle"/></svg>Overdue · Jan 8</span>
+        <span class="flag-today"><svg class="ic-sm ic"><use href="#i-clock"/></svg>Due today</span>
+        <span class="small muted">Follow-up: Jan 20 · —</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- TAGS -->
+  <section class="section" id="tags">
+    <div class="section-head"><h2>Tag &amp; chip</h2><p>Tags are reusable user labels (color dot). Chips are active filter pills with remove action + “Clear all”.</p><div class="spec-ref">UI/UX Spec v1.1 — §9.5, §7.2</div></div>
+    <div class="demo"><div class="demo-label">Tags</div>
+      <div class="row">
+        <span class="tag"><span class="dot" style="background:#6366f1"></span>priority</span>
+        <span class="tag sel"><span class="dot" style="background:#0891b2"></span>remote <svg class="ic-sm ic"><use href="#i-check"/></svg></span>
+        <span class="tag"><span class="dot" style="background:#d97706"></span>referral <button class="rm" aria-label="Remove"><svg class="ic-sm ic"><use href="#i-x"/></svg></button></span>
+      </div>
+    </div>
+    <div class="demo"><div class="demo-label">Active filter chips</div>
+      <div class="row">
+        <span class="chip"><strong>Status:</strong> Applied <button aria-label="Remove filter"><svg class="ic-sm ic"><use href="#i-x"/></svg></button></span>
+        <span class="chip"><strong>Tag:</strong> priority <button aria-label="Remove filter"><svg class="ic-sm ic"><use href="#i-x"/></svg></button></span>
+        <span class="chip"><strong>Follow-up:</strong> overdue <button aria-label="Remove filter"><svg class="ic-sm ic"><use href="#i-x"/></svg></button></span>
+        <button class="btn btn-ghost btn-xs" style="color:var(--primary-text)">Clear all</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- AVATARS -->
+  <section class="section" id="avatars">
+    <div class="section-head"><h2>Avatar</h2><p>Only component allowed full radius. Initials fallback, 4 sizes, stacked group.</p><div class="spec-ref">UI/UX Spec v1.1 — §3.9</div></div>
+    <div class="demo"><div class="demo-label">Sizes &amp; group</div>
+      <div class="row" style="gap:16px">
+        <span class="avatar av-24">JD</span><span class="avatar av-28">JD</span><span class="avatar av-32 av-alt">SR</span><span class="avatar av-40 av-alt2">AK</span>
+        <span class="av-group"><span class="avatar av-32">JD</span><span class="avatar av-32 av-alt">SR</span><span class="avatar av-32 av-alt2">AK</span><span class="avatar av-32" style="background:var(--muted);color:var(--muted-foreground)">+3</span></span>
+      </div>
+    </div>
+  </section>
+
+  <!-- CARDS -->
+  <section class="section" id="cards">
+    <div class="section-head"><h2>Card</h2><p>8px radius · 1px border · no shadow. Header / description / content / footer anatomy. Clickable hover: primary border + muted bg. Stat card for dashboard.</p><div class="spec-ref">UI/UX Spec v1.1 — §9.3, §7.1</div></div>
+    <div class="demo"><div class="demo-label">Anatomy, clickable &amp; stat</div>
+      <div class="row-top">
+        <div class="card" style="width:320px">
+          <div class="card-h"><div class="card-title">Follow-ups</div><div class="card-desc">Applications that need attention</div></div>
+          <div class="card-c small muted">Header, description, content, footer.</div>
+          <div class="card-f"><button class="btn btn-ghost btn-sm">Dismiss</button><button class="btn btn-default btn-sm">View all</button></div>
+        </div>
+        <div class="card clickable" style="width:280px;padding:14px"><div class="cell-t">Acme Corp</div><div class="cell-s">Frontend Engineer · hover me</div></div>
+        <button class="stat"><div class="s-ic"><svg class="ic"><use href="#i-briefcase"/></svg></div><div class="s-label">Total applications</div><div class="s-val">25</div><div class="s-sub">+3 this week</div></button>
+        <button class="stat"><div class="s-ic"><svg class="ic"><use href="#i-calendar"/></svg></div><div class="s-label">Scheduled interviews</div><div class="s-val">3</div><div class="s-sub">Next: Jan 15, 2:00 PM</div></button>
+      </div>
+    </div>
+  </section>
+
+  <!-- DATA -->
+  <section class="section" id="data">
+    <div class="section-head"><h2>Data display</h2><p>Table rows (hover muted · selected primary-subtle · kebab actions), status-history timeline, donut chart with legend, and app content rows.</p><div class="spec-ref">UI/UX Spec v1.1 — §7.2, §7.3</div></div>
+    <div class="demo"><div class="demo-label">Table</div>
+      <div class="card" style="overflow:hidden">
+        <div class="tbl-wrap">
+          <table class="tbl">
+            <thead><tr><th>Company / Role</th><th>Status</th><th>Applied</th><th>Follow-up</th><th>Updated</th><th style="width:44px"></th></tr></thead>
+            <tbody>
+              <tr class="sel"><td><div class="cell-t">Acme Corp</div><div class="cell-s">Frontend Engineer</div></td><td><span class="badge badge-applied">Applied</span></td><td class="small">Jan 12</td><td><span class="flag-today"><svg class="ic-sm ic"><use href="#i-clock"/></svg>Today</span></td><td class="small muted">2h ago</td>
+                <td><div class="menu-w"><button class="btn btn-ghost btn-icon btn-xs" data-menu-btn aria-label="Row actions"><svg class="ic"><use href="#i-more"/></svg></button><div class="menu-pop"><button class="m-item">Change status</button><button class="m-item">Edit</button><div class="m-sep"></div><button class="m-item danger">Delete</button></div></div></td></tr>
+              <tr><td><div class="cell-t">Globex</div><div class="cell-s">Backend Engineer</div></td><td><span class="badge badge-interview">Interview</span></td><td class="small">Jan 8</td><td><span class="flag-overdue"><svg class="ic-sm ic"><use href="#i-alert-triangle"/></svg>Jan 10</span></td><td class="small muted">1d ago</td><td><svg class="ic" style="color:var(--subtle)"><use href="#i-chevron-right"/></svg></td></tr>
+              <tr><td><div class="cell-t">Umbrella Corp</div><div class="cell-s">Product Designer</div></td><td><span class="badge badge-offer">Offer</span></td><td class="small">Jan 3</td><td class="small muted">—</td><td class="small muted">3d ago</td><td><svg class="ic" style="color:var(--subtle)"><use href="#i-chevron-right"/></svg></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <div class="demo"><div class="demo-label">Timeline, chart &amp; content rows</div>
+      <div class="row-top">
+        <div class="card card-c" style="max-width:420px">
+          <div class="tl">
+            <div class="tl-i"><div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap"><span class="badge badge-applied">Applied</span><svg class="ic-sm ic" style="color:var(--subtle)"><use href="#i-arrow-right"/></svg><span class="badge badge-screening">Screening</span></div><div class="small muted" style="margin:4px 0">“Recruiter confirmed a screening call.”</div><div class="tl-time">Jan 14, 2026 · 9:12 AM</div></div>
+            <div class="tl-i"><div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap"><span class="badge badge-wishlist">Wishlist</span><svg class="ic-sm ic" style="color:var(--subtle)"><use href="#i-arrow-right"/></svg><span class="badge badge-applied">Applied</span></div><div class="tl-time" style="margin-top:4px">Jan 12, 2026 · 4:05 PM</div></div>
+          </div>
+        </div>
+        <div class="card card-c" style="max-width:520px">
+          <div class="donut-w">
+            <svg class="donut" viewBox="0 0 100 100" role="img" aria-label="Status distribution chart">
+              <g transform="rotate(-90 50 50)">
+                <circle cx="50" cy="50" r="40" fill="none" stroke="var(--muted)" stroke-width="13"/>
+                <circle cx="50" cy="50" r="40" fill="none" stroke="#6366f1" stroke-width="13" pathLength="100" stroke-dasharray="32 68" stroke-dashoffset="0"/>
+                <circle cx="50" cy="50" r="40" fill="none" stroke="#06b6d4" stroke-width="13" pathLength="100" stroke-dasharray="8 92" stroke-dashoffset="-32"/>
+                <circle cx="50" cy="50" r="40" fill="none" stroke="#8b5cf6" stroke-width="13" pathLength="100" stroke-dasharray="12 88" stroke-dashoffset="-40"/>
+                <circle cx="50" cy="50" r="40" fill="none" stroke="#22c55e" stroke-width="13" pathLength="100" stroke-dasharray="4 96" stroke-dashoffset="-52"/>
+                <circle cx="50" cy="50" r="40" fill="none" stroke="#ef4444" stroke-width="13" pathLength="100" stroke-dasharray="24 76" stroke-dashoffset="-56"/>
+                <circle cx="50" cy="50" r="40" fill="none" stroke="#94a3b8" stroke-width="13" pathLength="100" stroke-dasharray="20 80" stroke-dashoffset="-80"/>
+              </g>
+            </svg>
+            <div class="legend">
+              <div class="li"><span class="ld" style="background:#6366f1"></span>Applied<span class="lc">8</span></div>
+              <div class="li"><span class="ld" style="background:#ef4444"></span>Rejected<span class="lc">6</span></div>
+              <div class="li"><span class="ld" style="background:#94a3b8"></span>Wishlist + Withdrawn<span class="lc">5</span></div>
+              <div class="li"><span class="ld" style="background:#8b5cf6"></span>Interview<span class="lc">3</span></div>
+              <div class="li"><span class="ld" style="background:#06b6d4"></span>Screening<span class="lc">2</span></div>
+              <div class="li"><span class="ld" style="background:#22c55e"></span>Offer<span class="lc">1</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row-top" style="margin-top:20px">
+        <div class="board-card"><div class="cell-t">Acme Corp</div><div class="cell-s">Frontend Engineer</div><div style="margin-top:6px"><span class="flag-today small"><svg class="ic-sm ic"><use href="#i-clock"/></svg>Follow-up today</span></div></div>
+        <div class="board-card drag"><div class="cell-t">Globex</div><div class="cell-s">Backend Engineer</div><div class="small muted" style="margin-top:6px">dragging → primary border</div></div>
+        <div class="note">
+          <div class="n-h"><span class="small muted">Jan 14, 2026 · 10:22 AM</span>
+            <span class="n-a">
+              <span class="tip" data-tip="Edit"><button class="btn btn-ghost btn-icon btn-xs" aria-label="Edit"><svg class="ic-sm ic"><use href="#i-pencil"/></svg></button></span>
+              <span class="tip" data-tip="Delete"><button class="btn btn-ghost btn-icon btn-xs" aria-label="Delete" style="color:var(--destructive)"><svg class="ic-sm ic"><use href="#i-trash"/></svg></button></span>
+            </span>
+          </div>Recruiter asked for an updated resume and portfolio link.
+        </div>
+        <div class="iv-row">
+          <div class="iv-ic"><svg class="ic"><use href="#i-video"/></svg></div>
+          <div style="min-width:0;flex:1"><div class="cell-t">Technical · Globex</div><div class="cell-s">Jan 15, 2:00 PM · Jane Smith</div></div>
+          <span class="badge badge-scheduled">Scheduled</span>
+          <button class="btn btn-outline btn-sm"><svg class="ic-sm ic"><use href="#i-video"/></svg>Join</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEEDBACK -->
+  <section class="section" id="feedback">
+    <div class="section-head"><h2>Alert, toast &amp; states</h2><p>Alerts (inline, role=alert) · toasts (left accent border, bottom-right desktop / top-center mobile, 4s, aria-live) · skeletons · empty states · offline banner.</p><div class="spec-ref">UI/UX Spec v1.1 — §11</div></div>
+    <div class="demo"><div class="demo-label">Alert</div>
+      <div class="col" style="gap:10px">
+        <div class="alert alert-info" role="status"><svg class="ic"><use href="#i-info"/></svg><div><div class="a-t">Heads up</div>If an account exists for this email, a reset link has been sent.</div></div>
+        <div class="alert alert-ok" role="status"><svg class="ic"><use href="#i-check-circle"/></svg><div><div class="a-t">Email verified</div>Your account is ready. Sign in to continue.</div></div>
+        <div class="alert alert-warn" role="alert"><svg class="ic"><use href="#i-alert-triangle"/></svg><div><div class="a-t">Import warning</div>This will replace all current application data.</div></div>
+        <div class="alert alert-err" role="alert"><svg class="ic"><use href="#i-alert-circle"/></svg><div><div class="a-t">Sign in failed</div>Check your email and password, then try again. <button class="btn btn-outline btn-xs" style="margin-left:6px">Retry</button></div></div>
+        <div class="offline-b" role="status"><svg class="ic" style="color:var(--warning)"><use href="#i-wifi-off"/></svg>You’re offline. Previously opened data may remain visible; changes are disabled.</div>
+      </div>
+    </div>
+    <div class="demo"><div class="demo-label">Toast — live</div>
+      <div class="row">
+        <button class="btn btn-outline btn-sm" onclick="toast('success','Saved','Application updated successfully.')">Success</button>
+        <button class="btn btn-outline btn-sm" onclick="toast('error','Import failed','The file is not a valid backup document.')">Error</button>
+        <button class="btn btn-outline btn-sm" onclick="toast('warn','You\u2019re offline','Please reconnect to save changes.')">Warning</button>
+        <button class="btn btn-outline btn-sm" onclick="toast('info','Update available','A new version is ready.')">Info</button>
+      </div>
+    </div>
+    <div class="demo"><div class="demo-label">Toast anatomy</div>
+      <div class="row-top">
+        <div class="toast toast-success"><svg class="ic" style="color:var(--success)"><use href="#i-check-circle"/></svg><div><div class="tt">Status updated</div><div class="tm">Moved to Interview.</div></div><button class="tx" aria-label="Dismiss"><svg class="ic-sm ic"><use href="#i-x"/></svg></button></div>
+        <div class="toast toast-error"><svg class="ic" style="color:var(--destructive)"><use href="#i-alert-circle"/></svg><div><div class="tt">Import failed</div><div class="tm">Not a valid backup document.</div></div><button class="tx" aria-label="Dismiss"><svg class="ic-sm ic"><use href="#i-x"/></svg></button></div>
+        <div class="toast toast-info"><svg class="ic" style="color:var(--info)"><use href="#i-info"/></svg><div><div class="tt">Update available</div><div class="tm"><a href="#" style="font-weight:500">Reload</a> to get the latest.</div></div><button class="tx" aria-label="Dismiss"><svg class="ic-sm ic"><use href="#i-x"/></svg></button></div>
+      </div>
+    </div>
+    <div class="demo"><div class="demo-label">Skeleton</div>
+      <div class="row-top">
+        <div class="card card-c" style="width:280px"><div class="skel" style="width:40%;height:14px;margin-bottom:12px"></div><div class="skel" style="height:20px;width:60%;margin-bottom:16px"></div><div class="skel" style="height:10px;margin-bottom:8px"></div><div class="skel" style="height:10px;width:80%"></div></div>
+        <div class="card" style="width:420px;padding:0">
+          <div style="display:flex;gap:12px;padding:14px;border-bottom:1px solid var(--border)"><div class="skel" style="width:36%;height:14px"></div><div class="skel" style="width:16%;height:14px"></div><div class="skel" style="width:20%;height:14px"></div></div>
+          <div style="display:flex;gap:12px;padding:14px"><div class="skel" style="width:30%;height:14px"></div><div class="skel" style="width:14%;height:14px"></div><div class="skel" style="width:22%;height:14px"></div></div>
+        </div>
+        <div class="row"><span class="spinner lg"></span><button class="btn btn-default" disabled><span class="spinner"></span>Saving…</button></div>
+      </div>
+    </div>
+    <div class="demo"><div class="demo-label">Empty states</div>
+      <div class="row-top">
+        <div class="card" style="width:280px"><div class="empty"><div class="e-ic"><svg class="ic-xl ic"><use href="#i-inbox"/></svg></div><h4>No applications yet</h4><p>Start tracking your job search by adding your first application.</p><button class="btn btn-default btn-sm" style="margin-top:10px"><svg class="ic-sm ic"><use href="#i-plus"/></svg>Add your first application</button></div></div>
+        <div class="card" style="width:280px"><div class="empty"><div class="e-ic"><svg class="ic-xl ic"><use href="#i-search"/></svg></div><h4>No results found</h4><p>Try a different search or clear filters.</p><button class="btn btn-outline btn-sm" style="margin-top:10px">Clear filters</button></div></div>
+        <div class="card" style="width:280px"><div class="empty"><div class="e-ic"><svg class="ic-xl ic"><use href="#i-calendar"/></svg></div><h4>No interviews scheduled</h4><p>Add an interview from an application detail page.</p></div></div>
+        <div class="card" style="width:280px"><div class="empty"><div class="e-ic"><svg class="ic-xl ic"><use href="#i-check-circle"/></svg></div><h4>You’re all caught up</h4><p>No follow-ups due today.</p></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- OVERLAYS -->
+  <section class="section" id="overlays">
+    <div class="section-head"><h2>Dialog, menu &amp; popover</h2><p>Flat bordered dialogs (focus trap, Esc, focus return · mobile = full-screen sheet) · dropdown menus with shortcuts &amp; danger zone · command palette (⌘K) · tooltips.</p><div class="spec-ref">UI/UX Spec v1.1 — §8, §9.6, §16</div></div>
+    <div class="demo"><div class="demo-label">Dialog &amp; alert dialog</div>
+      <div class="row">
+        <button class="btn btn-default" data-open="d-add"><svg class="ic"><use href="#i-plus"/></svg>Add application</button>
+        <button class="btn btn-outline" data-open="d-status">Change status + note</button>
+        <button class="btn btn-destructive" data-open="d-delete"><svg class="ic"><use href="#i-trash"/></svg>Delete…</button>
+        <button class="btn btn-outline" data-open="d-sheet"><svg class="ic"><use href="#i-list"/></svg>Open sheet</button>
+        <button class="btn btn-outline" id="cmd-open2"><svg class="ic-sm ic"><use href="#i-command"/></svg>Command palette</button>
+      </div>
+    </div>
+    <div class="demo"><div class="demo-label">Dropdown menus</div>
+      <div class="row" style="gap:16px">
+        <div class="menu-w">
+          <button class="btn btn-outline" data-menu-btn aria-haspopup="true"><span class="avatar av-24" style="font-size:10px">JD</span> John Doe <svg class="ic-sm ic"><use href="#i-chevron-down"/></svg></button>
+          <div class="menu-pop" role="menu">
+            <div class="m-label">john@example.com</div>
+            <button class="m-item" role="menuitem"><svg class="ic-sm ic"><use href="#i-user"/></svg>Profile<span class="kbd kbd k"><kbd class="k">⇧⌘P</kbd></span></button>
+            <button class="m-item" role="menuitem"><svg class="ic-sm ic"><use href="#i-settings"/></svg>Settings<span class="kbd"><kbd class="k">⌘S</kbd></span></button>
+            <div class="m-sep"></div>
+            <button class="m-item danger" role="menuitem"><svg class="ic-sm ic"><use href="#i-log-out"/></svg>Log out</button>
+          </div>
+        </div>
+        <div class="menu-w">
+          <button class="btn btn-outline" data-menu-btn><svg class="ic"><use href="#i-sort"/></svg>Sort: Recently updated <svg class="ic-sm ic"><use href="#i-chevron-down"/></svg></button>
+          <div class="menu-pop" role="menu">
+            <button class="m-item sel">Recently updated <svg class="ic-sm ic ck"><use href="#i-check"/></svg></button>
+            <button class="m-item">Applied date <svg class="ic-sm ic ck"><use href="#i-check"/></svg></button>
+            <button class="m-item">Follow-up date <svg class="ic-sm ic ck"><use href="#i-check"/></svg></button>
+            <button class="m-item">Status (pipeline) <svg class="ic-sm ic ck"><use href="#i-check"/></svg></button>
+          </div>
+        </div>
+        <div class="menu-w">
+          <button class="btn btn-outline" data-menu-btn>Change status <svg class="ic-sm ic"><use href="#i-chevron-down"/></svg></button>
+          <div class="menu-pop" role="menu">
+            <button class="m-item"><span class="badge badge-wishlist">Wishlist</span></button>
+            <button class="m-item sel"><span class="badge badge-applied">Applied</span><svg class="ic-sm ic ck"><use href="#i-check"/></svg></button>
+            <button class="m-item"><span class="badge badge-screening">Screening</span></button>
+            <button class="m-item"><span class="badge badge-interview">Interview</span></button>
+            <button class="m-item"><span class="badge badge-offer">Offer</span></button>
+            <button class="m-item"><span class="badge badge-rejected">Rejected</span></button>
+            <button class="m-item"><span class="badge badge-withdrawn">Withdrawn</span></button>
+          </div>
+        </div>
+        <div class="menu-w">
+          <button class="btn btn-ghost btn-icon" data-menu-btn aria-label="Row actions"><svg class="ic"><use href="#i-more"/></svg></button>
+          <div class="menu-pop" role="menu">
+            <button class="m-item"><svg class="ic-sm ic"><use href="#i-pencil"/></svg>Edit</button>
+            <button class="m-item"><svg class="ic-sm ic"><use href="#i-archive"/></svg>Archive</button>
+            <button class="m-item dis"><svg class="ic-sm ic"><use href="#i-download"/></svg>Export</button>
+            <div class="m-sep"></div>
+            <button class="m-item danger"><svg class="ic-sm ic"><use href="#i-trash"/></svg>Delete</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="demo"><div class="demo-label">Filters popover</div>
+      <div class="menu-w">
+        <button class="btn btn-outline" data-menu-btn><svg class="ic"><use href="#i-filter"/></svg>Filters <span class="badge-count">2</span> <svg class="ic-sm ic"><use href="#i-chevron-down"/></svg></button>
+        <div class="menu-pop pop-wide left" data-stop>
+          <h5>Filter applications</h5>
+          <div class="fg"><div class="fgl">Status</div><div class="opts"><button class="tag sel">Applied</button><button class="tag">Screening</button><button class="tag">Interview</button><button class="tag">Offer</button></div></div>
+          <div class="fg"><div class="fgl">Follow-up</div><div class="opts"><button class="tag sel">Overdue</button><button class="tag">Due today</button><button class="tag">Upcoming</button><button class="tag">None</button></div></div>
+          <div class="fg"><div class="fgl">Employment type</div><div class="opts"><button class="tag">Full-time</button><button class="tag">Contract</button><button class="tag">Internship</button></div></div>
+          <div style="display:flex;justify-content:flex-end;gap:8px"><button class="btn btn-ghost btn-sm">Clear all</button><button class="btn btn-default btn-sm">Apply filters</button></div>
+        </div>
+      </div>
+    </div>
+    <div class="demo"><div class="demo-label">Tooltip</div>
+      <div class="row">
+        <span class="tip" data-tip="Archive"><button class="btn btn-outline btn-icon" aria-label="Archive"><svg class="ic"><use href="#i-archive"/></svg></button></span>
+        <span class="tip" data-tip="Export JSON"><button class="btn btn-outline btn-icon" aria-label="Export JSON"><svg class="ic"><use href="#i-download"/></svg></button></span>
+        <span class="muted small">Hover or focus</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- NAVIGATION -->
+  <section class="section" id="navigation">
+    <div class="section-head"><h2>Tabs, pagination &amp; navigation</h2><p>2px primary underline tabs · segmented view toggle · breadcrumb · shadcn-style pagination · sidebar &amp; bottom-nav items.</p><div class="spec-ref">UI/UX Spec v1.1 — §4, §9.8, §9.9</div></div>
+    <div class="demo"><div class="demo-label">Tabs &amp; segmented</div>
+      <div class="col" style="gap:16px;max-width:640px">
+        <div data-tabs>
+          <div class="tabs" role="tablist">
+            <button class="tab active" data-tb="t1">Overview</button>
+            <button class="tab" data-tb="t2">Notes <span class="badge-count">3</span></button>
+            <button class="tab" data-tb="t3">Interviews <span class="badge-count">1</span></button>
+            <button class="tab" data-tb="t4">Activity</button>
+          </div>
+          <div style="padding-top:14px" data-tp="t1"><span class="muted">Overview panel — active tab: primary text + 2px underline.</span></div>
+          <div style="padding-top:14px" data-tp="t2" hidden><span class="muted">Notes panel.</span></div>
+          <div style="padding-top:14px" data-tp="t3" hidden><span class="muted">Interviews panel.</span></div>
+          <div style="padding-top:14px" data-tp="t4" hidden><span class="muted">Activity panel.</span></div>
+        </div>
+        <div class="row">
+          <div class="seg" data-seg2><button class="active"><svg class="ic-sm ic"><use href="#i-sun"/></svg>Light</button><button><svg class="ic-sm ic"><use href="#i-moon"/></svg>Dark</button><button>System</button></div>
+          <div class="seg" data-seg2><button class="active" aria-label="List view"><svg class="ic-sm ic"><use href="#i-list"/></svg>List</button><button aria-label="Board view"><svg class="ic-sm ic"><use href="#i-board"/></svg>Board</button></div>
+        </div>
+      </div>
+    </div>
+    <div class="demo"><div class="demo-label">Breadcrumb &amp; pagination</div>
+      <div class="col" style="gap:14px">
+        <nav class="crumb" aria-label="Breadcrumb">
+          <a href="#"><svg class="ic-sm ic" style="vertical-align:-2px"><use href="#i-grid"/></svg></a>
+          <svg class="ic-sm ic sep-i"><use href="#i-chevron-right"/></svg><a href="#">Applications</a>
+          <svg class="ic-sm ic sep-i"><use href="#i-chevron-right"/></svg><span class="cur">Acme Corp</span>
+        </nav>
+        <nav class="pg" aria-label="Pagination">
+          <button disabled aria-label="Previous"><svg class="ic-sm ic"><use href="#i-chevron-left"/></svg></button>
+          <button class="active" aria-current="page">1</button><button>2</button><button>3</button><span class="gap">…</span><button>5</button>
+          <button aria-label="Next"><svg class="ic-sm ic"><use href="#i-chevron-right"/></svg></button>
+        </nav>
+        <nav class="pg" aria-label="Mobile pagination"><button><svg class="ic-sm ic"><use href="#i-chevron-left"/></svg>Prev</button><span class="small muted" style="padding:0 8px">Page 2 of 5</span><button>Next<svg class="ic-sm ic"><use href="#i-arrow-right"/></svg></button></nav>
+      </div>
+    </div>
+    <div class="demo"><div class="demo-label">Sidebar items &amp; mobile bottom nav</div>
+      <div class="row-top">
+        <div class="card" style="padding:12px;width:244px">
+          <button class="nav-i active"><svg class="ic"><use href="#i-grid"/></svg><span>Dashboard</span></button>
+          <button class="nav-i"><svg class="ic"><use href="#i-briefcase"/></svg><span>Applications</span></button>
+          <button class="nav-i"><svg class="ic"><use href="#i-calendar"/></svg><span>Interviews</span></button>
+          <button class="nav-i"><svg class="ic"><use href="#i-settings"/></svg><span>Settings</span></button>
+        </div>
+        <div>
+          <div class="bnav">
+            <button><svg class="ic"><use href="#i-grid"/></svg>Dashboard</button>
+            <button class="active" aria-current="page"><svg class="ic"><use href="#i-briefcase"/></svg>Applications</button>
+            <button><svg class="ic"><use href="#i-calendar"/></svg>Interviews</button>
+            <button><svg class="ic"><use href="#i-settings"/></svg>Settings</button>
+          </div>
+          <div class="small muted" style="text-align:center;margin-top:6px">Active: #6366f1 · no shadow</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- APP BLOCKS -->
+  <section class="section" id="blocks">
+    <div class="section-head"><h2>App blocks</h2><p>Contextual compositions used across screens — auth card, settings rows, provider management, tag manager, follow-ups, install prompt.</p><div class="spec-ref">UI/UX Spec v1.1 — §6, §7.5, §14</div></div>
+    <div class="demo"><div class="demo-label">Auth card &amp; follow-ups</div>
+      <div class="row-top">
+        <div class="card" style="max-width:380px;width:100%;padding:28px">
+          <div style="display:flex;flex-direction:column;gap:16px">
+            <div style="text-align:center"><div class="logo" style="margin:0 auto 12px;width:34px;height:34px"><svg class="ic-lg ic"><use href="#i-briefcase"/></svg></div><div class="card-title" style="font-size:17px">Sign in</div><div class="card-desc">Welcome back. Track your job search in one place.</div></div>
+            <div class="form-item" style="margin:0;max-width:none"><label class="label" for="bl-e">Email</label><input class="input" id="bl-e" value="john@example.com"></div>
+            <div class="form-item" style="margin:0;max-width:none"><label class="label" for="bl-p">Password</label><div class="in-wrap"><input class="input" id="bl-p" type="password" value="password123"><button type="button" class="sfx" data-pw="bl-p" aria-label="Show password"><svg class="ic"><use href="#i-eye"/></svg></button></div></div>
+            <button class="btn btn-default btn-lg" style="width:100%">Sign in</button>
+            <div style="display:flex;align-items:center;gap:12px;color:var(--subtle);font-size:12px"><div style="height:1px;flex:1;background:var(--border)"></div>or continue with<div style="height:1px;flex:1;background:var(--border)"></div></div>
+            <div class="row" style="gap:8px"><button class="btn btn-outline" style="flex:1"><svg class="ic"><use href="#i-google"/></svg>Google</button><button class="btn btn-outline" style="flex:1"><svg class="ic"><use href="#i-github"/></svg>GitHub</button></div>
+            <div class="small muted" style="text-align:center">Don’t have an account? <a href="#">Sign up</a></div>
+          </div>
+        </div>
+        <div class="card" style="width:360px">
+          <div class="card-h" style="display:flex;align-items:center;justify-content:space-between;padding-bottom:0"><div class="card-title">Follow-ups</div><span class="badge-count">3</span></div>
+          <div class="card-c" style="padding-top:8px">
+            <div class="fu-item"><div style="min-width:0"><div class="cell-t">Initech</div><div class="cell-s">Full Stack Developer</div></div><span class="badge badge-screening">Screening</span><span class="fu-d overdue"><svg class="ic-sm ic"><use href="#i-alert-triangle"/></svg>Overdue</span></div>
+            <div class="fu-item"><div style="min-width:0"><div class="cell-t">Acme Corp</div><div class="cell-s">Frontend Engineer</div></div><span class="badge badge-applied">Applied</span><span class="fu-d today"><svg class="ic-sm ic"><use href="#i-clock"/></svg>Today</span></div>
+            <div class="fu-item"><div style="min-width:0"><div class="cell-t">Pied Piper</div><div class="cell-s">UI Engineer</div></div><span class="badge badge-applied">Applied</span><span class="fu-d" style="color:var(--muted-foreground)">Jan 20</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="demo"><div class="demo-label">Settings — preferences, providers, tags, data</div>
+      <div class="row-top">
+        <div class="card" style="max-width:520px;width:100%;padding:6px 20px">
+          <div class="set-row"><div><div class="sr-l">Theme</div><div class="sr-s">Light, dark, or follow your system</div></div><div class="seg"><button class="active"><svg class="ic-sm ic"><use href="#i-sun"/></svg>Light</button><button><svg class="ic-sm ic"><use href="#i-moon"/></svg>Dark</button><button>System</button></div></div>
+          <div class="set-row"><div><div class="sr-l">Default landing page</div><div class="sr-s">Where you land after signing in</div></div>
+            <div class="cs" data-cselect style="min-width:170px"><button type="button" class="cs-btn" aria-haspopup="listbox" aria-expanded="false"><span class="cs-val">Dashboard</span><svg class="ic-sm ic chev"><use href="#i-chevron-down"/></svg></button><div class="cs-pop" role="listbox"><button type="button" class="cs-opt sel" role="option" aria-selected="true">Dashboard<svg class="ic-sm ic ck"><use href="#i-check"/></svg></button><button type="button" class="cs-opt" role="option">Applications<svg class="ic-sm ic ck"><use href="#i-check"/></svg></button></div></div>
+          </div>
+          <div class="set-row"><div><div class="sr-l">Time zone</div><div class="sr-s">IANA identifier · used for “today” follow-ups</div></div>
+            <div class="cs" data-cselect style="min-width:190px"><button type="button" class="cs-btn" aria-haspopup="listbox" aria-expanded="false"><span class="cs-val">Asia/Dhaka</span><svg class="ic-sm ic chev"><use href="#i-chevron-down"/></svg></button><div class="cs-pop" role="listbox"><button type="button" class="cs-opt sel" role="option" aria-selected="true">Asia/Dhaka<svg class="ic-sm ic ck"><use href="#i-check"/></svg></button><button type="button" class="cs-opt" role="option">UTC<svg class="ic-sm ic ck"><use href="#i-check"/></svg></button><button type="button" class="cs-opt" role="option">Europe/London<svg class="ic-sm ic ck"><use href="#i-check"/></svg></button></div></div>
+          </div>
+          <div class="set-row"><div><div class="sr-l">Email notifications</div><div class="sr-s">Optional product updates</div></div><button class="sw" role="switch" aria-checked="false" aria-label="Email notifications"></button></div>
+        </div>
+        <div class="col" style="gap:14px;flex:1;min-width:320px">
+          <div class="card" style="padding:6px 20px">
+            <div class="set-row"><div style="display:flex;align-items:center;gap:12px"><span class="prov-logo"><svg class="ic-lg ic"><use href="#i-google"/></svg></span><div><div class="sr-l">Google</div><div class="sr-s">john@gmail.com · connected</div></div></div><button class="btn btn-outline btn-sm">Disconnect</button></div>
+            <div class="set-row"><div style="display:flex;align-items:center;gap:12px"><span class="prov-logo"><svg class="ic-lg ic"><use href="#i-github"/></svg></span><div><div class="sr-l">GitHub</div><div class="sr-s">Not connected</div></div></div><button class="btn btn-default btn-sm">Connect</button></div>
+          </div>
+          <div class="card" style="padding:6px 20px">
+            <div class="set-row"><span style="display:flex;align-items:center;gap:8px"><span class="dot" style="width:10px;height:10px;border-radius:50%;background:#6366f1"></span><span class="sr-l">priority</span></span><span style="display:flex;align-items:center;gap:10px"><span class="small muted">4 applications</span><span class="tip" data-tip="Edit"><button class="btn btn-ghost btn-icon btn-xs" aria-label="Edit"><svg class="ic-sm ic"><use href="#i-pencil"/></svg></button></span><span class="tip" data-tip="Delete"><button class="btn btn-ghost btn-icon btn-xs" aria-label="Delete" style="color:var(--destructive)"><svg class="ic-sm ic"><use href="#i-trash"/></svg></button></span></span></div>
+            <div class="set-row"><span style="display:flex;align-items:center;gap:8px"><span class="dot" style="width:10px;height:10px;border-radius:50%;background:#0891b2"></span><span class="sr-l">remote</span></span><span style="display:flex;align-items:center;gap:10px"><span class="small muted">2 applications</span><span class="tip" data-tip="Edit"><button class="btn btn-ghost btn-icon btn-xs" aria-label="Edit"><svg class="ic-sm ic"><use href="#i-pencil"/></svg></button></span><span class="tip" data-tip="Delete"><button class="btn btn-ghost btn-icon btn-xs" aria-label="Delete" style="color:var(--destructive)"><svg class="ic-sm ic"><use href="#i-trash"/></svg></button></span></span></div>
+          </div>
+          <div class="card card-c" style="display:flex;align-items:center;gap:14px;flex-wrap:wrap">
+            <div class="s-ic" style="margin:0"><svg class="ic"><use href="#i-download"/></svg></div>
+            <div style="flex:1;min-width:180px"><div style="font-weight:600">Install Tally</div><div class="small muted">Faster, offline-ready experience on your device.</div></div>
+            <button class="btn btn-ghost btn-sm">Dismiss</button><button class="btn btn-default btn-sm">Install</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  </main>
+</div>
+
+<!-- ================= OVERLAYS ================= -->
+
+<!-- Add application dialog -->
+<div class="ov" id="d-add" role="dialog" aria-modal="true" aria-labelledby="d-add-t">
+  <div class="dialog lg">
+    <div class="dg-h"><div><div class="dg-title" id="d-add-t">Add application</div><div class="dg-desc">Company and role are required. Status defaults to Wishlist.</div></div><button class="dg-x" data-close aria-label="Close"><svg class="ic"><use href="#i-x"/></svg></button></div>
+    <div class="dg-b">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:0 14px" class="form-grid2">
+        <div class="form-item" style="max-width:none"><label class="label" for="af-c">Company <span class="req">*</span></label><input class="input" id="af-c" placeholder="Acme Corp"></div>
+        <div class="form-item" style="max-width:none"><label class="label" for="af-r">Role <span class="req">*</span></label><input class="input" id="af-r" placeholder="Frontend Engineer"></div>
+        <div class="form-item" style="max-width:none"><label class="label">Status</label>
+          <div class="cs" data-cselect style="width:100%"><button type="button" class="cs-btn" aria-haspopup="listbox" aria-expanded="false"><span class="cs-val">Wishlist</span><svg class="ic-sm ic chev"><use href="#i-chevron-down"/></svg></button><div class="cs-pop" role="listbox"><button type="button" class="cs-opt sel" role="option" aria-selected="true">Wishlist<svg class="ic-sm ic ck"><use href="#i-check"/></svg></button><button type="button" class="cs-opt" role="option">Applied<svg class="ic-sm ic ck"><use href="#i-check"/></svg></button><button type="button" class="cs-opt" role="option">Screening<svg class="ic-sm ic ck"><use href="#i-check"/></svg></button><button type="button" class="cs-opt" role="option">Interview<svg class="ic-sm ic ck"><use href="#i-check"/></svg></button><button type="button" class="cs-opt" role="option">Offer<svg class="ic-sm ic ck"><use href="#i-check"/></svg></button><button type="button" class="cs-opt" role="option">Rejected<svg class="ic-sm ic ck"><use href="#i-check"/></svg></button><button type="button" class="cs-opt" role="option">Withdrawn<svg class="ic-sm ic ck"><use href="#i-check"/></svg></button></div></div>
+        </div>
+        <div class="form-item" style="max-width:none"><label class="label">Applied date</label>
+          <div class="dp" data-datepicker style="width:100%"><div class="in-wrap"><span class="pfx"><svg class="ic"><use href="#i-calendar"/></svg></span><input class="input dp-in" placeholder="Select date" readonly></div>
+          <div class="dp-pop" role="dialog" aria-label="Choose date"><div class="dp-head"><button type="button" class="dp-nav" data-dpnav="-1" aria-label="Previous month"><svg class="ic"><use href="#i-chevron-left"/></svg></button><div class="dp-month">Month</div><button type="button" class="dp-nav" data-dpnav="1" aria-label="Next month"><svg class="ic"><use href="#i-chevron-right"/></svg></button></div><div class="dp-wd"><span>Su</span><span>Mo</span><span>Tu</span><span>We</span><span>Th</span><span>Fr</span><span>Sa</span></div><div class="dp-days"></div><div class="dp-foot"><button type="button" class="btn btn-ghost btn-xs" data-dptoday>Today</button><button type="button" class="btn btn-ghost btn-xs" data-dpclear>Clear</button></div></div></div>
+        </div>
+        <div class="form-item" style="max-width:none"><label class="label">Follow-up date &amp; time</label>
+          <div class="dp" data-datepicker data-with-time style="width:100%"><div class="in-wrap"><span class="pfx"><svg class="ic"><use href="#i-clock"/></svg></span><input class="input dp-in" placeholder="Select date &amp; time" readonly></div>
+          <div class="dp-pop" role="dialog" aria-label="Choose date and time"><div class="dp-head"><button type="button" class="dp-nav" data-dpnav="-1" aria-label="Previous month"><svg class="ic"><use href="#i-chevron-left"/></svg></button><div class="dp-month">Month</div><button type="button" class="dp-nav" data-dpnav="1" aria-label="Next month"><svg class="ic"><use href="#i-chevron-right"/></svg></button></div><div class="dp-wd"><span>Su</span><span>Mo</span><span>Tu</span><span>We</span><span>Th</span><span>Fr</span><span>Sa</span></div><div class="dp-days"></div><div class="tp-row"><span class="tp-label">Time</span><div class="tp-seg"><button type="button" data-tp="h+" aria-label="Hour up"><svg class="ic-sm ic"><use href="#i-chevron-up"/></svg></button><span class="tp-val tp-h">09</span><button type="button" data-tp="h-" aria-label="Hour down"><svg class="ic-sm ic"><use href="#i-chevron-down"/></svg></button></div><span class="tp-colon">:</span><div class="tp-seg"><button type="button" data-tp="m+" aria-label="Minute up"><svg class="ic-sm ic"><use href="#i-chevron-up"/></svg></button><span class="tp-val tp-m">00</span><button type="button" data-tp="m-" aria-label="Minute down"><svg class="ic-sm ic"><use href="#i-chevron-down"/></svg></button></div></div><div class="dp-foot"><button type="button" class="btn btn-ghost btn-xs" data-dpclear>Clear</button><button type="button" class="btn btn-default btn-xs" data-dpdone>Done</button></div></div></div>
+        </div>
+        <div class="form-item" style="max-width:none"><label class="label">Tags</label>
+          <div class="ts" data-tagselect><button type="button" class="ts-btn" aria-haspopup="true" aria-expanded="false"><span class="ts-val" style="display:flex;gap:6px;flex-wrap:wrap;align-items:center"><span class="ts-ph">Select tags…</span></span><svg class="ic-sm ic" style="margin-left:auto;color:var(--subtle)"><use href="#i-chevron-down"/></svg></button>
+          <div class="ts-pop"><button type="button" class="ts-opt" data-v="t1" data-label="priority" data-color="#6366f1"><span class="mbox"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span><span class="dot" style="width:8px;height:8px;border-radius:50%;background:#6366f1"></span>priority</button><button type="button" class="ts-opt" data-v="t2" data-label="remote" data-color="#0891b2"><span class="mbox"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span><span class="dot" style="width:8px;height:8px;border-radius:50%;background:#0891b2"></span>remote</button><button type="button" class="ts-opt" data-v="t3" data-label="referral" data-color="#d97706"><span class="mbox"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span><span class="dot" style="width:8px;height:8px;border-radius:50%;background:#d97706"></span>referral</button></div></div>
+        </div>
+        <div class="form-item" style="max-width:none;grid-column:1/-1"><label class="label" for="af-n">Initial note</label><textarea class="textarea" id="af-n" placeholder="Anything worth remembering… (1–5000 characters)"></textarea></div>
+      </div>
+    </div>
+    <div class="dg-f"><button class="btn btn-ghost" data-close>Cancel</button><button class="btn btn-default"><svg class="ic"><use href="#i-check"/></svg>Save application</button></div>
+  </div>
+</div>
+
+<!-- Change status dialog -->
+<div class="ov" id="d-status" role="dialog" aria-modal="true">
+  <div class="dialog sm">
+    <div class="dg-h"><div><div class="dg-title">Change status</div><div class="dg-desc">Acme Corp · Frontend Engineer — currently <span class="badge badge-applied">Applied</span></div></div><button class="dg-x" data-close aria-label="Close"><svg class="ic"><use href="#i-x"/></svg></button></div>
+    <div class="dg-b">
+      <div class="form-item" style="max-width:none"><label class="label">New status</label>
+        <div class="cs" data-cselect style="width:100%"><button type="button" class="cs-btn" aria-haspopup="listbox" aria-expanded="false"><span class="cs-val">Screening</span><svg class="ic-sm ic chev"><use href="#i-chevron-down"/></svg></button><div class="cs-pop" role="listbox"><button type="button" class="cs-opt" role="option">Wishlist<svg class="ic-sm ic ck"><use href="#i-check"/></svg></button><button type="button" class="cs-opt" role="option">Applied<svg class="ic-sm ic ck"><use href="#i-check"/></svg></button><button type="button" class="cs-opt sel" role="option" aria-selected="true">Screening<svg class="ic-sm ic ck"><use href="#i-check"/></svg></button><button type="button" class="cs-opt" role="option">Interview<svg class="ic-sm ic ck"><use href="#i-check"/></svg></button><button type="button" class="cs-opt" role="option">Offer<svg class="ic-sm ic ck"><use href="#i-check"/></svg></button><button type="button" class="cs-opt" role="option">Rejected<svg class="ic-sm ic ck"><use href="#i-check"/></svg></button><button type="button" class="cs-opt" role="option">Withdrawn<svg class="ic-sm ic ck"><use href="#i-check"/></svg></button></div></div>
+      </div>
+      <div class="form-item" style="max-width:none"><label class="label">Note <span class="muted" style="font-weight:400">(optional)</span></label><textarea class="textarea" placeholder="e.g. Recruiter confirmed technical interview"></textarea><p class="form-desc">Saved with the status history entry.</p></div>
+    </div>
+    <div class="dg-f"><button class="btn btn-ghost" data-close>Skip</button><button class="btn btn-default">Save note &amp; update</button></div>
+  </div>
+</div>
+
+<!-- Alert dialog -->
+<div class="ov" id="d-delete" role="alertdialog" aria-modal="true">
+  <div class="dialog sm">
+    <div class="dg-h"><div><div class="dg-title">Delete application?</div><div class="dg-desc" style="margin-top:8px">This permanently deletes <strong style="color:var(--foreground)">Acme Corp — Frontend Engineer</strong>, including its notes, interviews, and status history. This action cannot be undone.</div></div><button class="dg-x" data-close aria-label="Close"><svg class="ic"><use href="#i-x"/></svg></button></div>
+    <div class="dg-f"><button class="btn btn-outline" data-close>Cancel</button><button class="btn btn-destructive">Delete</button></div>
+  </div>
+</div>
+
+<!-- Sheet -->
+<div class="ov sheet-ov" id="d-sheet" role="dialog" aria-modal="true">
+  <div class="sheet">
+    <div class="sheet-h"><div><div class="dg-title">Menu</div><div class="dg-desc">Slide-over navigation (Sheet, side=right)</div></div><button class="dg-x" data-close aria-label="Close"><svg class="ic"><use href="#i-x"/></svg></button></div>
+    <div class="sheet-b">
+      <button class="nav-i active"><svg class="ic"><use href="#i-grid"/></svg><span>Dashboard</span></button>
+      <button class="nav-i"><svg class="ic"><use href="#i-briefcase"/></svg><span>Applications</span></button>
+      <button class="nav-i"><svg class="ic"><use href="#i-calendar"/></svg><span>Interviews</span></button>
+      <button class="nav-i"><svg class="ic"><use href="#i-settings"/></svg><span>Settings</span></button>
+      <div style="height:1px;background:var(--border);margin:10px 8px"></div>
+      <button class="nav-i" style="color:var(--destructive)"><svg class="ic"><use href="#i-log-out"/></svg><span>Log out</span></button>
+    </div>
+  </div>
+</div>
+
+<!-- Command palette -->
+<div class="ov cmd-wrap" id="d-cmd" role="dialog" aria-modal="true" aria-label="Command palette">
+  <div class="cmd-dialog">
+    <div class="cmd-in"><svg class="ic" style="color:var(--subtle)"><use href="#i-search"/></svg><input id="cmd-input" placeholder="Search components and actions…" autocomplete="off"><kbd class="k">esc</kbd></div>
+    <div class="cmd-list" id="cmd-list"></div>
+  </div>
+</div>
+
+<div class="toast-live" id="toast-live" aria-live="polite"></div>
+
+<script>
+'use strict';
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+const sameDay=(a,b)=>a.getFullYear()===b.getFullYear()&&a.getMonth()===b.getMonth()&&a.getDate()===b.getDate();
+
+/* THEME */
+$('#theme-seg').addEventListener('click',e=>{
+  const b=e.target.closest('[data-t]');if(!b)return;
+  document.documentElement.setAttribute('data-theme',b.dataset.t);
+  $$('#theme-seg [data-t]').forEach(x=>x.classList.toggle('active',x===b));
+});
+
+/* TOAST */
+const TI={success:'#i-check-circle',error:'#i-alert-circle',warn:'#i-wifi-off',info:'#i-info'};
+const TC={success:'toast-success',error:'toast-error',warn:'toast-warn',info:'toast-info'};
+function toast(type,title,msg){
+  const t=document.createElement('div');t.className='toast anim '+TC[type];
+  t.innerHTML=`<svg class="ic"><use href="${TI[type]}"/></svg><div><div class="tt">${title}</div><div class="tm">${msg||''}</div></div><button class="tx" aria-label="Dismiss"><svg class="ic-sm ic"><use href="#i-x"/></svg></button>`;
+  t.querySelector('.tx').onclick=()=>t.remove();
+  $('#toast-live').appendChild(t);
+  setTimeout(()=>{t.style.transition='opacity .3s';t.style.opacity='0';setTimeout(()=>t.remove(),300);},4000);
+}
+
+/* MENUS */
+function closeMenus(){$$('.menu-w.open').forEach(w=>{w.classList.remove('open');w.querySelector('[data-menu-btn]').setAttribute('aria-expanded','false');});}
+document.addEventListener('click',e=>{
+  const t=e.target.closest('[data-menu-btn]');
+  if(t){const w=t.closest('.menu-w');const was=w.classList.contains('open');closeMenus();
+    if(!was){w.classList.add('open');t.setAttribute('aria-expanded','true');}e.stopPropagation();return;}
+  if(e.target.closest('.menu-pop')){ if(!e.target.closest('.tag,.cs-opt')) {/* keep open while interacting */} return;}
+  if(!e.target.closest('.menu-pop'))closeMenus();
+});
+$$('.menu-pop .m-item').forEach(i=>i.addEventListener('click',e=>{e.stopPropagation();closeMenus();}));
+$$('.menu-pop .tag').forEach(t=>t.addEventListener('click',e=>{e.stopPropagation();t.classList.toggle('sel');}));
+document.addEventListener('keydown',e=>{
+  const open=$('.menu-w.open');if(!open)return;
+  if(e.key==='Escape'){closeMenus();return;}
+  const items=[...open.querySelectorAll('.m-item:not(.dis)')];
+  const i=items.indexOf(document.activeElement);
+  if(e.key==='ArrowDown'){e.preventDefault();items[(i+1)%items.length]?.focus();}
+  if(e.key==='ArrowUp'){e.preventDefault();items[(i-1+items.length)%items.length]?.focus();}
+});
+
+/* OVERLAYS (dialog/sheet/command) */
+let lastF=null;
+function openOv(id){lastF=document.activeElement;const o=document.getElementById(id);o.classList.add('open');document.body.style.overflow='hidden';
+  setTimeout(()=>{const f=o.querySelector('#cmd-input')||o.querySelector('input,select,textarea,button:not([data-close]):not(.dg-x)');f&&f.focus();},60);}
+function closeOvs(){$$('.ov.open').forEach(o=>o.classList.remove('open'));document.body.style.overflow='';if(lastF&&lastF.focus)lastF.focus();}
+$$('[data-open]').forEach(b=>b.addEventListener('click',()=>openOv(b.dataset.open)));
+$$('[data-close]').forEach(b=>b.addEventListener('click',closeOvs));
+$$('.ov').forEach(o=>o.addEventListener('click',e=>{if(e.target===o)closeOvs();}));
+
+/* COMMAND PALETTE */
+const CMDS=[
+  {g:'Navigate',items:[['Go to dashboard','#i-grid'],['Go to applications','#i-briefcase'],['Go to interviews','#i-calendar'],['Go to settings','#i-settings']]},
+  {g:'Actions',items:[['Add application','#i-plus'],['Export JSON','#i-download'],['Import backup','#i-upload'],['Toggle theme','#i-moon']]},
+  {g:'Components',items:[['Buttons','#i-arrow-right'],['Date picker','#i-calendar'],['Dialogs & menus','#i-more'],['Toasts & states','#i-bell']]}
+];
+function paintCmd(q){
+  const list=$('#cmd-list');let html='';let any=false;
+  CMDS.forEach(g=>{
+    const it=g.items.filter(([l])=>!q||l.toLowerCase().includes(q.toLowerCase()));
+    if(!it.length)return;any=true;
+    html+=`<div class="cmd-g">${g.g}</div>`+it.map(([l,ic])=>`<button class="cmd-i" data-label="${l}"><svg class="ic"><use href="${ic}"/></svg>${l}</button>`).join('');
+  });
+  list.innerHTML=any?html:`<div class="cmd-empty">No results found for “${q}”.</div>`;
+  const first=list.querySelector('.cmd-i');if(first)first.classList.add('hl');
+  list.querySelectorAll('.cmd-i').forEach(b=>b.addEventListener('click',()=>{toast('info',b.dataset.label,'Command executed (prototype).');closeOvs();}));
+  list.querySelectorAll('.cmd-i').forEach(b=>b.addEventListener('mousemove',()=>{list.querySelectorAll('.cmd-i').forEach(x=>x.classList.remove('hl'));b.classList.add('hl');}));
+}
+$('#cmd-open').addEventListener('click',()=>{openOv('d-cmd');$('#cmd-input').value='';paintCmd('');});
+$('#cmd-open2').addEventListener('click',()=>{openOv('d-cmd');$('#cmd-input').value='';paintCmd('');});
+$('#cmd-input').addEventListener('input',e=>paintCmd(e.target.value));
+$('#cmd-input').addEventListener('keydown',e=>{
+  const items=[...$('#cmd-list').querySelectorAll('.cmd-i')];
+  const i=items.findIndex(x=>x.classList.contains('hl'));
+  if(e.key==='ArrowDown'){e.preventDefault();items.forEach(x=>x.classList.remove('hl'));items[(i+1)%items.length]?.classList.add('hl');}
+  else if(e.key==='ArrowUp'){e.preventDefault();items.forEach(x=>x.classList.remove('hl'));items[(i-1+items.length)%items.length]?.classList.add('hl');}
+  else if(e.key==='Enter'){e.preventDefault();const h=$('#cmd-list .cmd-i.hl');if(h){toast('info',h.dataset.label,'Command executed (prototype).');closeOvs();}}
+});
+document.addEventListener('keydown',e=>{
+  if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==='k'){e.preventDefault();openOv('d-cmd');$('#cmd-input').value='';paintCmd('');}
+});
+
+/* CUSTOM SELECT */
+function initCS(root){
+  if(root.dataset.init)return;root.dataset.init='1';
+  if(root.classList.contains('disabled'))return;
+  const btn=root.querySelector('.cs-btn'),val=root.querySelector('.cs-val'),opts=[...root.querySelectorAll('.cs-opt')];
+  let act=-1;
+  const open=()=>{closeFloats();root.classList.add('open');btn.setAttribute('aria-expanded','true');act=opts.findIndex(o=>o.classList.contains('sel'));mark();};
+  const close=(f=true)=>{root.classList.remove('open');btn.setAttribute('aria-expanded','false');act=-1;opts.forEach(o=>o.classList.remove('hl'));if(f)btn.focus();};
+  const mark=()=>{opts.forEach((o,i)=>{o.classList.toggle('hl',i===act);if(i===act)o.scrollIntoView({block:'nearest'});});};
+  const choose=o=>{opts.forEach(x=>{x.classList.remove('sel');x.removeAttribute('aria-selected');});
+    o.classList.add('sel');o.setAttribute('aria-selected','true');val.textContent=o.textContent.replace(/\s+$/,'').split('\n')[0];val.classList.remove('ph');close();};
+  btn.addEventListener('click',e=>{e.stopPropagation();root.classList.contains('open')?close():open();});
+  btn.addEventListener('keydown',e=>{if(['ArrowDown','ArrowUp','Enter',' '].includes(e.key)){e.preventDefault();open();}});
+  root.addEventListener('keydown',e=>{
+    if(!root.classList.contains('open'))return;
+    if(e.key==='ArrowDown'){e.preventDefault();act=Math.min(opts.length-1,act+1);mark();}
+    else if(e.key==='ArrowUp'){e.preventDefault();act=Math.max(0,act-1);mark();}
+    else if(e.key==='Home'){e.preventDefault();act=0;mark();}
+    else if(e.key==='End'){e.preventDefault();act=opts.length-1;mark();}
+    else if(e.key==='Enter'){e.preventDefault();act>=0?choose(opts[act]):close();}
+    else if(e.key==='Escape'){e.stopPropagation();close();}
+    else if(e.key==='Tab'){close(false);}
+  });
+  opts.forEach(o=>o.addEventListener('click',e=>{e.stopPropagation();choose(o);}));
+}
+function initAllCS(){$$('[data-cselect]').forEach(initCS);}
+initAllCS();
+
+/* TAG SELECT */
+function initTS(root){
+  if(root.dataset.init)return;root.dataset.init='1';
+  const btn=root.querySelector('.ts-btn'),val=root.querySelector('.ts-val'),opts=[...root.querySelectorAll('.ts-opt')];
+  const paint=()=>{
+    const sel=opts.filter(o=>o.classList.contains('sel'));
+    val.innerHTML=sel.length?sel.map(o=>`<span class="tchip"><span class="dot" style="background:${o.dataset.color}"></span>${o.dataset.label}<button type="button" data-rm="${o.dataset.v}" aria-label="Remove ${o.dataset.label}"><svg class="ic-sm ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></span>`).join(''):'<span class="ts-ph">Select tags…</span>';
+    val.querySelectorAll('[data-rm]').forEach(b=>b.addEventListener('click',e=>{e.stopPropagation();opts.find(x=>x.dataset.v===b.dataset.rm)?.classList.remove('sel');paint();}));
+  };
+  btn.addEventListener('click',e=>{e.stopPropagation();const was=root.classList.contains('open');closeFloats();if(!was)root.classList.add('open');btn.setAttribute('aria-expanded',String(root.classList.contains('open')));});
+  opts.forEach(o=>o.addEventListener('click',e=>{e.stopPropagation();o.classList.toggle('sel');paint();}));
+  root.addEventListener('keydown',e=>{if(e.key==='Escape'){root.classList.remove('open');btn.focus();e.stopPropagation();}});
+}
+function initAllTS(){$$('[data-tagselect]').forEach(initTS);}
+initAllTS();
+
+/* DATE PICKER */
+function initDP(root){
+  if(root.dataset.init)return;root.dataset.init='1';
+  const input=root.querySelector('.dp-in'),pop=root.querySelector('.dp-pop'),wt=root.hasAttribute('data-with-time');
+  let view=new Date(),sel=null,h=9,m=0;
+  const mo=pop.querySelector('.dp-month'),days=pop.querySelector('.dp-days');
+  const fmt=d=>d.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+  function paint(){
+    const y=view.getFullYear(),mm=view.getMonth();
+    mo.textContent=view.toLocaleDateString('en-US',{month:'long',year:'numeric'});
+    const sd=new Date(y,mm,1).getDay(),dim=new Date(y,mm+1,0).getDate(),pd=new Date(y,mm,0).getDate();
+    const today=new Date();let html='';
+    for(let i=0;i<42;i++){
+      let d,cls='dp-day',dt;
+      if(i<sd){d=pd-sd+1+i;cls+=' out';dt=new Date(y,mm-1,d);}
+      else if(i-sd<dim){d=i-sd+1;dt=new Date(y,mm,d);}
+      else{d=i-sd-dim+1;cls+=' out';dt=new Date(y,mm+1,d);}
+      if(sameDay(dt,today))cls+=' today';
+      if(sel&&sameDay(dt,sel))cls+=' sel';
+      html+=`<button type="button" class="${cls}" data-d="${dt.toISOString()}" tabindex="-1">${d}</button>`;
+    }
+    days.innerHTML=html;
+    const f=days.querySelector('.sel')||days.querySelector('.today')||days.querySelector('.dp-day');
+    if(f)f.tabIndex=0;
+    if(wt){pop.querySelector('.tp-h').textContent=String(h).padStart(2,'0');pop.querySelector('.tp-m').textContent=String(m).padStart(2,'0');}
+  }
+  const commit=()=>{if(!sel)return;input.value=fmt(sel)+(wt?` · ${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}`:'');};
+  const open=()=>{closeFloats();root.classList.add('open');input.setAttribute('aria-expanded','true');paint();};
+  const close=()=>{root.classList.remove('open');input.setAttribute('aria-expanded','false');};
+  input.addEventListener('click',e=>{e.stopPropagation();root.classList.contains('open')?close():open();});
+  input.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();open();}if(e.key==='Escape'){close();e.stopPropagation();}});
+  pop.addEventListener('click',e=>{
+    e.stopPropagation();
+    const nav=e.target.closest('[data-dpnav]');
+    if(nav){view=new Date(view.getFullYear(),view.getMonth()+Number(nav.dataset.dpnav),1);paint();return;}
+    if(e.target.closest('[data-dptoday]')){view=new Date();sel=new Date();commit();paint();if(!wt)close();return;}
+    if(e.target.closest('[data-dpclear]')){sel=null;input.value='';paint();if(!wt)close();return;}
+    if(e.target.closest('[data-dpdone]')){commit();close();return;}
+    const day=e.target.closest('.dp-day');
+    if(day){sel=new Date(day.dataset.d);view=new Date(sel.getFullYear(),sel.getMonth(),1);commit();paint();if(!wt)close();}
+  });
+  pop.querySelectorAll('[data-tp]').forEach(b=>b.addEventListener('click',e=>{
+    e.stopPropagation();const k=b.dataset.tp;
+    if(k==='h+')h=(h+1)%24;if(k==='h-')h=(h+23)%24;
+    if(k==='m+')m=(m+5)%60;if(k==='m-')m=(m+55)%60;
+    pop.querySelector('.tp-h').textContent=String(h).padStart(2,'0');
+    pop.querySelector('.tp-m').textContent=String(m).padStart(2,'0');
+    commit();
+  }));
+  days.addEventListener('keydown',e=>{
+    const ds=[...days.querySelectorAll('.dp-day')];const i=ds.indexOf(document.activeElement);let ni=-1;
+    if(e.key==='ArrowRight')ni=i+1;else if(e.key==='ArrowLeft')ni=i-1;
+    else if(e.key==='ArrowDown')ni=i+7;else if(e.key==='ArrowUp')ni=i-7;else return;
+    e.preventDefault();
+    if(ni>=0&&ni<ds.length){ds.forEach(d=>d.tabIndex=-1);ds[ni].tabIndex=0;ds[ni].focus();}
+  });
+}
+function initAllDP(){$$('[data-datepicker]').forEach(initDP);}
+initAllDP();
+function closeFloats(){closeMenus();$$('.dp.open').forEach(d=>d.classList.remove('open'));$$('.ts.open').forEach(t=>{t.classList.remove('open');t.querySelector('.ts-btn').setAttribute('aria-expanded','false');});}
+document.addEventListener('click',e=>{if(!e.target.closest('.dp')&&!e.target.closest('.ts'))closeFloats();});
+new MutationObserver(()=>{initAllCS();initAllDP();initAllTS();}).observe(document.body,{subtree:true,childList:true});
+
+/* MISC */
+$$('.sw').forEach(s=>s.addEventListener('click',()=>{if(s.disabled)return;s.classList.toggle('on');s.setAttribute('aria-checked',String(s.classList.contains('on')));}));
+$$('[data-pw]').forEach(b=>b.addEventListener('click',()=>{
+  const inp=$('#'+b.dataset.pw);const show=inp.type==='password';
+  inp.type=show?'text':'password';
+  b.innerHTML=`<svg class="ic"><use href="#${show?'i-eye-off':'i-eye'}"/></svg>`;
+  b.setAttribute('aria-label',show?'Hide password':'Show password');
+}));
+const ta1=$('#ta1');ta1&&ta1.addEventListener('input',()=>{$('#ta1c').textContent=ta1.value.length;});
+$$('[data-tb]').forEach(b=>b.addEventListener('click',()=>{
+  const g=b.closest('[data-tabs]');
+  g.querySelectorAll('[data-tb]').forEach(x=>x.classList.toggle('active',x===b));
+  g.querySelectorAll('[data-tp]').forEach(p=>p.hidden=p.dataset.tp!==b.dataset.tb);
+}));
+$$('[data-seg2]').forEach(seg=>seg.querySelectorAll('button').forEach(b=>b.addEventListener('click',()=>{seg.querySelectorAll('button').forEach(x=>x.classList.remove('active'));b.classList.add('active');})));
+$$('.pg button:not(:disabled)').forEach(b=>b.addEventListener('click',()=>{
+  const nav=b.closest('.pg');if(b.textContent.trim()===''||b.querySelector('svg')&&nav.querySelectorAll('button').length>6){}
+  nav.querySelectorAll('button').forEach(x=>x.classList.remove('active'));
+  if(!isNaN(parseInt(b.textContent)))b.classList.add('active');
+}));
+const ind1=$('#ind1');if(ind1){ind1.indeterminate=true;ind1.addEventListener('change',()=>$('#ind1b').classList.toggle('ind',ind1.indeterminate));}
+$$('#pal .swb').forEach(b=>b.addEventListener('click',()=>{$$('#pal .swb').forEach(x=>x.classList.remove('sel'));b.classList.add('sel');}));
+const dz=$('#dz1');
+if(dz){const fi=dz.querySelector('input[type=file]');
+  const showF=n=>{$('#dz-file').innerHTML=`<span class="chip"><svg class="ic-sm ic"><use href="#i-file"/></svg>${n}<button aria-label="Remove"><svg class="ic-sm ic"><use href="#i-x"/></svg></button></span>`;};
+  dz.addEventListener('click',()=>fi.click());
+  dz.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();fi.click();}});
+  fi.addEventListener('change',()=>{fi.files[0]&&showF(fi.files[0].name);});
+  dz.addEventListener('dragover',e=>{e.preventDefault();dz.classList.add('drag');});
+  dz.addEventListener('dragleave',()=>dz.classList.remove('drag'));
+  dz.addEventListener('drop',e=>{e.preventDefault();dz.classList.remove('drag');e.dataTransfer.files[0]&&showF(e.dataTransfer.files[0].name);});
+  $('#dz-file').addEventListener('click',e=>{if(e.target.closest('button'))$('#dz-file').innerHTML='';});
+}
+/* scroll spy */
+const obs=new IntersectionObserver(es=>{es.forEach(en=>{
+  if(en.isIntersecting){const id=en.target.id;$$('.snav a').forEach(a=>a.classList.toggle('active',a.getAttribute('href')==='#'+id));}
+});},{rootMargin:'-15% 0px -75% 0px'});
+$$('.section').forEach(s=>obs.observe(s));
+/* esc global */
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape'){
+    const ov=$('.ov.open');if(ov){closeOvs();return;}
+    closeFloats();
+  }
+});
+</script>
+</body>
+</html>
