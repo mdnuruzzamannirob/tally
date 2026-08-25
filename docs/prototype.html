@@ -1,0 +1,2000 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#6366f1">
+<title>Tally — Job Application Tracker</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ========== TOKENS — UI/UX Spec v1.1 ========== */
+:root{
+  --background:#f8fafc; --surface:#ffffff; --surface-muted:#f8fafc;
+  --border:#e2e8f0; --border-strong:#cbd5e1;
+  --text-1:#0f172a; --text-2:#64748b; --text-3:#94a3b8;
+  --primary:#6366f1; --primary-hover:#4f46e5; --primary-active:#4338ca;
+  --primary-subtle:#eef2ff; --primary-border:#c7d2fe; --primary-text:#4338ca;
+  --ring:rgba(99,102,241,.25);
+  --success:#16a34a; --warning:#d97706; --danger:#dc2626; --danger-hover:#b91c1c; --info:#0891b2;
+  --overlay:rgba(15,23,42,.45);
+  --shadow-pop:0 8px 24px rgba(15,23,42,.08);
+  --err-bg:#fef2f2; --err-bd:#fecaca; --err-tx:#b91c1c;
+  --warn-bg:#fffbeb; --warn-bd:#fde68a; --warn-tx:#92400e;
+  --info-bg:#ecfeff; --info-bd:#a5f3fc; --info-tx:#0e7490;
+  --ok-bg:#f0fdf4; --ok-bd:#bbf7d0; --ok-tx:#15803d;
+  --card-hover-bd:#c7d2fe;
+  --st-wishlist-bg:#f1f5f9;--st-wishlist-tx:#475569;--st-wishlist-bd:#e2e8f0;
+  --st-applied-bg:#eef2ff;--st-applied-tx:#4338ca;--st-applied-bd:#c7d2fe;
+  --st-screening-bg:#ecfeff;--st-screening-tx:#0e7490;--st-screening-bd:#a5f3fc;
+  --st-interview-bg:#f5f3ff;--st-interview-tx:#6d28d9;--st-interview-bd:#ddd6fe;
+  --st-offer-bg:#f0fdf4;--st-offer-tx:#15803d;--st-offer-bd:#bbf7d0;
+  --st-rejected-bg:#fef2f2;--st-rejected-tx:#b91c1c;--st-rejected-bd:#fecaca;
+  --st-withdrawn-bg:#f9fafb;--st-withdrawn-tx:#6b7280;--st-withdrawn-bd:#e5e7eb;
+  --iv-scheduled-bg:#eff6ff;--iv-scheduled-tx:#1d4ed8;--iv-scheduled-bd:#bfdbfe;
+  --iv-completed-bg:#f0fdf4;--iv-completed-tx:#15803d;--iv-completed-bd:#bbf7d0;
+  --iv-cancelled-bg:#f9fafb;--iv-cancelled-tx:#6b7280;--iv-cancelled-bd:#e5e7eb;
+  --iv-noshow-bg:#fef2f2;--iv-noshow-tx:#b91c1c;--iv-noshow-bd:#fecaca;
+}
+[data-theme="dark"]{
+  --background:#0b1220; --surface:#111827; --surface-muted:#1f2937;
+  --border:#1f2937; --border-strong:#374151;
+  --text-1:#f8fafc; --text-2:#94a3b8; --text-3:#64748b;
+  --primary-hover:#818cf8; --primary-text:#c7d2fe;
+  --primary-subtle:rgba(99,102,241,.14); --primary-border:rgba(129,140,248,.35);
+  --ring:rgba(129,140,248,.3);
+  --success:#22c55e; --warning:#f59e0b; --danger:#ef4444; --danger-hover:#dc2626; --info:#38bdf8;
+  --overlay:rgba(2,6,23,.6); --shadow-pop:0 8px 24px rgba(0,0,0,.4);
+  --err-bg:rgba(239,68,68,.12);--err-bd:rgba(239,68,68,.3);--err-tx:#fecaca;
+  --warn-bg:rgba(245,158,11,.1);--warn-bd:rgba(245,158,11,.3);--warn-tx:#fde68a;
+  --info-bg:rgba(56,189,248,.1);--info-bd:rgba(56,189,248,.3);--info-tx:#bae6fd;
+  --ok-bg:rgba(34,197,94,.1);--ok-bd:rgba(34,197,94,.3);--ok-tx:#bbf7d0;
+  --card-hover-bd:rgba(129,140,248,.35);
+  --st-wishlist-bg:rgba(148,163,184,.12);--st-wishlist-tx:#cbd5e1;--st-wishlist-bd:rgba(148,163,184,.25);
+  --st-applied-bg:rgba(99,102,241,.16);--st-applied-tx:#c7d2fe;--st-applied-bd:rgba(129,140,248,.35);
+  --st-screening-bg:rgba(34,211,238,.12);--st-screening-tx:#a5f3fc;--st-screening-bd:rgba(34,211,238,.25);
+  --st-interview-bg:rgba(167,139,250,.14);--st-interview-tx:#ddd6fe;--st-interview-bd:rgba(167,139,250,.3);
+  --st-offer-bg:rgba(34,197,94,.14);--st-offer-tx:#bbf7d0;--st-offer-bd:rgba(34,197,94,.3);
+  --st-rejected-bg:rgba(239,68,68,.14);--st-rejected-tx:#fecaca;--st-rejected-bd:rgba(239,68,68,.3);
+  --st-withdrawn-bg:rgba(156,163,175,.12);--st-withdrawn-tx:#e5e7eb;--st-withdrawn-bd:rgba(156,163,175,.25);
+  --iv-scheduled-bg:rgba(59,130,246,.16);--iv-scheduled-tx:#bfdbfe;--iv-scheduled-bd:rgba(59,130,246,.35);
+  --iv-completed-bg:rgba(34,197,94,.14);--iv-completed-tx:#bbf7d0;--iv-completed-bd:rgba(34,197,94,.3);
+  --iv-cancelled-bg:rgba(156,163,175,.12);--iv-cancelled-tx:#e5e7eb;--iv-cancelled-bd:rgba(156,163,175,.25);
+  --iv-noshow-bg:rgba(239,68,68,.14);--iv-noshow-tx:#fecaca;--iv-noshow-bd:rgba(239,68,68,.3);
+}
+/* ========== BASE ========== */
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;background:var(--background);color:var(--text-1);font-size:14px;line-height:1.5;-webkit-font-smoothing:antialiased}
+button{font-family:inherit}
+a{color:var(--primary-text);text-decoration:none}
+a:hover{text-decoration:underline}
+[hidden]{display:none!important}
+.icon{width:16px;height:16px;flex-shrink:0}
+.icon-sm{width:14px;height:14px}
+.icon-lg{width:20px;height:20px}
+.icon-xl{width:24px;height:24px}
+.muted{color:var(--text-2)} .small{font-size:12px}
+a:focus-visible,button:focus-visible,[tabindex]:focus-visible{outline:2px solid var(--primary);outline-offset:2px}
+.skip-link{position:absolute;left:-9999px;top:8px;z-index:999;background:var(--primary);color:#fff;padding:8px 14px;border-radius:6px}
+.skip-link:focus{left:8px}
+.page{display:none} .page.active{display:block;animation:fade .18s ease}
+@keyframes fade{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+kbd.k{border:1px solid var(--border);border-radius:4px;padding:0 5px;font-size:11px;background:var(--surface-muted);font-family:inherit;color:var(--text-2)}
+/* ========== BUTTONS ========== */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:36px;padding:0 14px;border-radius:6px;font-size:14px;font-weight:500;border:1px solid transparent;cursor:pointer;transition:background .15s,border-color .15s,color .15s;white-space:nowrap}
+.btn:disabled{opacity:.55;cursor:not-allowed}
+.btn-sm{height:30px;padding:0 10px;font-size:13px}
+.btn-lg{height:42px;padding:0 18px;font-size:15px}
+.btn-primary{background:var(--primary);color:#fff}
+.btn-primary:hover:not(:disabled){background:var(--primary-hover)}
+.btn-primary:active:not(:disabled){background:var(--primary-active)}
+.btn-secondary{background:var(--surface);color:var(--text-1);border-color:var(--border)}
+.btn-secondary:hover:not(:disabled){background:var(--surface-muted)}
+.btn-ghost{background:transparent;color:var(--text-1)}
+.btn-ghost:hover:not(:disabled){background:var(--surface-muted)}
+.btn-danger{background:#dc2626;color:#fff}
+.btn-danger:hover:not(:disabled){background:#b91c1c}
+.btn-icon{width:36px;padding:0}
+.btn-icon.btn-sm{width:30px}
+.btn-block{width:100%}
+.spinner{width:14px;height:14px;border:2px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;display:inline-block}
+.spinner.dark{border-color:var(--border-strong);border-top-color:var(--text-1)}
+@keyframes spin{to{transform:rotate(360deg)}}
+.tip-wrap{position:relative;display:inline-flex}
+.tip-wrap .tip{position:absolute;bottom:calc(100% + 6px);left:50%;transform:translateX(-50%);background:var(--text-1);color:var(--background);font-size:11px;padding:4px 8px;border-radius:4px;white-space:nowrap;opacity:0;pointer-events:none;transition:opacity .15s;z-index:60}
+.tip-wrap:hover .tip,.tip-wrap:focus-within .tip{opacity:1}
+/* ========== FORMS ========== */
+.field{display:flex;flex-direction:column;gap:6px;margin-bottom:14px}
+.field>label{font-size:13px;font-weight:500}
+.req{color:var(--danger)}
+.input,.select,.textarea{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:8px 12px;font-size:14px;color:var(--text-1);font-family:inherit;transition:border-color .15s,box-shadow .15s}
+.input::placeholder,.textarea::placeholder{color:var(--text-3)}
+.input:focus,.select:focus,.textarea:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 3px var(--ring)}
+.input:disabled,.textarea:disabled,.select:disabled{background:var(--surface-muted);color:var(--text-3);cursor:not-allowed}
+.input.is-error,.textarea.is-error{border-color:var(--danger)}
+.textarea{min-height:84px;resize:vertical}
+.select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;padding-right:34px;cursor:pointer}
+.hint{font-size:12px;color:var(--text-2)}
+.field-error{font-size:12px;color:var(--danger);display:flex;align-items:center;gap:4px}
+.input-wrap{position:relative}
+.input-wrap .input{padding-right:38px}
+.input-wrap .suffix{position:absolute;right:6px;top:50%;transform:translateY(-50%);background:none;border:0;color:var(--text-2);cursor:pointer;padding:4px;border-radius:4px;display:flex}
+.input-wrap .suffix:hover{color:var(--text-1);background:var(--surface-muted)}
+.input-wrap .prefix-icon{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--text-3);display:flex}
+.input-wrap .prefix-icon+.input{padding-left:32px}
+.input-wrap kbd{position:absolute;right:8px;top:50%;transform:translateY(-50%);font-size:11px;color:var(--text-3);border:1px solid var(--border);border-radius:4px;padding:1px 6px;background:var(--surface-muted);font-family:inherit}
+input[type="checkbox"]{width:16px;height:16px;accent-color:var(--primary);cursor:pointer}
+.switch{width:36px;height:20px;border-radius:9999px;background:var(--border-strong);position:relative;cursor:pointer;border:0;transition:background .15s;flex-shrink:0}
+.switch::after{content:"";position:absolute;top:2px;left:2px;width:16px;height:16px;border-radius:9999px;background:#fff;transition:left .15s;box-shadow:0 1px 2px rgba(0,0,0,.2)}
+.switch.on{background:var(--primary)}
+.switch.on::after{left:18px}
+.strength{display:flex;gap:4px;margin-top:6px}
+.strength span{height:4px;flex:1;border-radius:2px;background:var(--border)}
+.strength span.ok{background:var(--warning)}
+.strength span.good{background:var(--success)}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:0 14px}
+.form-grid .span-2{grid-column:1/-1}
+.divider{display:flex;align-items:center;gap:12px;color:var(--text-3);font-size:12px;margin:16px 0}
+.divider::before,.divider::after{content:"";height:1px;flex:1;background:var(--border)}
+/* ========== CARDS ========== */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:8px}
+.card-pad{padding:16px}
+.card-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 16px;border-bottom:1px solid var(--border)}
+.card-head h4{font-size:14px;font-weight:600}
+.card-body{padding:16px}
+/* ========== BADGES / TAGS / CHIPS ========== */
+.badge{display:inline-flex;align-items:center;gap:4px;border-radius:4px;border:1px solid transparent;font-size:12px;font-weight:500;padding:2px 8px;white-space:nowrap}
+.badge-wishlist{background:var(--st-wishlist-bg);color:var(--st-wishlist-tx);border-color:var(--st-wishlist-bd)}
+.badge-applied{background:var(--st-applied-bg);color:var(--st-applied-tx);border-color:var(--st-applied-bd)}
+.badge-screening{background:var(--st-screening-bg);color:var(--st-screening-tx);border-color:var(--st-screening-bd)}
+.badge-interview{background:var(--st-interview-bg);color:var(--st-interview-tx);border-color:var(--st-interview-bd)}
+.badge-offer{background:var(--st-offer-bg);color:var(--st-offer-tx);border-color:var(--st-offer-bd)}
+.badge-rejected{background:var(--st-rejected-bg);color:var(--st-rejected-tx);border-color:var(--st-rejected-bd)}
+.badge-withdrawn{background:var(--st-withdrawn-bg);color:var(--st-withdrawn-tx);border-color:var(--st-withdrawn-bd)}
+.badge-scheduled{background:var(--iv-scheduled-bg);color:var(--iv-scheduled-tx);border-color:var(--iv-scheduled-bd)}
+.badge-completed{background:var(--iv-completed-bg);color:var(--iv-completed-tx);border-color:var(--iv-completed-bd)}
+.badge-cancelled{background:var(--iv-cancelled-bg);color:var(--iv-cancelled-tx);border-color:var(--iv-cancelled-bd)}
+.badge-noshow{background:var(--iv-noshow-bg);color:var(--iv-noshow-tx);border-color:var(--iv-noshow-bd)}
+.badge-count{background:var(--surface-muted);border:1px solid var(--border);color:var(--text-2);font-size:11px;padding:0 6px;border-radius:4px}
+.tag{display:inline-flex;align-items:center;gap:5px;border-radius:4px;border:1px solid var(--border);background:var(--surface-muted);font-size:12px;padding:3px 8px;color:var(--text-1);cursor:pointer}
+button.tag{transition:border-color .15s,background .15s}
+.tag.selected{background:var(--primary-subtle);border-color:var(--primary-border);color:var(--primary-text)}
+.tag .dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.chip{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--border);background:var(--surface);border-radius:4px;font-size:12px;padding:4px 8px}
+.chip button{background:none;border:0;color:var(--text-2);cursor:pointer;display:flex;padding:0}
+.chip button:hover{color:var(--danger)}
+.chip strong{font-weight:500;color:var(--text-2)}
+/* ========== BANNERS / TOASTS ========== */
+.banner{display:flex;gap:10px;align-items:flex-start;border-radius:6px;padding:12px 14px;font-size:13px;border:1px solid}
+.banner-error{background:var(--err-bg);border-color:var(--err-bd);color:var(--err-tx)}
+.banner-info{background:var(--info-bg);border-color:var(--info-bd);color:var(--info-tx)}
+.banner-ok{background:var(--ok-bg);border-color:var(--ok-bd);color:var(--ok-tx)}
+.offline-banner{background:var(--surface-muted);border:1px solid var(--border);border-left:3px solid var(--warning);border-radius:6px;padding:10px 14px;font-size:13px;display:flex;gap:8px;align-items:center;margin-top:14px}
+.toast-live{position:fixed;bottom:16px;right:16px;display:flex;flex-direction:column;gap:8px;z-index:400}
+.toast{display:flex;gap:10px;align-items:flex-start;background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--info);border-radius:6px;padding:12px 14px;min-width:300px;max-width:380px;animation:toast-in .2s ease}
+.toast-success{border-left-color:var(--success)} .toast-error{border-left-color:var(--danger)}
+.toast-warn{border-left-color:var(--warning)} .toast-info{border-left-color:var(--info)}
+.toast .t-title{font-size:13px;font-weight:600}
+.toast .t-msg{font-size:12px;color:var(--text-2);margin-top:1px}
+.toast .t-close{margin-left:auto;background:none;border:0;color:var(--text-2);cursor:pointer;padding:2px;border-radius:4px;display:flex}
+.toast .t-close:hover{color:var(--text-1);background:var(--surface-muted)}
+@keyframes toast-in{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+/* ========== SKELETON / EMPTY ========== */
+.skeleton{background:var(--surface-muted);border-radius:6px;position:relative;overflow:hidden}
+.skeleton::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.35),transparent);animation:shimmer 1.4s infinite}
+[data-theme="dark"] .skeleton::after{background:linear-gradient(90deg,transparent,rgba(255,255,255,.05),transparent)}
+@keyframes shimmer{from{transform:translateX(-100%)}to{transform:translateX(100%)}}
+.empty{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:40px 20px;gap:6px}
+.empty .empty-icon{width:44px;height:44px;border-radius:8px;background:var(--surface-muted);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:var(--text-3);margin-bottom:6px}
+.empty h4{font-size:15px;font-weight:600}
+.empty p{font-size:13px;color:var(--text-2);max-width:360px}
+/* ========== DROPDOWNS ========== */
+.dropdown{position:relative;display:inline-block}
+.dropdown-menu{position:absolute;top:calc(100% + 6px);right:0;min-width:200px;background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:4px;box-shadow:var(--shadow-pop);opacity:0;transform:translateY(-4px);pointer-events:none;transition:opacity .15s,transform .15s;z-index:120}
+.dropdown.open .dropdown-menu{opacity:1;transform:none;pointer-events:auto}
+.dropdown-menu.align-left{right:auto;left:0}
+.dropdown-item{display:flex;align-items:center;gap:8px;width:100%;padding:8px 10px;border-radius:4px;font-size:13px;color:var(--text-1);background:none;border:0;cursor:pointer;text-align:left}
+.dropdown-item:hover{background:var(--surface-muted)}
+.dropdown-item.danger{color:var(--danger)}
+.dropdown-item .check{margin-left:auto;color:var(--primary);opacity:0}
+.dropdown-item.selected .check{opacity:1}
+.dropdown-sep{height:1px;background:var(--border);margin:4px 0}
+.dropdown-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.04em;color:var(--text-3);padding:6px 10px 4px}
+.popover-wide{min-width:360px;padding:14px}
+.popover-wide h5{font-size:13px;font-weight:600;margin-bottom:8px}
+.filter-group{margin-bottom:12px}
+.fg-label{font-size:12px;color:var(--text-2);margin-bottom:6px;font-weight:500}
+.filter-options{display:flex;flex-wrap:wrap;gap:6px}
+/* ========== TABS / SEGMENTED ========== */
+.tabs{display:flex;gap:4px;border-bottom:1px solid var(--border);overflow-x:auto}
+.tab{padding:10px 14px;font-size:14px;font-weight:500;color:var(--text-2);border:0;border-bottom:2px solid transparent;margin-bottom:-1px;cursor:pointer;background:none;white-space:nowrap}
+.tab:hover{color:var(--text-1)}
+.tab.active{color:var(--primary);border-bottom-color:var(--primary)}
+[data-theme="dark"] .tab.active{color:var(--primary-text);border-bottom-color:var(--primary-text)}
+.segmented{display:inline-flex;background:var(--surface-muted);border:1px solid var(--border);border-radius:6px;padding:2px;gap:2px}
+.segmented button{padding:5px 12px;border-radius:4px;font-size:13px;border:1px solid transparent;background:none;color:var(--text-2);cursor:pointer;display:inline-flex;align-items:center;gap:6px}
+.segmented button.active{background:var(--surface);color:var(--text-1);border-color:var(--border)}
+/* ========== TABLE ========== */
+.table-wrap{overflow-x:auto}
+.table{width:100%;border-collapse:collapse;font-size:14px;min-width:860px}
+.table th{text-align:left;font-size:12px;color:var(--text-2);font-weight:500;padding:10px 12px;border-bottom:1px solid var(--border);white-space:nowrap}
+.table td{padding:12px;border-bottom:1px solid var(--border);vertical-align:middle}
+.table tbody tr{cursor:pointer;transition:background .1s}
+.table tbody tr:hover{background:var(--surface-muted)}
+.cell-title{font-weight:500}
+.cell-sub{font-size:12px;color:var(--text-2)}
+.flag-overdue{color:var(--danger);font-weight:500;display:inline-flex;align-items:center;gap:4px}
+.flag-today{color:var(--warning);font-weight:500;display:inline-flex;align-items:center;gap:4px}
+.pag-bar{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;flex-wrap:wrap;gap:8px}
+.pagination{display:flex;align-items:center;gap:4px}
+.pagination button{min-width:30px;height:30px;padding:0 8px;border-radius:6px;border:1px solid transparent;background:none;color:var(--text-2);font-size:13px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:4px}
+.pagination button:hover:not(:disabled){background:var(--surface-muted);color:var(--text-1)}
+.pagination button.active{background:var(--primary-subtle);color:var(--primary-text);border-color:var(--primary-border)}
+.pagination button:disabled{opacity:.4;cursor:not-allowed}
+/* ========== TIMELINE / NOTES / IV ========== */
+.timeline{position:relative;padding-left:20px}
+.timeline::before{content:"";position:absolute;left:5px;top:6px;bottom:6px;width:1px;background:var(--border)}
+.timeline-item{position:relative;padding-bottom:16px}
+.timeline-item:last-child{padding-bottom:0}
+.timeline-item::before{content:"";position:absolute;left:-19px;top:5px;width:9px;height:9px;border-radius:50%;background:var(--primary);border:2px solid var(--surface)}
+.note-item{border:1px solid var(--border);border-radius:8px;padding:12px 14px;margin-bottom:10px;background:var(--surface)}
+.note-item .note-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
+.note-item .note-actions{display:flex;gap:2px;opacity:0;transition:opacity .15s}
+.note-item:hover .note-actions,.note-item:focus-within .note-actions{opacity:1}
+.iv-row{display:flex;align-items:center;gap:12px;border:1px solid var(--border);border-radius:8px;padding:12px 14px;margin-bottom:10px;background:var(--surface);flex-wrap:wrap}
+.iv-type{width:36px;height:36px;border-radius:6px;background:var(--primary-subtle);color:var(--primary-text);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.meta-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.meta-item .m-label{font-size:11px;text-transform:uppercase;letter-spacing:.04em;color:var(--text-3);font-weight:600;margin-bottom:3px}
+.meta-item .m-value{font-size:13px;display:flex;align-items:center;gap:5px;flex-wrap:wrap}
+/* ========== MODALS ========== */
+.modal-overlay{position:fixed;inset:0;background:var(--overlay);display:flex;align-items:center;justify-content:center;padding:16px;opacity:0;pointer-events:none;transition:opacity .15s;z-index:300}
+.modal-overlay.open{opacity:1;pointer-events:auto}
+.modal{background:var(--surface);border:1px solid var(--border);border-radius:8px;width:100%;max-width:560px;max-height:calc(100vh - 32px);display:flex;flex-direction:column;transform:scale(.97);transition:transform .15s}
+.modal.modal-lg{max-width:640px}
+.modal.modal-sm{max-width:420px}
+.modal-overlay.open .modal{transform:scale(1)}
+.modal-head{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--border)}
+.modal-head h3{font-size:16px;font-weight:600}
+.modal-head .x{background:none;border:0;color:var(--text-2);cursor:pointer;padding:6px;border-radius:6px;display:flex}
+.modal-head .x:hover{background:var(--surface-muted);color:var(--text-1)}
+.modal-body{padding:20px;overflow-y:auto}
+.modal-foot{display:flex;justify-content:flex-end;gap:8px;padding:14px 20px;border-top:1px solid var(--border)}
+.modal-icon{width:40px;height:40px;border-radius:8px;display:flex;align-items:center;justify-content:center;margin-bottom:12px}
+.modal-icon.danger{background:var(--err-bg);color:var(--danger)}
+.modal-icon.warn{background:var(--warn-bg);color:var(--warning)}
+/* ========== AUTH ========== */
+.auth-view{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px 16px}
+.auth-card{width:100%;max-width:380px;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:28px}
+.auth-card .logo-mark{margin:0 auto 14px;width:36px;height:36px}
+.logo-mark{width:28px;height:28px;border-radius:6px;background:var(--primary);color:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.auth-card h2{font-size:18px;font-weight:600;text-align:center;margin-bottom:4px}
+.auth-card .sub{font-size:13px;color:var(--text-2);text-align:center;margin-bottom:18px}
+.auth-foot{font-size:13px;color:var(--text-2);text-align:center;margin-top:16px}
+.result-icon{width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 14px}
+.result-icon.ok{background:var(--ok-bg);color:var(--success)}
+.result-icon.err{background:var(--err-bg);color:var(--danger)}
+/* ========== APP SHELL — FULL WIDTH ========== */
+#app-shell{display:grid;grid-template-columns:240px minmax(0,1fr);min-height:100vh}
+.sidebar{background:var(--surface);border-right:1px solid var(--border);padding:12px;display:flex;flex-direction:column;gap:2px;position:sticky;top:0;height:100vh;overflow-y:auto;z-index:150}
+.sidebar .brand{display:flex;align-items:center;gap:10px;font-weight:600;padding:6px 10px 14px;font-size:15px}
+.nav-item{display:flex;gap:10px;align-items:center;padding:8px 10px;border-radius:6px;color:var(--text-2);font-size:14px;font-weight:500;cursor:pointer;border:0;background:none;width:100%;text-align:left}
+.nav-item:hover{background:var(--surface-muted);color:var(--text-1)}
+.nav-item.active{background:var(--primary-subtle);color:var(--primary-text)}
+.sidebar .spacer{flex:1}
+.user-mini{display:flex;align-items:center;gap:10px;padding:10px;border-top:1px solid var(--border);margin-top:8px}
+.avatar{width:28px;height:28px;border-radius:9999px;background:var(--primary);color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;flex-shrink:0}
+.shell-main{display:flex;flex-direction:column;min-width:0}
+.topbar{display:flex;align-items:center;gap:10px;padding:10px 24px;border-bottom:1px solid var(--border);background:var(--surface);position:sticky;top:0;z-index:140}
+.topbar .search-box{flex:1;max-width:460px}
+.offline-slot{padding:0 24px}
+.content{padding:24px;width:100%}
+.page-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:20px;flex-wrap:wrap}
+.page-head h1{font-size:24px;font-weight:600}
+.page-head .desc{font-size:13px;color:var(--text-2);margin-top:2px}
+.scrim{position:fixed;inset:0;background:var(--overlay);opacity:0;pointer-events:none;transition:opacity .2s;z-index:200}
+.scrim.open{opacity:1;pointer-events:auto}
+/* dashboard */
+.stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.stat-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:16px;cursor:pointer;transition:border-color .15s,background .15s;text-align:left;width:100%}
+.stat-card:hover{border-color:var(--card-hover-bd);background:var(--surface-muted)}
+.stat-icon{width:32px;height:32px;border-radius:6px;background:var(--primary-subtle);color:var(--primary-text);display:flex;align-items:center;justify-content:center;margin-bottom:10px}
+.stat-label{font-size:13px;color:var(--text-2)}
+.stat-value{font-size:30px;font-weight:600;margin-top:4px}
+.stat-sub{font-size:12px;color:var(--text-2);margin-top:2px}
+.dash-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px}
+.followup-item{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);cursor:pointer}
+.followup-item:last-child{border-bottom:0}
+.fu-date{margin-left:auto;font-size:12px;display:flex;align-items:center;gap:4px;white-space:nowrap}
+.fu-date.overdue{color:var(--danger);font-weight:500}
+.fu-date.today{color:var(--warning);font-weight:500}
+.list-row{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);cursor:pointer}
+.list-row:last-child{border-bottom:0}
+.donut-wrap{display:flex;align-items:center;gap:20px;flex-wrap:wrap}
+.donut{width:150px;height:150px;flex-shrink:0}
+.legend{display:flex;flex-direction:column;gap:6px;font-size:13px;flex:1;min-width:160px}
+.legend .l-item{display:flex;align-items:center;gap:8px}
+.legend .l-dot{width:8px;height:8px;border-radius:2px;flex-shrink:0}
+.legend .l-count{margin-left:auto;color:var(--text-2)}
+/* toolbar */
+.toolbar{display:flex;gap:10px;align-items:center;margin-bottom:12px;flex-wrap:wrap}
+.chips-row{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:14px}
+.chips-row .clear{font-size:12px;background:none;border:0;color:var(--primary-text);cursor:pointer;font-weight:500}
+/* board */
+.board{display:flex;gap:12px;overflow-x:auto;padding-bottom:8px}
+.board-col{min-width:230px;flex:1;background:var(--surface-muted);border:1px solid var(--border);border-radius:8px;padding:10px;transition:border-color .15s,background .15s}
+.board-col.drag-over{border-color:var(--primary);background:var(--primary-subtle)}
+.board-col-head{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600;padding:2px 4px 10px}
+.board-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:10px;margin-bottom:8px;cursor:pointer;transition:border-color .15s}
+.board-card:hover{border-color:var(--card-hover-bd)}
+.board-card.dragging{border-color:var(--primary);opacity:.75}
+/* mobile cards */
+.m-cards{display:none}
+.app-card-m{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:12px;margin-bottom:10px;cursor:pointer}
+.app-card-m:hover{border-color:var(--card-hover-bd)}
+.app-card-m .row1{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
+/* settings */
+.settings-layout{display:grid;grid-template-columns:210px minmax(0,1fr);gap:24px;align-items:start}
+.settings-nav{display:flex;flex-direction:column;gap:2px}
+.settings-nav .tab{border-bottom:0;border-left:2px solid transparent;border-radius:0 6px 6px 0;margin:0;text-align:left;padding:8px 12px;display:flex;align-items:center;gap:8px}
+.settings-nav .tab.active{border-left-color:var(--primary);background:var(--primary-subtle)}
+.settings-panel{max-width:720px}
+.settings-panel h3{font-size:16px;font-weight:600;margin-bottom:4px}
+.sp-desc{font-size:13px;color:var(--text-2);margin-bottom:16px}
+.panel-card{margin-bottom:16px}
+.setting-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 0;border-bottom:1px solid var(--border);flex-wrap:wrap}
+.setting-row:last-child{border-bottom:0}
+.sr-label{font-size:14px;font-weight:500}
+.sr-sub{font-size:12px;color:var(--text-2)}
+.provider-row{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--border);flex-wrap:wrap}
+.provider-row:last-child{border-bottom:0}
+.provider-logo{width:32px;height:32px;border-radius:6px;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;background:var(--surface)}
+.tag-row{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);flex-wrap:wrap}
+.tag-row:last-child{border-bottom:0}
+/* bottom nav */
+.bottom-nav{display:none;position:fixed;bottom:0;left:0;right:0;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--border);background:var(--surface);padding:6px 4px calc(6px + env(safe-area-inset-bottom));z-index:150}
+.bottom-nav button{display:flex;flex-direction:column;align-items:center;gap:3px;font-size:10.5px;font-weight:500;color:var(--text-2);background:none;border:0;cursor:pointer;padding:4px 0}
+.bottom-nav button.active{color:var(--primary)}
+[data-theme="dark"] .bottom-nav button.active{color:var(--primary-text)}
+.demo-fab{position:fixed;left:12px;bottom:12px;z-index:350}
+.demo-fab .dropdown-menu{bottom:calc(100% + 6px);top:auto;left:0;right:auto;max-height:60vh;overflow:auto;min-width:250px}
+/* ========== RESPONSIVE ========== */
+@media (max-width:1200px){
+  .stat-grid{grid-template-columns:repeat(2,1fr)}
+}
+@media (max-width:1023px){
+  #app-shell{grid-template-columns:1fr}
+  .sidebar{position:fixed;left:0;top:0;bottom:0;width:260px;transform:translateX(-100%);transition:transform .2s;height:100dvh}
+  .sidebar.open{transform:none}
+}
+@media (max-width:900px){
+  .dash-grid{grid-template-columns:1fr}
+  .meta-grid{grid-template-columns:repeat(2,1fr)}
+}
+@media (max-width:767px){
+  .content{padding:16px;padding-bottom:88px}
+  .topbar{padding:10px 16px}
+  .offline-slot{padding:0 16px}
+  .bottom-nav{display:grid}
+  .table-wrap{display:none}
+  .m-cards{display:block}
+  .form-grid{grid-template-columns:1fr}
+  .form-grid .span-2{grid-column:auto}
+  .settings-layout{grid-template-columns:1fr;gap:14px}
+  .settings-nav{flex-direction:row;overflow-x:auto;gap:4px}
+  .settings-nav .tab{border-left:0;border-bottom:2px solid transparent;border-radius:0;white-space:nowrap}
+  .settings-nav .tab.active{border-bottom-color:var(--primary);background:none}
+  .modal-overlay{padding:0;align-items:flex-end}
+  .modal{max-width:none;height:100dvh;max-height:100dvh;border-radius:0;border:0;transform:translateY(16px)}
+  .modal-overlay.open .modal{transform:none}
+  .toast-live{top:calc(12px + env(safe-area-inset-top));bottom:auto;left:16px;right:16px}
+  .toast{max-width:none;width:100%}
+  .demo-fab{bottom:calc(72px + env(safe-area-inset-bottom))}
+}
+@media (max-width:640px){
+  .topbar .search-box{display:none}
+  .topbar .add-text{display:none}
+}
+@media (max-width:520px){
+  .stat-grid{grid-template-columns:1fr 1fr}
+  .meta-grid{grid-template-columns:1fr 1fr}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}
+}
+</style>
+</head>
+<body>
+<a href="#main" class="skip-link">Skip to content</a>
+
+<!-- ================= ICONS ================= -->
+<svg xmlns="http://www.w3.org/2000/svg" style="display:none">
+  <symbol id="i-grid" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></symbol>
+  <symbol id="i-briefcase" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></symbol>
+  <symbol id="i-calendar" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></symbol>
+  <symbol id="i-settings" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/><line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/><line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/><line x1="1" y1="14" x2="7" y2="14"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="17" y1="16" x2="23" y2="16"/></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></symbol>
+  <symbol id="i-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></symbol>
+  <symbol id="i-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></symbol>
+  <symbol id="i-chevron-down" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></symbol>
+  <symbol id="i-chevron-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></symbol>
+  <symbol id="i-chevron-left" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></symbol>
+  <symbol id="i-alert-triangle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></symbol>
+  <symbol id="i-alert-circle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></symbol>
+  <symbol id="i-info" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></symbol>
+  <symbol id="i-user" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></symbol>
+  <symbol id="i-log-out" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></symbol>
+  <symbol id="i-more" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></symbol>
+  <symbol id="i-external" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></symbol>
+  <symbol id="i-pencil" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></symbol>
+  <symbol id="i-trash" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></symbol>
+  <symbol id="i-archive" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="21 8 21 21 3 21 3 8"/><rect x="1" y="3" width="22" height="5"/><line x1="10" y1="12" x2="14" y2="12"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></symbol>
+  <symbol id="i-download" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></symbol>
+  <symbol id="i-upload" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></symbol>
+  <symbol id="i-eye" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></symbol>
+  <symbol id="i-eye-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></symbol>
+  <symbol id="i-filter" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></symbol>
+  <symbol id="i-mail" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><polyline points="22 6 12 13 2 6"/></symbol>
+  <symbol id="i-map-pin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></symbol>
+  <symbol id="i-tag" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></symbol>
+  <symbol id="i-menu" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></symbol>
+  <symbol id="i-shield" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></symbol>
+  <symbol id="i-database" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></symbol>
+  <symbol id="i-video" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></symbol>
+  <symbol id="i-phone" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></symbol>
+  <symbol id="i-arrow-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></symbol>
+  <symbol id="i-inbox" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 16 12 14 15 10 15 8 12 2 12"/><path d="M5.45 5.11L2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/></symbol>
+  <symbol id="i-check-circle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></symbol>
+  <symbol id="i-x-circle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></symbol>
+  <symbol id="i-lock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></symbol>
+  <symbol id="i-wifi-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="1" y1="1" x2="23" y2="23"/><path d="M16.72 11.06A10.94 10.94 0 0 1 19 12.55"/><path d="M5 12.55a10.94 10.94 0 0 1 5.17-2.39"/><path d="M10.71 5.05A16 16 0 0 1 22.58 9"/><path d="M1.42 9a15.91 15.91 0 0 1 4.7-2.88"/><path d="M8.53 16.11a6 6 0 0 1 6.95 0"/><line x1="12" y1="20" x2="12.01" y2="20"/></symbol>
+  <symbol id="i-google" viewBox="0 0 24 24"><path fill="#4285F4" d="M23.49 12.27c0-.79-.07-1.54-.19-2.27H12v4.51h6.47a5.57 5.57 0 0 1-2.4 3.58v3h3.86c2.26-2.09 3.56-5.17 3.56-8.82z"/><path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.86-3c-1.08.72-2.45 1.16-4.07 1.16-3.13 0-5.78-2.11-6.73-4.96H1.29v3.09A11.99 11.99 0 0 0 12 24z"/><path fill="#FBBC05" d="M5.27 14.29A7.12 7.12 0 0 1 4.89 12c0-.8.14-1.57.38-2.29V6.62H1.29a11.86 11.86 0 0 0 0 10.76l3.98-3.09z"/><path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42A11.97 11.97 0 0 0 12 0 11.99 11.99 0 0 0 1.29 6.62l3.98 3.09C6.22 6.86 8.87 4.75 12 4.75z"/></symbol>
+  <symbol id="i-github" viewBox="0 0 24 24"><path fill="currentColor" d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.58.11.79-.25.79-.56 0-.27-.01-1.17-.02-2.12-3.2.7-3.87-1.36-3.87-1.36-.52-1.33-1.28-1.68-1.28-1.68-1.04-.71.08-.7.08-.7 1.15.08 1.76 1.19 1.76 1.19 1.03 1.76 2.69 1.25 3.35.96.1-.75.4-1.25.72-1.54-2.55-.29-5.24-1.28-5.24-5.69 0-1.26.45-2.28 1.19-3.09-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.76 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.83 1.19 3.09 0 4.42-2.7 5.39-5.26 5.68.41.35.77 1.05.77 2.12 0 1.53-.01 2.76-.01 3.14 0 .31.21.67.8.56A10.52 10.52 0 0 0 23.5 12C23.5 5.65 18.35.5 12 .5z"/></symbol>
+</svg>
+
+<!-- ================= AUTH VIEWS ================= -->
+<div id="auth-root">
+  <section class="auth-view" data-auth="login">
+    <div class="auth-card">
+      <div class="logo-mark"><svg class="icon-lg icon"><use href="#i-briefcase"/></svg></div>
+      <h2>Sign in</h2>
+      <p class="sub">Welcome back. Track your job search in one place.</p>
+      <div id="login-alert" hidden aria-live="assertive"></div>
+      <form id="form-login" novalidate>
+        <div class="field"><label for="lg-email">Email</label><input class="input" id="lg-email" type="email" value="john@example.com" autocomplete="email"></div>
+        <div class="field"><label for="lg-pass">Password</label>
+          <div class="input-wrap"><input class="input" id="lg-pass" type="password" value="password123" autocomplete="current-password" aria-describedby="lg-pass-hint"><button type="button" class="suffix" data-pw="lg-pass" aria-label="Show password"><svg class="icon"><use href="#i-eye"/></svg></button></div>
+          <span class="hint" id="lg-pass-hint">Demo: any password works · <code>wrong</code> shows the error banner · email starting with <code>new@</code> shows the unverified notice.</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+          <label style="display:flex;gap:6px;align-items:center;font-size:13px;cursor:pointer"><input type="checkbox" checked>Remember me</label>
+          <a href="#/forgot-password" data-go="forgot" style="font-size:13px">Forgot password?</a>
+        </div>
+        <button class="btn btn-primary btn-block" id="lg-submit" type="submit">Sign in</button>
+      </form>
+      <div class="divider">or continue with</div>
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <button class="btn btn-secondary btn-block" data-social><svg class="icon"><use href="#i-google"/></svg>Continue with Google</button>
+        <button class="btn btn-secondary btn-block" data-social><svg class="icon"><use href="#i-github"/></svg>Continue with GitHub</button>
+      </div>
+      <p class="auth-foot">Don’t have an account? <a href="#/register" data-go="register">Sign up</a></p>
+    </div>
+  </section>
+
+  <section class="auth-view" data-auth="register" hidden>
+    <div class="auth-card">
+      <div class="logo-mark"><svg class="icon-lg icon"><use href="#i-briefcase"/></svg></div>
+      <h2>Create your account</h2>
+      <p class="sub">Start managing every application, interview, and follow-up.</p>
+      <form id="form-register" novalidate>
+        <div class="field"><label for="rg-name">Name <span class="req">*</span></label><input class="input" id="rg-name" placeholder="John Doe" aria-describedby="rg-name-err"><div class="field-error" id="rg-name-err" hidden></div></div>
+        <div class="field"><label for="rg-email">Email <span class="req">*</span></label><input class="input" id="rg-email" type="email" placeholder="john@example.com" aria-describedby="rg-email-err"><div class="field-error" id="rg-email-err" hidden></div></div>
+        <div class="field"><label for="rg-pass">Password <span class="req">*</span></label>
+          <div class="input-wrap"><input class="input" id="rg-pass" type="password" placeholder="Minimum 8 characters" aria-describedby="rg-pass-err"><button type="button" class="suffix" data-pw="rg-pass" aria-label="Show password"><svg class="icon"><use href="#i-eye"/></svg></button></div>
+          <div class="strength" id="rg-strength"><span></span><span></span><span></span><span></span></div>
+          <div class="field-error" id="rg-pass-err" hidden></div>
+          <span class="hint">Use at least 8 characters.</span>
+        </div>
+        <button class="btn btn-primary btn-block" id="rg-submit" type="submit">Create account</button>
+      </form>
+      <div class="divider">or continue with</div>
+      <div style="display:flex;gap:8px">
+        <button class="btn btn-secondary" style="flex:1" data-social><svg class="icon"><use href="#i-google"/></svg>Google</button>
+        <button class="btn btn-secondary" style="flex:1" data-social><svg class="icon"><use href="#i-github"/></svg>GitHub</button>
+      </div>
+      <p class="auth-foot">Already have an account? <a href="#/login" data-go="login">Sign in</a></p>
+    </div>
+  </section>
+
+  <section class="auth-view" data-auth="verify-pending" hidden>
+    <div class="auth-card" style="text-align:center">
+      <div class="result-icon" style="background:var(--primary-subtle);color:var(--primary)"><svg class="icon-xl icon"><use href="#i-mail"/></svg></div>
+      <h2>Check your email</h2>
+      <p class="sub">We sent a verification link to <strong style="color:var(--text-1)" id="vp-email">j***@example.com</strong></p>
+      <button class="btn btn-primary btn-block" id="vp-resend" disabled>Resend verification email (0:45)</button>
+      <button class="btn btn-ghost btn-block" style="margin-top:8px" data-go="login">Back to sign in</button>
+      <p class="hint" style="margin-top:14px">Didn’t get it? Check your spam folder. The link expires after 24 hours.</p>
+    </div>
+  </section>
+
+  <section class="auth-view" data-auth="verify-success" hidden>
+    <div class="auth-card" style="text-align:center">
+      <div class="result-icon ok"><svg class="icon-xl icon"><use href="#i-check-circle"/></svg></div>
+      <h2>Email verified</h2>
+      <p class="sub">Your account is ready. Sign in to start tracking your applications.</p>
+      <button class="btn btn-primary btn-block" data-go="login">Go to sign in</button>
+    </div>
+  </section>
+
+  <section class="auth-view" data-auth="verify-failed" hidden>
+    <div class="auth-card" style="text-align:center">
+      <div class="result-icon err"><svg class="icon-xl icon"><use href="#i-x-circle"/></svg></div>
+      <h2>Verification failed</h2>
+      <p class="sub">This link is invalid or has expired. Request a new one and try again.</p>
+      <button class="btn btn-primary btn-block" data-resend-again>Resend verification email</button>
+      <button class="btn btn-ghost btn-block" style="margin-top:8px" data-go="login">Back to sign in</button>
+    </div>
+  </section>
+
+  <section class="auth-view" data-auth="forgot" hidden>
+    <div class="auth-card">
+      <h2>Forgot password</h2>
+      <p class="sub">Enter your email and we’ll send you a reset link.</p>
+      <form id="form-forgot" novalidate>
+        <div class="field"><label for="fp-email">Email</label><input class="input" id="fp-email" type="email" placeholder="john@example.com"></div>
+        <button class="btn btn-primary btn-block" id="fp-submit" type="submit">Send reset link</button>
+      </form>
+      <div id="fp-done" hidden style="margin-top:14px">
+        <div class="banner banner-info" role="status"><svg class="icon"><use href="#i-info"/></svg><div>If an account exists for this email, a reset link has been sent.</div></div>
+        <button class="btn btn-secondary btn-block" style="margin-top:10px" data-go="reset"><svg class="icon"><use href="#i-mail"/></svg>Open the reset link (demo)</button>
+      </div>
+      <p class="auth-foot"><a href="#/login" data-go="login">Back to sign in</a></p>
+    </div>
+  </section>
+
+  <section class="auth-view" data-auth="reset" hidden>
+    <div class="auth-card">
+      <h2>Reset password</h2>
+      <p class="sub">Choose a new password for your account.</p>
+      <div id="rs-expired" hidden>
+        <div class="banner banner-error" role="alert" style="margin-bottom:14px"><svg class="icon"><use href="#i-alert-circle"/></svg><div>This reset link is invalid or has expired. Request a new one and try again.</div></div>
+        <button class="btn btn-primary btn-block" data-go="forgot">Request a new link</button>
+        <button class="btn btn-ghost btn-block" style="margin-top:8px" id="rs-restore">Restore valid-token view (demo)</button>
+      </div>
+      <form id="form-reset" novalidate>
+        <div id="rs-fields">
+          <div class="field"><label for="rs-pass">New password</label>
+            <div class="input-wrap"><input class="input" id="rs-pass" type="password"><button type="button" class="suffix" data-pw="rs-pass" aria-label="Show password"><svg class="icon"><use href="#i-eye"/></svg></button></div>
+            <div class="strength" id="rs-strength"><span></span><span></span><span></span><span></span></div>
+          </div>
+          <div class="field"><label for="rs-conf">Confirm new password</label>
+            <div class="input-wrap"><input class="input" id="rs-conf" type="password"><button type="button" class="suffix" data-pw="rs-conf" aria-label="Show password"><svg class="icon"><use href="#i-eye"/></svg></button></div>
+            <div class="field-error" id="rs-err" hidden></div>
+          </div>
+          <button class="btn btn-primary btn-block" type="submit">Reset password</button>
+        </div>
+      </form>
+      <button class="btn btn-ghost btn-block small" id="rs-expired-demo" style="margin-top:12px">Demo: simulate expired token</button>
+    </div>
+  </section>
+
+  <section class="auth-view" data-auth="offline" hidden>
+    <div class="auth-card" style="text-align:center">
+      <div class="result-icon" style="background:var(--warn-bg);color:var(--warning)"><svg class="icon-xl icon"><use href="#i-wifi-off"/></svg></div>
+      <h2>You’re offline</h2>
+      <p class="sub">Some features may be unavailable. Check your connection and try again.</p>
+      <button class="btn btn-primary btn-block" id="off-retry"><svg class="icon"><use href="#i-refresh" style="display:none"/></svg>Retry connection</button>
+    </div>
+  </section>
+</div>
+
+<!-- ================= APP SHELL ================= -->
+<div id="app-shell" hidden>
+  <div class="scrim" id="scrim"></div>
+  <aside class="sidebar" id="sidebar" aria-label="Primary navigation">
+    <div class="brand"><span class="logo-mark"><svg class="icon"><use href="#i-briefcase"/></svg></span><span>Tally</span></div>
+    <button class="nav-item" data-go="dashboard" data-nav="dashboard"><svg class="icon"><use href="#i-grid"/></svg><span>Dashboard</span></button>
+    <button class="nav-item" data-go="applications" data-nav="applications"><svg class="icon"><use href="#i-briefcase"/></svg><span>Applications</span></button>
+    <button class="nav-item" data-go="interviews" data-nav="interviews"><svg class="icon"><use href="#i-calendar"/></svg><span>Interviews</span></button>
+    <button class="nav-item" data-go="settings" data-nav="settings"><svg class="icon"><use href="#i-settings"/></svg><span>Settings</span></button>
+    <div class="spacer"></div>
+    <div class="user-mini"><span class="avatar">JD</span><div style="min-width:0"><div style="font-size:13px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">John Doe</div><div class="small muted" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">john@example.com</div></div></div>
+  </aside>
+
+  <div class="shell-main">
+    <header class="topbar">
+      <span class="tip-wrap"><button class="btn btn-ghost btn-icon" id="btn-menu" aria-label="Open menu" style="display:none"><svg class="icon"><use href="#i-menu"/></svg></button><span class="tip">Menu</span></span>
+      <span style="font-weight:600;display:none" id="topbar-brand">Tally</span>
+      <div class="input-wrap search-box">
+        <span class="prefix-icon"><svg class="icon"><use href="#i-search"/></svg></span>
+        <input class="input" id="global-search" placeholder="Search applications…" aria-label="Search applications">
+        <kbd>/</kbd>
+      </div>
+      <div style="margin-left:auto;display:flex;gap:8px;align-items:center">
+        <span class="tip-wrap"><button class="btn btn-ghost btn-icon" id="btn-theme" aria-label="Toggle theme"><svg class="icon"><use href="#i-moon"/></svg></button><span class="tip">Toggle theme</span></span>
+        <button class="btn btn-primary" id="btn-add-top" title="Shortcut: n"><svg class="icon"><use href="#i-plus"/></svg><span class="add-text">Add application</span></button>
+        <div class="dropdown">
+          <button class="btn btn-ghost" data-dd-toggle aria-label="User menu" style="padding:0 4px"><span class="avatar">JD</span></button>
+          <div class="dropdown-menu" role="menu">
+            <div class="dropdown-label">john@example.com</div>
+            <button class="dropdown-item" data-go="settings"><svg class="icon-sm icon"><use href="#i-settings"/></svg>Settings</button>
+            <div class="dropdown-sep"></div>
+            <button class="dropdown-item danger" id="btn-logout"><svg class="icon-sm icon"><use href="#i-log-out"/></svg>Log out</button>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <div class="offline-slot" id="offline-wrap"></div>
+
+    <main class="content" id="main">
+
+      <!-- DASHBOARD -->
+      <section class="page" data-page="dashboard">
+        <div class="page-head"><div><h1>Dashboard</h1><p class="desc">Your job search at a glance — archived applications excluded.</p></div></div>
+        <div id="dash-error" hidden></div>
+        <div id="dash-onboard" class="card" hidden>
+          <div class="empty">
+            <div class="empty-icon"><svg class="icon-xl icon"><use href="#i-inbox"/></svg></div>
+            <h4>Welcome to Tally</h4>
+            <p>Track every application, interview, and follow-up in one place. Start by adding your first application.</p>
+            <button class="btn btn-primary" style="margin-top:10px" id="onboard-add"><svg class="icon"><use href="#i-plus"/></svg>Add your first application</button>
+          </div>
+        </div>
+        <div id="dash-skel" hidden>
+          <div class="stat-grid" style="margin-bottom:14px">
+            <div class="card card-pad"><div class="skeleton" style="width:50%;height:12px;margin-bottom:10px"></div><div class="skeleton" style="width:40%;height:26px"></div></div>
+            <div class="card card-pad"><div class="skeleton" style="width:50%;height:12px;margin-bottom:10px"></div><div class="skeleton" style="width:40%;height:26px"></div></div>
+            <div class="card card-pad"><div class="skeleton" style="width:50%;height:12px;margin-bottom:10px"></div><div class="skeleton" style="width:40%;height:26px"></div></div>
+            <div class="card card-pad"><div class="skeleton" style="width:50%;height:12px;margin-bottom:10px"></div><div class="skeleton" style="width:40%;height:26px"></div></div>
+          </div>
+          <div class="card card-pad"><div class="skeleton" style="height:14px;width:30%;margin-bottom:12px"></div><div class="skeleton" style="height:12px;margin-bottom:8px"></div><div class="skeleton" style="height:12px;width:80%"></div></div>
+        </div>
+        <div id="dash-widgets">
+          <div class="stat-grid" id="stat-grid"></div>
+          <div class="dash-grid">
+            <div class="card"><div class="card-head"><h4>Follow-ups</h4><span class="badge-count" id="fu-count">0</span></div><div class="card-body" style="padding-top:6px" id="fu-list"></div></div>
+            <div class="card"><div class="card-head"><h4>Status distribution</h4><span class="small muted" id="donut-total"></span></div><div class="card-body"><div class="donut-wrap" id="donut-area"></div></div></div>
+            <div class="card"><div class="card-head"><h4>Upcoming interviews</h4><button class="btn btn-ghost btn-sm" data-go="interviews">View all</button></div><div class="card-body" style="padding-top:6px" id="up-ivs"></div></div>
+            <div class="card"><div class="card-head"><h4>Recent applications</h4><button class="btn btn-ghost btn-sm" data-go="applications">View all</button></div><div class="card-body" style="padding-top:6px" id="recent-apps"></div></div>
+          </div>
+          <div class="card" style="margin-top:14px" id="install-card">
+            <div class="card-body" style="display:flex;align-items:center;gap:14px;flex-wrap:wrap">
+              <div class="stat-icon" style="margin:0"><svg class="icon"><use href="#i-download"/></svg></div>
+              <div style="flex:1;min-width:200px">
+                <div style="font-weight:600;font-size:14px">Install Tally</div>
+                <div class="small muted">Add it to your home screen for a faster, offline-ready experience.</div>
+              </div>
+              <button class="btn btn-ghost btn-sm" id="install-dismiss">Dismiss</button>
+              <button class="btn btn-primary btn-sm" id="install-go">Install</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- APPLICATIONS -->
+      <section class="page" data-page="applications">
+        <div class="page-head">
+          <div><h1>Applications</h1><p class="desc">Browse, search, filter, and manage your applications.</p></div>
+          <button class="btn btn-primary" id="btn-add-page"><svg class="icon"><use href="#i-plus"/></svg>Add application</button>
+        </div>
+        <div class="toolbar">
+          <div class="dropdown">
+            <button class="btn btn-secondary" data-dd-toggle><svg class="icon"><use href="#i-filter"/></svg>Filters <span class="badge-count" id="filter-count">0</span> <svg class="icon-sm icon"><use href="#i-chevron-down"/></svg></button>
+            <div class="dropdown-menu popover-wide align-left" data-stop>
+              <h5>Filter applications</h5>
+              <div class="filter-group"><div class="fg-label">Status</div><div class="filter-options" id="f-status-opts"></div></div>
+              <div class="filter-group"><div class="fg-label">Tags</div><div class="filter-options" id="f-tag-opts"></div></div>
+              <div class="filter-group"><div class="fg-label">Follow-up</div><div class="filter-options" id="f-fu-opts"></div></div>
+              <div class="filter-group"><div class="fg-label">Remote type</div><div class="filter-options" id="f-remote-opts"></div></div>
+              <div class="filter-group"><div class="fg-label">Employment type</div><div class="filter-options" id="f-emp-opts"></div></div>
+              <div class="filter-group"><div class="fg-label">Source (exact match)</div><input class="input" id="f-source" placeholder="e.g. LinkedIn" style="font-size:13px"></div>
+              <div class="filter-group"><div class="fg-label">Applied between</div>
+                <div style="display:flex;gap:8px"><input class="input" type="date" id="f-from" style="font-size:13px" aria-label="Applied from"><input class="input" type="date" id="f-to" style="font-size:13px" aria-label="Applied to"></div>
+              </div>
+              <label style="display:flex;gap:8px;align-items:center;font-size:13px;cursor:pointer;margin-bottom:12px"><input type="checkbox" id="f-archived"> Include archived</label>
+              <div style="display:flex;justify-content:flex-end;gap:8px"><button class="btn btn-ghost btn-sm" id="f-clear">Clear all</button><button class="btn btn-primary btn-sm" id="f-apply">Done</button></div>
+            </div>
+          </div>
+          <div class="dropdown">
+            <button class="btn btn-secondary" data-dd-toggle><svg class="icon"><use href="#i-sort"/></svg><span id="sort-label">Recently updated</span> <svg class="icon-sm icon"><use href="#i-chevron-down"/></svg></button>
+            <div class="dropdown-menu" role="menu" id="sort-menu">
+              <div class="dropdown-label">Sort by</div>
+              <button class="dropdown-item" data-sort="updatedAt">Recently updated <svg class="icon-sm icon check"><use href="#i-check"/></svg></button>
+              <button class="dropdown-item" data-sort="createdAt">Recently created <svg class="icon-sm icon check"><use href="#i-check"/></svg></button>
+              <button class="dropdown-item" data-sort="company">Company name <svg class="icon-sm icon check"><use href="#i-check"/></svg></button>
+              <button class="dropdown-item" data-sort="role">Role name <svg class="icon-sm icon check"><use href="#i-check"/></svg></button>
+              <button class="dropdown-item" data-sort="appliedAt">Applied date <svg class="icon-sm icon check"><use href="#i-check"/></svg></button>
+              <button class="dropdown-item" data-sort="nextFollowUpAt">Follow-up date <svg class="icon-sm icon check"><use href="#i-check"/></svg></button>
+              <button class="dropdown-item" data-sort="status">Status (pipeline) <svg class="icon-sm icon check"><use href="#i-check"/></svg></button>
+              <div class="dropdown-sep"></div>
+              <button class="dropdown-item" data-order="desc">Order: Descending <svg class="icon-sm icon check"><use href="#i-check"/></svg></button>
+              <button class="dropdown-item" data-order="asc">Order: Ascending <svg class="icon-sm icon check"><use href="#i-check"/></svg></button>
+            </div>
+          </div>
+          <div class="segmented" role="group" aria-label="View toggle" id="view-toggle">
+            <button data-viewmode="list" class="active" aria-label="List view"><svg class="icon-sm icon"><use href="#i-list"/></svg>List</button>
+            <button data-viewmode="board" aria-label="Board view"><svg class="icon-sm icon"><use href="#i-board"/></svg>Board</button>
+          </div>
+          <span class="small muted" style="margin-left:auto" id="result-count"></span>
+        </div>
+        <div class="chips-row" id="chips-row"></div>
+        <div id="board-hint" class="small muted" style="margin-bottom:10px" hidden>Drag cards between columns to change status — every card also has an accessible status menu.</div>
+        <div id="list-skel" class="card" style="padding:14px" hidden>
+          <div style="display:flex;gap:12px;margin-bottom:14px"><div class="skeleton" style="width:36%;height:14px"></div><div class="skeleton" style="width:16%;height:14px"></div><div class="skeleton" style="width:20%;height:14px"></div></div>
+          <div style="display:flex;gap:12px;margin-bottom:14px"><div class="skeleton" style="width:30%;height:14px"></div><div class="skeleton" style="width:14%;height:14px"></div><div class="skeleton" style="width:22%;height:14px"></div></div>
+          <div style="display:flex;gap:12px"><div class="skeleton" style="width:40%;height:14px"></div><div class="skeleton" style="width:18%;height:14px"></div><div class="skeleton" style="width:16%;height:14px"></div></div>
+        </div>
+        <div id="apps-body">
+          <div id="list-view">
+            <div class="card" id="table-card" style="overflow:hidden">
+              <div class="table-wrap">
+                <table class="table">
+                  <thead><tr><th style="width:26%">Company / Role</th><th>Status</th><th>Tags</th><th>Applied</th><th>Follow-up</th><th>Updated</th><th style="width:44px"></th></tr></thead>
+                  <tbody id="app-tbody"></tbody>
+                </table>
+              </div>
+              <div id="apps-cards" class="m-cards" style="padding:12px"></div>
+              <div class="pag-bar"><span class="small muted" id="pag-info"></span><nav class="pagination" id="pag-nav" aria-label="Pagination"></nav></div>
+            </div>
+            <div id="apps-empty"></div>
+          </div>
+          <div id="board-view" class="board" hidden></div>
+        </div>
+      </section>
+
+      <!-- DETAIL -->
+      <section class="page" data-page="detail"><div id="detail-root"></div></section>
+
+      <!-- INTERVIEWS -->
+      <section class="page" data-page="interviews">
+        <div class="page-head">
+          <div><h1>Interviews</h1><p class="desc">Manage your interview schedule across all applications.</p></div>
+          <button class="btn btn-primary" id="btn-add-iv"><svg class="icon"><use href="#i-plus"/></svg>Add interview</button>
+        </div>
+        <div class="card">
+          <div style="padding:0 16px">
+            <div class="tabs" role="tablist">
+              <button class="tab active" id="iv-tab-up" role="tab">Upcoming <span class="badge-count" id="iv-up-count">0</span></button>
+              <button class="tab" id="iv-tab-past" role="tab">Past <span class="badge-count" id="iv-past-count">0</span></button>
+            </div>
+          </div>
+          <div class="card-body" id="iv-up-body"></div>
+          <div class="card-body" id="iv-past-body" hidden></div>
+        </div>
+      </section>
+
+      <!-- SETTINGS -->
+      <section class="page" data-page="settings">
+        <div class="page-head"><div><h1>Settings</h1><p class="desc">Manage your account, security, preferences, and data.</p></div></div>
+        <div class="settings-layout">
+          <nav class="settings-nav" aria-label="Settings sections">
+            <button class="tab active" data-stab="profile"><svg class="icon-sm icon"><use href="#i-user"/></svg>Profile</button>
+            <button class="tab" data-stab="security"><svg class="icon-sm icon"><use href="#i-shield"/></svg>Security</button>
+            <button class="tab" data-stab="tags"><svg class="icon-sm icon"><use href="#i-tag"/></svg>Tags</button>
+            <button class="tab" data-stab="preferences"><svg class="icon-sm icon"><use href="#i-settings"/></svg>Preferences</button>
+            <button class="tab" data-stab="data"><svg class="icon-sm icon"><use href="#i-database"/></svg>Data</button>
+          </nav>
+          <div class="settings-panel">
+            <div data-stab-panel="profile">
+              <h3>Profile</h3><p class="sp-desc">Your personal information. Email cannot be changed in MVP.</p>
+              <div class="card card-pad panel-card">
+                <div class="field"><label for="sp-name">Name</label><input class="input" id="sp-name" value="John Doe"></div>
+                <div class="field"><label>Email</label><input class="input" value="john@example.com" disabled><span class="hint">Email is read-only.</span></div>
+                <div style="display:flex;justify-content:flex-end"><button class="btn btn-primary" id="sp-save">Save changes</button></div>
+              </div>
+            </div>
+            <div data-stab-panel="security" hidden>
+              <h3>Security</h3><p class="sp-desc">Password and connected login methods.</p>
+              <div class="card card-pad panel-card">
+                <h4 style="font-size:14px;font-weight:600;margin-bottom:12px">Password</h4>
+                <label style="display:flex;gap:8px;align-items:center;font-size:13px;cursor:pointer;margin-bottom:12px"><input type="checkbox" id="sc-oauth-demo"> Demo: OAuth-only user (no password yet)</label>
+                <div class="field" id="sc-cur-wrap"><label for="sc-cur">Current password</label><div class="input-wrap"><input class="input" id="sc-cur" type="password"><button type="button" class="suffix" data-pw="sc-cur" aria-label="Show password"><svg class="icon"><use href="#i-eye"/></svg></button></div></div>
+                <div class="field"><label for="sc-new">New password</label><div class="input-wrap"><input class="input" id="sc-new" type="password"><button type="button" class="suffix" data-pw="sc-new" aria-label="Show password"><svg class="icon"><use href="#i-eye"/></svg></button></div></div>
+                <div class="field"><label for="sc-conf">Confirm new password</label><div class="input-wrap"><input class="input" id="sc-conf" type="password"><button type="button" class="suffix" data-pw="sc-conf" aria-label="Show password"><svg class="icon"><use href="#i-eye"/></svg></button></div><div class="field-error" id="sc-err" hidden></div></div>
+                <div class="banner banner-info" id="sc-set-hint" hidden style="margin-bottom:12px"><svg class="icon"><use href="#i-info"/></svg><div>Setting a password enables email &amp; password sign-in alongside your social accounts.</div></div>
+                <div style="display:flex;justify-content:flex-end"><button class="btn btn-primary" id="sc-save">Update password</button></div>
+              </div>
+              <div class="card card-pad panel-card">
+                <h4 style="font-size:14px;font-weight:600;margin-bottom:4px">Connected accounts</h4>
+                <p class="small muted" style="margin-bottom:8px">You can’t remove your last available login method.</p>
+                <div id="providers-list"></div>
+              </div>
+            </div>
+            <div data-stab-panel="tags" hidden>
+              <h3>Tags</h3><p class="sp-desc">Reusable labels for your applications. Deleting a tag removes its assignments but never deletes applications.</p>
+              <div class="card card-pad panel-card">
+                <div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap">
+                  <input class="input" id="tag-new-name" placeholder="New tag name…" style="flex:1;min-width:140px">
+                  <input class="input" type="color" id="tag-new-color" value="#6366f1" style="width:44px;padding:4px" aria-label="Tag color">
+                  <button class="btn btn-primary" id="tag-create"><svg class="icon"><use href="#i-plus"/></svg>Create</button>
+                </div>
+                <div id="tag-rows"></div>
+              </div>
+            </div>
+            <div data-stab-panel="preferences" hidden>
+              <h3>Preferences</h3><p class="sp-desc">For authenticated users, server-stored preferences are authoritative.</p>
+              <div class="card card-pad panel-card">
+                <div class="setting-row">
+                  <div><div class="sr-label">Theme</div><div class="sr-sub">Light, dark, or follow your system.</div></div>
+                  <div class="segmented" id="pref-theme">
+                    <button data-themepref="light"><svg class="icon-sm icon"><use href="#i-sun"/></svg>Light</button>
+                    <button data-themepref="dark"><svg class="icon-sm icon"><use href="#i-moon"/></svg>Dark</button>
+                    <button data-themepref="system">System</button>
+                  </div>
+                </div>
+                <div class="setting-row">
+                  <div><div class="sr-label">Default landing page</div><div class="sr-sub">Where you land after signing in.</div></div>
+                  <select class="select" id="pref-landing" style="width:170px"><option value="dashboard">Dashboard</option><option value="applications">Applications</option></select>
+                </div>
+                <div class="setting-row">
+                  <div><div class="sr-label">Time zone</div><div class="sr-sub">IANA identifier · used for “today” follow-ups.</div></div>
+                  <select class="select" id="pref-tz" style="width:210px"><option>Asia/Dhaka</option><option>UTC</option><option>Europe/London</option><option>America/New_York</option><option>Asia/Kolkata</option><option>Asia/Singapore</option></select>
+                </div>
+                <div class="setting-row">
+                  <div><div class="sr-label">Email notifications</div><div class="sr-sub">Optional product updates.</div></div>
+                  <button class="switch" id="pref-notif" role="switch" aria-checked="false" aria-label="Email notifications"></button>
+                </div>
+                <div style="display:flex;justify-content:flex-end;margin-top:12px"><button class="btn btn-primary" id="pref-save">Save preferences</button></div>
+              </div>
+            </div>
+            <div data-stab-panel="data" hidden>
+              <h3>Data</h3><p class="sp-desc">Export or import your data. You own it.</p>
+              <div class="card card-pad panel-card">
+                <h4 style="font-size:14px;font-weight:600;margin-bottom:12px">Export</h4>
+                <div style="display:flex;gap:8px;flex-wrap:wrap">
+                  <button class="btn btn-secondary" id="export-json"><svg class="icon"><use href="#i-download"/></svg>Export JSON</button>
+                  <button class="btn btn-secondary" id="export-csv"><svg class="icon"><use href="#i-download"/></svg>Export CSV</button>
+                </div>
+                <span class="hint" style="display:block;margin-top:10px">JSON is a full backup · CSV covers applications only.</span>
+              </div>
+              <div class="card card-pad panel-card">
+                <h4 style="font-size:14px;font-weight:600;margin-bottom:4px">Import</h4>
+                <p class="small muted" style="margin-bottom:12px">Importing replaces your current application data. This cannot be undone.</p>
+                <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+                  <button class="btn btn-secondary" id="import-pick"><svg class="icon"><use href="#i-upload"/></svg>Choose JSON file…</button>
+                  <span class="small muted" id="import-file">No file selected</span>
+                  <button class="btn btn-primary" id="import-go" disabled>Import</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 404 -->
+      <section class="page" data-page="notfound">
+        <div class="card" style="margin-top:40px">
+          <div class="empty">
+            <div class="empty-icon"><svg class="icon-xl icon"><use href="#i-alert-circle"/></svg></div>
+            <h4>Page not found</h4>
+            <p>The page you’re looking for doesn’t exist or has moved.</p>
+            <button class="btn btn-primary" style="margin-top:10px" data-go="dashboard">Back to dashboard</button>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <nav class="bottom-nav" aria-label="Mobile navigation">
+    <button data-go="dashboard" data-bnav="dashboard"><svg class="icon"><use href="#i-grid"/></svg>Dashboard</button>
+    <button data-go="applications" data-bnav="applications"><svg class="icon"><use href="#i-briefcase"/></svg>Applications</button>
+    <button data-go="interviews" data-bnav="interviews"><svg class="icon"><use href="#i-calendar"/></svg>Interviews</button>
+    <button data-go="settings" data-bnav="settings"><svg class="icon"><use href="#i-settings"/></svg>Settings</button>
+  </nav>
+</div>
+
+<!-- ================= MODALS ================= -->
+<div class="modal-overlay" id="modal-app" role="dialog" aria-modal="true" aria-labelledby="app-modal-title">
+  <div class="modal modal-lg">
+    <div class="modal-head"><h3 id="app-modal-title">Add application</h3><button class="x" data-close aria-label="Close"><svg class="icon"><use href="#i-x"/></svg></button></div>
+    <div class="modal-body">
+      <form id="form-app" novalidate>
+        <div class="form-grid">
+          <div class="field"><label for="af-company">Company <span class="req">*</span></label><input class="input" id="af-company" placeholder="Acme Corp"><div class="field-error" data-err="company" hidden></div></div>
+          <div class="field"><label for="af-role">Role <span class="req">*</span></label><input class="input" id="af-role" placeholder="Frontend Engineer"><div class="field-error" data-err="role" hidden></div></div>
+          <div class="field span-2"><label for="af-url">Job URL</label><input class="input" id="af-url" placeholder="https://…"><div class="field-error" data-err="jobUrl" hidden></div></div>
+          <div class="field"><label for="af-location">Location</label><input class="input" id="af-location" placeholder="Remote"></div>
+          <div class="field" id="af-status-wrap"><label for="af-status">Status</label><select class="select" id="af-status"></select></div>
+          <div class="field"><label for="af-remote">Remote type</label><select class="select" id="af-remote"><option value="">—</option><option value="REMOTE">Remote</option><option value="HYBRID">Hybrid</option><option value="ONSITE">Onsite</option></select></div>
+          <div class="field"><label for="af-emp">Employment type</label><select class="select" id="af-emp"><option value="">—</option><option value="FULL_TIME">Full-time</option><option value="CONTRACT">Contract</option><option value="INTERNSHIP">Internship</option></select></div>
+          <div class="field"><label for="af-source">Source</label><input class="input" id="af-source" list="sources" placeholder="LinkedIn, referral…"><datalist id="sources"><option>LinkedIn</option><option>Company website</option><option>Referral</option><option>Job board</option><option>Other</option></datalist></div>
+          <div class="field"><label for="af-applied">Applied date</label><input class="input" id="af-applied" type="date"></div>
+          <div class="field"><label for="af-smin">Salary min</label><input class="input" id="af-smin" type="number" min="0" placeholder="80000"><div class="field-error" data-err="salaryMin" hidden></div></div>
+          <div class="field"><label for="af-smax">Salary max</label><input class="input" id="af-smax" type="number" min="0" placeholder="100000"><div class="field-error" data-err="salaryMax" hidden></div></div>
+          <div class="field"><label for="af-cur">Currency</label><select class="select" id="af-cur"><option value="">—</option><option>USD</option><option>EUR</option><option>GBP</option><option>BDT</option></select><div class="field-error" data-err="currency" hidden></div></div>
+          <div class="field"><label for="af-fu">Follow-up date &amp; time</label><input class="input" id="af-fu" type="datetime-local"></div>
+          <div class="field span-2"><label>Tags</label><div style="display:flex;flex-wrap:wrap;gap:6px" id="af-tags"></div></div>
+          <div class="field span-2" id="af-note-wrap"><label for="af-note">Initial note</label><textarea class="textarea" id="af-note" placeholder="Anything worth remembering… (1–5000 characters)"></textarea><div class="field-error" data-err="initialNote" hidden></div></div>
+        </div>
+      </form>
+    </div>
+    <div class="modal-foot"><button class="btn btn-ghost" data-close>Cancel</button><button class="btn btn-primary" id="app-save"><svg class="icon"><use href="#i-check"/></svg><span id="app-save-label">Save application</span></button></div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-status" role="dialog" aria-modal="true">
+  <div class="modal modal-sm">
+    <div class="modal-head"><h3>Change status</h3><button class="x" data-close aria-label="Close"><svg class="icon"><use href="#i-x"/></svg></button></div>
+    <div class="modal-body">
+      <p class="small muted" style="margin-bottom:14px" id="status-app-name"></p>
+      <div class="field"><label for="st-select">New status</label><select class="select" id="st-select"></select></div>
+      <div class="field"><label for="st-note">Note <span class="muted" style="font-weight:400">(optional)</span></label><textarea class="textarea" id="st-note" placeholder="e.g. Recruiter confirmed technical interview"></textarea><span class="hint">Saved with the status history entry.</span></div>
+    </div>
+    <div class="modal-foot"><button class="btn btn-ghost" id="st-skip">Skip</button><button class="btn btn-primary" id="st-save">Update status</button></div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-interview" role="dialog" aria-modal="true">
+  <div class="modal">
+    <div class="modal-head"><h3 id="iv-modal-title">Add interview</h3><button class="x" data-close aria-label="Close"><svg class="icon"><use href="#i-x"/></svg></button></div>
+    <div class="modal-body">
+      <div class="field"><label for="ivf-app">Application <span class="req">*</span></label><select class="select" id="ivf-app"></select><span class="hint">Interviews must belong to an application.</span></div>
+      <div class="form-grid">
+        <div class="field"><label for="ivf-type">Interview type</label><select class="select" id="ivf-type"><option value="PHONE">Phone</option><option value="TECHNICAL">Technical</option><option value="HR">HR</option><option value="SYSTEM_DESIGN">System design</option><option value="ONSITE">Onsite</option><option value="OTHER">Other</option></select></div>
+        <div class="field"><label for="ivf-status">Status</label><select class="select" id="ivf-status"><option value="SCHEDULED">Scheduled</option><option value="COMPLETED">Completed</option><option value="CANCELLED">Cancelled</option><option value="NO_SHOW">No-show</option></select></div>
+        <div class="field span-2"><label for="ivf-when">Scheduled date &amp; time <span class="req">*</span></label><input class="input" id="ivf-when" type="datetime-local"><div class="field-error" id="ivf-when-err" hidden></div></div>
+        <div class="field"><label for="ivf-who">Interviewer name</label><input class="input" id="ivf-who" placeholder="Jane Smith"></div>
+        <div class="field"><label for="ivf-loc">Location</label><input class="input" id="ivf-loc" placeholder="Remote"></div>
+        <div class="field span-2"><label for="ivf-link">Meeting link</label><input class="input" id="ivf-link" placeholder="https://meet.google.com/…"></div>
+        <div class="field span-2"><label for="ivf-notes">Notes</label><textarea class="textarea" id="ivf-notes" placeholder="Prepare system design…"></textarea></div>
+      </div>
+    </div>
+    <div class="modal-foot"><button class="btn btn-ghost" data-close>Cancel</button><button class="btn btn-primary" id="iv-save">Save interview</button></div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-confirm" role="dialog" aria-modal="true">
+  <div class="modal modal-sm">
+    <div class="modal-body" style="padding-top:24px">
+      <div class="modal-icon danger" id="cf-icon"><svg class="icon-xl icon"><use href="#i-trash"/></svg></div>
+      <h3 id="cf-title" style="font-size:16px;font-weight:600;margin-bottom:6px"></h3>
+      <p class="small muted" id="cf-body"></p>
+    </div>
+    <div class="modal-foot"><button class="btn btn-ghost" data-close>Cancel</button><button class="btn btn-danger" id="cf-confirm">Delete</button></div>
+  </div>
+</div>
+
+<div class="toast-live" id="toast-live" aria-live="polite"></div>
+
+<!-- PROTOTYPE HELPER -->
+<div class="dropdown demo-fab" id="demo-fab">
+  <button class="btn btn-secondary btn-sm" data-dd-toggle aria-haspopup="true"><svg class="icon-sm icon"><use href="#i-grid"/></svg>Prototype screens</button>
+  <div class="dropdown-menu">
+    <div class="dropdown-label">Public</div>
+    <button class="dropdown-item" data-go="login">Login</button>
+    <button class="dropdown-item" data-go="register">Register</button>
+    <button class="dropdown-item" data-go="verify-pending">Verify email — pending</button>
+    <button class="dropdown-item" data-go="verify-success">Verify email — success</button>
+    <button class="dropdown-item" data-go="verify-failed">Verify email — failed</button>
+    <button class="dropdown-item" data-go="forgot">Forgot password</button>
+    <button class="dropdown-item" data-go="reset">Reset password</button>
+    <button class="dropdown-item" data-demo-go="offline">Offline fallback page</button>
+    <div class="dropdown-sep"></div>
+    <div class="dropdown-label">Protected</div>
+    <button class="dropdown-item" data-demo-go="dashboard">Dashboard</button>
+    <button class="dropdown-item" data-demo-go="applications">Applications</button>
+    <button class="dropdown-item" data-demo-go="detail">Application detail</button>
+    <button class="dropdown-item" data-demo-go="interviews">Interviews</button>
+    <button class="dropdown-item" data-demo-go="settings">Settings</button>
+    <button class="dropdown-item" data-demo-go="notfound">404 page</button>
+    <div class="dropdown-sep"></div>
+    <div class="dropdown-label">Simulate</div>
+    <button class="dropdown-item" id="demo-expire"><svg class="icon-sm icon"><use href="#i-lock"/></svg>Session expired</button>
+    <button class="dropdown-item" id="demo-apierr"><svg class="icon-sm icon"><use href="#i-alert-triangle"/></svg>API error banner</button>
+    <button class="dropdown-item" id="demo-offline"><svg class="icon-sm icon"><use href="#i-wifi-off"/></svg>Toggle offline banner</button>
+    <button class="dropdown-item" id="demo-update"><svg class="icon-sm icon"><use href="#i-info"/></svg>“Update available” toast</button>
+    <div class="dropdown-sep"></div>
+    <div style="padding:6px 10px;font-size:11px;color:var(--text-3);line-height:1.7">Shortcuts: <kbd class="k">/</kbd> search · <kbd class="k">n</kbd> new application · <kbd class="k">g</kbd>+<kbd class="k">d</kbd>/<kbd class="k">a</kbd> go to page · <kbd class="k">Esc</kbd> close</div>
+  </div>
+</div>
+
+<script>
+'use strict';
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+/* ---------- META ---------- */
+const STATUSES=[
+ {key:'WISHLIST',label:'Wishlist',cls:'badge-wishlist',color:'#94a3b8'},
+ {key:'APPLIED',label:'Applied',cls:'badge-applied',color:'#6366f1'},
+ {key:'SCREENING',label:'Screening',cls:'badge-screening',color:'#06b6d4'},
+ {key:'INTERVIEW',label:'Interview',cls:'badge-interview',color:'#8b5cf6'},
+ {key:'OFFER',label:'Offer',cls:'badge-offer',color:'#22c55e'},
+ {key:'REJECTED',label:'Rejected',cls:'badge-rejected',color:'#ef4444'},
+ {key:'WITHDRAWN',label:'Withdrawn',cls:'badge-withdrawn',color:'#9ca3af'}];
+const sMeta=k=>STATUSES.find(s=>s.key===k);
+const badge=k=>{const m=sMeta(k);return `<span class="badge ${m.cls}">${m.label}</span>`;};
+const IV_STATUS={SCHEDULED:['Scheduled','badge-scheduled'],COMPLETED:['Completed','badge-completed'],CANCELLED:['Cancelled','badge-cancelled'],NO_SHOW:['No-show','badge-noshow']};
+const IV_TYPE={PHONE:['Phone','i-phone'],TECHNICAL:['Technical','i-video'],HR:['HR','i-user'],SYSTEM_DESIGN:['System design','i-grid'],ONSITE:['Onsite','i-map-pin'],OTHER:['Other','i-more']};
+const SORT_LABELS={updatedAt:'Recently updated',createdAt:'Recently created',company:'Company name',role:'Role name',appliedAt:'Applied date',nextFollowUpAt:'Follow-up date',status:'Status (pipeline)'};
+
+/* ---------- SAMPLE DATA ---------- */
+const NOW=Date.now(), DAY=864e5;
+const ago=h=>new Date(NOW-h*36e5).toISOString();
+const ahead=h=>new Date(NOW+h*36e5).toISOString();
+const dAgo=d=>new Date(NOW-d*DAY).toISOString().slice(0,10);
+const uid=()=>'x'+Math.random().toString(36).slice(2,9);
+const H=(from,to,note,at)=>({id:uid(),fromStatus:from,toStatus:to,note,changedAt:at});
+
+let tags=[
+ {id:'t1',name:'priority',color:'#6366f1'},
+ {id:'t2',name:'remote',color:'#0891b2'},
+ {id:'t3',name:'referral',color:'#d97706'},
+ {id:'t4',name:'fintech',color:'#16a34a'}];
+
+let apps=[
+ {id:'a1',company:'Acme Corp',role:'Frontend Engineer',jobUrl:'https://jobs.acme.com/frontend',location:'Remote (EU)',remoteType:'REMOTE',employmentType:'FULL_TIME',source:'LinkedIn',status:'APPLIED',appliedAt:dAgo(3),salaryMin:80000,salaryMax:100000,currency:'USD',nextFollowUpAt:ahead(2),archivedAt:null,createdAt:ago(72),updatedAt:ago(2),tagIds:['t1','t2'],
+  notes:[{id:'n1',content:'Applied through the company careers page.',createdAt:ago(72),updatedAt:null},{id:'n2',content:'Recruiter viewed my profile on LinkedIn — follow up if no response by Friday.',createdAt:ago(20),updatedAt:null}],
+  history:[H('WISHLIST','APPLIED','Submitted application.',ago(72))]},
+ {id:'a2',company:'Globex',role:'Backend Engineer',jobUrl:'',location:'Berlin',remoteType:'HYBRID',employmentType:'FULL_TIME',source:'Referral',status:'INTERVIEW',appliedAt:dAgo(10),salaryMin:null,salaryMax:null,currency:null,nextFollowUpAt:ago(30),archivedAt:null,createdAt:ago(240),updatedAt:ago(26),tagIds:['t3'],
+  notes:[{id:'n3',content:'Referred by Sara. Team works on payments infrastructure.',createdAt:ago(200),updatedAt:null}],
+  history:[H('WISHLIST','APPLIED','',ago(240)),H('APPLIED','SCREENING','Recruiter call went well.',ago(150)),H('SCREENING','INTERVIEW','Technical interview scheduled.',ago(30))]},
+ {id:'a3',company:'Initech',role:'Full Stack Developer',jobUrl:'',location:'Remote',remoteType:'REMOTE',employmentType:'CONTRACT',source:'Job board',status:'SCREENING',appliedAt:dAgo(12),salaryMin:null,salaryMax:null,currency:null,nextFollowUpAt:ago(80),archivedAt:null,createdAt:ago(280),updatedAt:ago(50),tagIds:['t2'],notes:[],
+  history:[H('WISHLIST','APPLIED','',ago(280)),H('APPLIED','SCREENING','',ago(60))]},
+ {id:'a4',company:'Umbrella Corp',role:'Product Designer',jobUrl:'',location:'Dhaka',remoteType:'ONSITE',employmentType:'FULL_TIME',source:'Company website',status:'OFFER',appliedAt:dAgo(20),salaryMin:70000,salaryMax:90000,currency:'USD',nextFollowUpAt:null,archivedAt:null,createdAt:ago(470),updatedAt:ago(10),tagIds:['t4'],notes:[],
+  history:[H('WISHLIST','APPLIED','',ago(470)),H('APPLIED','INTERVIEW','',ago(300)),H('INTERVIEW','OFFER','Offer received!',ago(12))]},
+ {id:'a5',company:'Stark Industries',role:'React Developer',jobUrl:'',location:'Remote',remoteType:'REMOTE',employmentType:'FULL_TIME',source:'LinkedIn',status:'WISHLIST',appliedAt:null,salaryMin:null,salaryMax:null,currency:null,nextFollowUpAt:null,archivedAt:null,createdAt:ago(96),updatedAt:ago(96),tagIds:[],notes:[],history:[]},
+ {id:'a6',company:'Wayne Enterprises',role:'Data Analyst',jobUrl:'',location:'Gotham',remoteType:'ONSITE',employmentType:'FULL_TIME',source:'Job board',status:'REJECTED',appliedAt:dAgo(25),salaryMin:null,salaryMax:null,currency:null,nextFollowUpAt:null,archivedAt:null,createdAt:ago(600),updatedAt:ago(120),tagIds:[],notes:[],
+  history:[H('WISHLIST','APPLIED','',ago(600)),H('APPLIED','REJECTED','Role was filled internally.',ago(120))]},
+ {id:'a7',company:'Hooli',role:'Mobile Engineer',jobUrl:'',location:'Remote',remoteType:'REMOTE',employmentType:'FULL_TIME',source:'LinkedIn',status:'WITHDRAWN',appliedAt:dAgo(30),salaryMin:null,salaryMax:null,currency:null,nextFollowUpAt:null,archivedAt:ago(180),createdAt:ago(720),updatedAt:ago(200),tagIds:[],notes:[],
+  history:[H('WISHLIST','APPLIED','',ago(720)),H('APPLIED','WITHDRAWN','Process was too slow.',ago(210))]},
+ {id:'a8',company:'Pied Piper',role:'UI Engineer',jobUrl:'',location:'Remote (US)',remoteType:'REMOTE',employmentType:'FULL_TIME',source:'Referral',status:'APPLIED',appliedAt:dAgo(2),salaryMin:null,salaryMax:null,currency:null,nextFollowUpAt:ahead(70),archivedAt:null,createdAt:ago(48),updatedAt:ago(8),tagIds:['t1'],notes:[],
+  history:[H('WISHLIST','APPLIED','',ago(48))]},
+ {id:'a9',company:'Vandelay Industries',role:'Systems Engineer',jobUrl:'',location:'New York',remoteType:'HYBRID',employmentType:'FULL_TIME',source:'Company website',status:'SCREENING',appliedAt:dAgo(6),salaryMin:null,salaryMax:null,currency:null,nextFollowUpAt:null,archivedAt:null,createdAt:ago(140),updatedAt:ago(40),tagIds:[],notes:[],
+  history:[H('WISHLIST','APPLIED','',ago(140)),H('APPLIED','SCREENING','',ago(45))]},
+ {id:'a10',company:'Massive Dynamic',role:'Research Engineer',jobUrl:'',location:'Remote',remoteType:'REMOTE',employmentType:'FULL_TIME',source:'LinkedIn',status:'INTERVIEW',appliedAt:dAgo(9),salaryMin:90000,salaryMax:120000,currency:'USD',nextFollowUpAt:ahead(4),archivedAt:null,createdAt:ago(220),updatedAt:ago(5),tagIds:['t4'],notes:[],
+  history:[H('WISHLIST','APPLIED','',ago(220)),H('APPLIED','INTERVIEW','Fast-tracked after take-home.',ago(30))]}];
+
+/* extra generated applications (fills board + real 20/page pagination) */
+const EXTRA=[
+ ['b1','Nimbus Labs','DevOps Engineer','APPLIED',1,3,null,['t2']],
+ ['b2','Quantify','Data Scientist','SCREENING',6,26,80,['t4']],
+ ['b3','Bluenote','Frontend Developer','WISHLIST',0,50,null,[]],
+ ['b4','Cortex AI','ML Engineer','INTERVIEW',12,5,120,['t1','t4']],
+ ['b5','Harbor & Co','Product Manager','REJECTED',30,400,null,[]],
+ ['b6','Zephyr','QA Engineer','APPLIED',4,28,-30,['t2']],
+ ['b7','Lumina','UX Researcher','SCREENING',8,10,6,['t3']],
+ ['b8','Northwind','Backend Developer','WITHDRAWN',40,700,null,[]],
+ ['b9','Aperture','Systems Analyst','APPLIED',3,76,96,[]],
+ ['b10','Redwood','iOS Engineer','INTERVIEW',15,20,50,['t1']],
+ ['b11','Solstice','Technical Writer','WISHLIST',0,120,null,[]],
+ ['b12','Ironclad','Security Engineer','APPLIED',9,55,-80,['t3']],
+ ['b13','Beacon','Data Engineer','SCREENING',7,30,140,[]],
+ ['b14','Fathom','Research Scientist','OFFER',22,15,null,['t4']]];
+EXTRA.forEach(([id,company,role,status,days,updH,fuH,tg])=>{
+  apps.push({id,company,role,jobUrl:null,location:null,
+    remoteType:['REMOTE','HYBRID','ONSITE',null][days%4],
+    employmentType:['FULL_TIME','CONTRACT','FULL_TIME','INTERNSHIP'][days%4],
+    source:['LinkedIn','Company website','Referral','Job board'][days%4],
+    status,appliedAt:days?dAgo(days):null,salaryMin:null,salaryMax:null,currency:null,
+    nextFollowUpAt:fuH==null?null:(fuH>=0?ahead(fuH):ago(-fuH)),
+    archivedAt:id==='b8'?ago(500):null,
+    createdAt:ago(days*24+40),updatedAt:ago(updH),tagIds:tg,notes:[],
+    history:status!=='WISHLIST'?[H('WISHLIST',status,'',ago(days*24+40))]:[]});
+});
+
+let interviews=[
+ {id:'i1',appId:'a2',type:'TECHNICAL',scheduledAt:ahead(50),interviewerName:'Jane Smith',meetingLink:'https://meet.google.com/abc-defg-hij',location:'Remote',notes:'Focus on distributed systems.',status:'SCHEDULED'},
+ {id:'i2',appId:'a10',type:'HR',scheduledAt:ahead(5),interviewerName:'Omar Faruk',meetingLink:'',location:'Phone',notes:'',status:'SCHEDULED'},
+ {id:'i3',appId:'a3',type:'PHONE',scheduledAt:ahead(100),interviewerName:'Recruiting team',meetingLink:'',location:'Phone',notes:'',status:'SCHEDULED'},
+ {id:'i4',appId:'b4',type:'TECHNICAL',scheduledAt:ahead(26),interviewerName:'Panel',meetingLink:'https://meet.google.com/xyz-pqrs-tuv',location:'Remote',notes:'',status:'SCHEDULED'},
+ {id:'i5',appId:'b10',type:'HR',scheduledAt:ahead(75),interviewerName:'Talent team',meetingLink:'',location:'Remote',notes:'',status:'SCHEDULED'},
+ {id:'i6',appId:'a4',type:'SYSTEM_DESIGN',scheduledAt:ago(140),interviewerName:'Design panel',meetingLink:'',location:'Onsite',notes:'',status:'COMPLETED'},
+ {id:'i7',appId:'a6',type:'PHONE',scheduledAt:ago(240),interviewerName:'',meetingLink:'',location:'Phone',notes:'',status:'NO_SHOW'},
+ {id:'i8',appId:'a7',type:'HR',scheduledAt:ago(300),interviewerName:'',meetingLink:'',location:'Remote',notes:'',status:'CANCELLED'}];
+
+/* ---------- STATE ---------- */
+const state={
+  authed:false, route:'login', routeParam:null, intended:null, landing:'dashboard',
+  themePref:'system', offline:false, apiError:false,
+  filters:{search:'',statuses:[],tags:[],followUp:'',remoteType:'',employmentType:'',source:'',appliedFrom:'',appliedTo:'',includeArchived:false},
+  sort:{field:'updatedAt',order:'desc'},
+  page:1,pageSize:20,view:'list',
+  editingApp:null,editingNote:null,statusAppId:null,ivEditing:null,confirmCb:null};
+
+/* ---------- HELPERS ---------- */
+const fmtDate=v=>new Date(v).toLocaleDateString('en-US',{month:'short',day:'numeric'});
+const fmtDT=v=>{const d=new Date(v);return d.toLocaleDateString('en-US',{month:'short',day:'numeric'})+', '+d.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'});};
+const rel=v=>{const m=Math.round((Date.now()-new Date(v))/6e4);if(m<1)return'just now';if(m<60)return m+'m ago';const h=Math.round(m/60);if(h<24)return h+'h ago';const d=Math.round(h/24);if(d<7)return d+'d ago';return Math.round(d/7)+'w ago';};
+const sameDay=(a,b)=>a.getFullYear()===b.getFullYear()&&a.getMonth()===b.getMonth()&&a.getDate()===b.getDate();
+function fuState(a){if(!a.nextFollowUpAt)return'none';const t=new Date(a.nextFollowUpAt),n=new Date();if(sameDay(t,n))return'today';return t<n?'overdue':'upcoming';}
+function fuCell(a){const s=fuState(a);if(s==='none')return'<span class="muted">—</span>';
+ if(s==='overdue')return `<span class="flag-overdue"><svg class="icon-sm icon"><use href="#i-alert-triangle"/></svg>${fmtDate(a.nextFollowUpAt)}</span>`;
+ if(s==='today')return `<span class="flag-today"><svg class="icon-sm icon"><use href="#i-clock"/></svg>Today</span>`;
+ return `<span class="small muted">${fmtDate(a.nextFollowUpAt)}</span>`;}
+const tagsOf=a=>a.tagIds.map(id=>tags.find(t=>t.id===id)).filter(Boolean);
+const tagsLine=a=>{const ts=tagsOf(a);return ts.length?ts.map(t=>`<span class="tag" style="cursor:default"><span class="dot" style="background:${t.color}"></span>${esc(t.name)}</span>`).join(' '):'<span class="small muted">—</span>';};
+const toLocalInput=iso=>{const d=new Date(iso),p=n=>String(n).padStart(2,'0');return `${d.getFullYear()}-${p(d.getMonth()+1)}-${p(d.getDate())}T${p(d.getHours())}:${p(d.getMinutes())}`;};
+const appById=id=>apps.find(a=>a.id===id);
+
+/* ---------- TOAST ---------- */
+const T_ICON={success:'#i-check-circle',error:'#i-alert-circle',warn:'#i-wifi-off',info:'#i-info'};
+const T_CLS={success:'toast-success',error:'toast-error',warn:'toast-warn',info:'toast-info'};
+function toast(type,title,msg,action){
+  const t=document.createElement('div');t.className='toast '+T_CLS[type];
+  t.innerHTML=`<svg class="icon"><use href="${T_ICON[type]}"/></svg><div><div class="t-title">${esc(title)}</div>${msg?`<div class="t-msg">${msg}</div>`:''}</div>${action?`<button class="btn btn-secondary btn-sm" style="align-self:center">${esc(action.label)}</button>`:''}<button class="t-close" aria-label="Dismiss"><svg class="icon-sm icon"><use href="#i-x"/></svg></button>`;
+  if(action)t.querySelectorAll('button')[0].onclick=()=>{action.fn();t.remove();};
+  t.querySelector('.t-close').onclick=()=>t.remove();
+  $('#toast-live').appendChild(t);
+  setTimeout(()=>{t.style.transition='opacity .3s';t.style.opacity='0';setTimeout(()=>t.remove(),300);},4000);
+}
+
+/* ---------- THEME ---------- */
+function applyTheme(){
+  const dark=state.themePref==='dark'||(state.themePref==='system'&&matchMedia('(prefers-color-scheme: dark)').matches);
+  document.documentElement.setAttribute('data-theme',dark?'dark':'light');
+  $('#btn-theme').innerHTML=`<svg class="icon"><use href="#${dark?'i-sun':'i-moon'}"/></svg>`;
+  $$('#pref-theme [data-themepref]').forEach(b=>b.classList.toggle('active',b.dataset.themepref===state.themePref));
+}
+matchMedia('(prefers-color-scheme: dark)').addEventListener('change',()=>{if(state.themePref==='system')applyTheme();});
+
+/* ---------- MODALS + FOCUS TRAP ---------- */
+let lastFocus=null;
+function openModal(id){lastFocus=document.activeElement;$('#'+id).classList.add('open');document.body.style.overflow='hidden';}
+function closeModals(){$$('.modal-overlay.open').forEach(m=>m.classList.remove('open'));document.body.style.overflow='';if(lastFocus&&lastFocus.focus)lastFocus.focus();}
+function guardOffline(){if(state.offline){toast('warn','You’re offline','Please reconnect to save changes.');return true;}return false;}
+function showConfirm({icon='i-trash',tone='danger',title,body,label,cb}){
+  $('#cf-icon').className='modal-icon '+(tone==='warn'?'warn':'danger');
+  $('#cf-icon').innerHTML=`<svg class="icon-xl icon"><use href="#${icon}"/></svg>`;
+  $('#cf-title').textContent=title;$('#cf-body').textContent=body;
+  $('#cf-confirm').textContent=label;
+  state.confirmCb=cb;openModal('modal-confirm');
+}
+function trapTab(e){
+  const ov=document.querySelector('.modal-overlay.open');if(!ov)return;
+  const list=[...ov.querySelectorAll('button,input,select,textarea,a[href]')].filter(x=>!x.disabled&&x.offsetParent!==null);
+  if(!list.length)return;
+  const first=list[0],last=list[list.length-1];
+  if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus();}
+  else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus();}
+}
+
+/* ---------- DROPDOWNS (smart positioning — fixes clipping) ---------- */
+function closeDDs(){$$('.dropdown.open').forEach(d=>{d.classList.remove('open');const m=d.querySelector('.dropdown-menu');if(m){m.style.position='';m.style.top='';m.style.left='';m.style.right='';m.style.maxHeight='';m.style.overflowY='';}});}
+function placeMenu(wrap){
+  const menu=wrap.querySelector('.dropdown-menu');if(!menu||wrap.id==='demo-fab')return;
+  let clipped=false,el=wrap.parentElement;
+  while(el&&el!==document.body){const cs=getComputedStyle(el);
+    if(/auto|scroll|hidden/.test(cs.overflow)||/auto|scroll|hidden/.test(cs.overflowX)||/auto|scroll|hidden/.test(cs.overflowY)){clipped=true;break;}
+    el=el.parentElement;}
+  if(!clipped)return;
+  const trig=wrap.querySelector('[data-dd-toggle]');const r=trig.getBoundingClientRect();
+  const mw=Math.min(menu.offsetWidth||240,innerWidth-16);
+  menu.style.position='fixed';
+  menu.style.left=Math.min(Math.max(8,r.right-mw),innerWidth-mw-8)+'px';
+  menu.style.right='auto';
+  const mh=menu.offsetHeight||240;
+  let top=r.bottom+6;
+  if(top+mh>innerHeight-8)top=Math.max(8,r.top-mh-6);
+  menu.style.top=top+'px';
+  if(top+mh>innerHeight-8){menu.style.maxHeight=(innerHeight-top-12)+'px';menu.style.overflowY='auto';}
+}
+addEventListener('resize',closeDDs);
+
+/* ---------- ROUTER ---------- */
+const PUBLIC_ROUTES=['login','register','verify-pending','verify-success','verify-failed','forgot','reset','offline'];
+const PROTECTED=['dashboard','applications','detail','interviews','settings'];
+let suppressHash=false;
+function go(route,param){
+  if(PROTECTED.includes(route)&&!state.authed){state.intended={route,param:param||null};route='login';param=null;}
+  state.route=route;state.routeParam=param||null;
+  suppressHash=true;location.hash=route==='detail'?`#/applications/${param}`:`#/${route}`;
+  setTimeout(()=>suppressHash=false,0);render();
+}
+function setRoute(route,param){
+  if(PROTECTED.includes(route)&&!state.authed){state.intended={route,param:param||null};route='login';param=null;}
+  else if(!PUBLIC_ROUTES.includes(route)&&!PROTECTED.includes(route)){route=state.authed?'notfound':'login';param=null;}
+  state.route=route;state.routeParam=param||null;render();
+}
+function applyHash(){
+  const h=(location.hash||'#/login').replace(/^#\//,'');
+  if(h.startsWith('applications/'))setRoute('detail',h.split('/')[1]);
+  else setRoute(h||'login',null);
+}
+addEventListener('hashchange',()=>{if(!suppressHash)applyHash();});
+
+/* ---------- RENDER ROOT ---------- */
+function render(){
+  const inShell=PROTECTED.includes(state.route)||state.route==='notfound';
+  $('#auth-root').hidden=inShell;$('#app-shell').hidden=!inShell;
+  if(!inShell){
+    $$('.auth-view').forEach(v=>v.hidden=v.dataset.auth!==state.route);
+    if(state.route==='verify-pending')startCooldown();
+    return;
+  }
+  $$('.page').forEach(p=>p.classList.toggle('active',p.dataset.page===state.route));
+  const navKey=state.route==='detail'?'applications':state.route;
+  $$('.sidebar [data-nav]').forEach(b=>b.classList.toggle('active',b.dataset.nav===navKey));
+  $$('.bottom-nav [data-bnav]').forEach(b=>b.classList.toggle('active',b.dataset.bnav===navKey));
+  renderOffline();
+  if(state.route==='dashboard')renderDashboard();
+  if(state.route==='applications')renderApplications();
+  if(state.route==='detail')renderDetail(state.routeParam);
+  if(state.route==='interviews')renderInterviews();
+  if(state.route==='settings'){renderTags();renderProviders();}
+  window.scrollTo({top:0});closeSlide();
+}
+function renderOffline(){
+  $('#offline-wrap').innerHTML=state.offline?`<div class="offline-banner" role="status"><svg class="icon" style="color:var(--warning)"><use href="#i-wifi-off"/></svg>You’re offline. Previously opened data may remain visible; changes are disabled.</div>`:'';
+}
+
+/* ---------- DASHBOARD ---------- */
+const loaded=new Set();
+function nextIv(){return interviews.filter(i=>i.status==='SCHEDULED'&&new Date(i.scheduledAt)>new Date()&&appById(i.appId)&&!appById(i.appId).archivedAt).sort((a,b)=>new Date(a.scheduledAt)-new Date(b.scheduledAt))[0];}
+function renderDashboard(){
+  const errBox=$('#dash-error'),onb=$('#dash-onboard'),widgets=$('#dash-widgets'),skel=$('#dash-skel');
+  if(state.apiError){
+    errBox.hidden=false;widgets.hidden=true;onb.hidden=true;skel.hidden=true;
+    errBox.innerHTML=`<div class="banner banner-error" role="alert" style="margin-bottom:16px"><svg class="icon"><use href="#i-alert-circle"/></svg><div style="flex:1">We couldn’t load your dashboard. Check your connection and try again.</div><button class="btn btn-secondary btn-sm" id="dash-retry">Retry</button></div>`;
+    $('#dash-retry').onclick=()=>{state.apiError=false;toast('success','Loaded','Dashboard data refreshed.');renderDashboard();};
+    return;
+  }
+  errBox.hidden=true;
+  const hasAny=apps.some(a=>!a.archivedAt);
+  if(!hasAny){onb.hidden=false;widgets.hidden=true;skel.hidden=true;return;}
+  onb.hidden=true;widgets.hidden=false;
+  const paint=()=>{
+    const act=apps.filter(a=>!a.archivedAt);
+    const total=act.length;
+    const active=act.filter(a=>['APPLIED','SCREENING','INTERVIEW'].includes(a.status)).length;
+    const sched=interviews.filter(i=>i.status==='SCHEDULED'&&new Date(i.scheduledAt)>new Date()&&appById(i.appId)&&!appById(i.appId).archivedAt).length;
+    const offers=act.filter(a=>a.status==='OFFER').length;
+    const nIv=nextIv();
+    $('#stat-grid').innerHTML=`
+      <button class="stat-card" data-stat="all"><div class="stat-icon"><svg class="icon"><use href="#i-briefcase"/></svg></div><div class="stat-label">Total applications</div><div class="stat-value">${total}</div><div class="stat-sub">All statuses · incl. closed</div></button>
+      <button class="stat-card" data-stat="active"><div class="stat-icon"><svg class="icon"><use href="#i-clock"/></svg></div><div class="stat-label">Active applications</div><div class="stat-value">${active}</div><div class="stat-sub">Applied · Screening · Interview</div></button>
+      <button class="stat-card" data-stat="interviews"><div class="stat-icon"><svg class="icon"><use href="#i-calendar"/></svg></div><div class="stat-label">Scheduled interviews</div><div class="stat-value">${sched}</div><div class="stat-sub">${nIv?'Next: '+fmtDT(nIv.scheduledAt):'None upcoming'}</div></button>
+      <button class="stat-card" data-stat="offers"><div class="stat-icon"><svg class="icon"><use href="#i-check-circle"/></svg></div><div class="stat-label">Offers</div><div class="stat-value">${offers}</div><div class="stat-sub">${offers?esc(act.filter(a=>a.status==='OFFER')[0].company):'Keep going!'}</div></button>`;
+    const fu=act.filter(a=>a.nextFollowUpAt).map(a=>({a,s:fuState(a)})).filter(x=>x.s==='overdue'||x.s==='today').sort((x,y)=>new Date(x.a.nextFollowUpAt)-new Date(y.a.nextFollowUpAt));
+    $('#fu-count').textContent=fu.length;
+    $('#fu-list').innerHTML=fu.length?fu.slice(0,6).map(({a,s})=>`
+      <div class="followup-item" data-open-app="${a.id}" tabindex="0">
+        <div style="min-width:0"><div class="cell-title">${esc(a.company)}</div><div class="cell-sub">${esc(a.role)}</div></div>
+        ${badge(a.status)}
+        <span class="fu-date ${s}"><svg class="icon-sm icon"><use href="#${s==='overdue'?'i-alert-triangle':'i-clock'}"/></svg>${s==='overdue'?'Overdue · '+fmtDate(a.nextFollowUpAt):'Due today'}</span>
+      </div>`).join('')
+      :`<div class="empty" style="padding:20px"><div class="empty-icon"><svg class="icon-xl icon"><use href="#i-check-circle"/></svg></div><h4>You’re all caught up</h4><p>No follow-ups due today.</p></div>`;
+    const counts=Object.fromEntries(STATUSES.map(s=>[s.key,0]));act.forEach(a=>counts[a.status]++);
+    $('#donut-total').textContent=total+' total';
+    let off=0;
+    const segs=STATUSES.filter(s=>counts[s.key]>0).map(s=>{const pct=counts[s.key]/total*100;const c=`<circle cx="50" cy="50" r="40" fill="none" stroke="${s.color}" stroke-width="13" pathLength="100" stroke-dasharray="${pct} ${100-pct}" stroke-dashoffset="${-off}"/>`;off+=pct;return c;}).join('');
+    $('#donut-area').innerHTML=`
+      <svg class="donut" viewBox="0 0 100 100" role="img" aria-label="Status distribution chart"><g transform="rotate(-90 50 50)"><circle cx="50" cy="50" r="40" fill="none" stroke="var(--surface-muted)" stroke-width="13"/>${segs}</g></svg>
+      <div class="legend">${STATUSES.map(s=>`<div class="l-item"><span class="l-dot" style="background:${s.color}"></span>${s.label}<span class="l-count">${counts[s.key]}</span></div>`).join('')}</div>`;
+    const up=interviews.filter(i=>i.status==='SCHEDULED'&&new Date(i.scheduledAt)>new Date()&&appById(i.appId)&&!appById(i.appId).archivedAt).sort((a,b)=>new Date(a.scheduledAt)-new Date(b.scheduledAt)).slice(0,5);
+    $('#up-ivs').innerHTML=up.length?up.map(i=>{const a=appById(i.appId);return `
+      <div class="list-row" data-open-app="${a.id}" tabindex="0">
+        <div class="iv-type"><svg class="icon"><use href="#${IV_TYPE[i.type][1]}"/></svg></div>
+        <div style="min-width:0"><div class="cell-title">${IV_TYPE[i.type][0]} · ${esc(a.company)}</div><div class="cell-sub">${esc(a.role)}${i.interviewerName?' · '+esc(i.interviewerName):''}</div></div>
+        <div style="margin-left:auto;text-align:right"><div class="small" style="font-weight:500">${fmtDate(i.scheduledAt)}</div><div class="cell-sub">${new Date(i.scheduledAt).toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'})}</div></div>
+      </div>`;}).join('')
+      :`<div class="empty" style="padding:20px"><div class="empty-icon"><svg class="icon-xl icon"><use href="#i-calendar"/></svg></div><h4>No interviews scheduled</h4><p>Add an interview from an application.</p></div>`;
+    const rec=[...act].sort((a,b)=>new Date(b.updatedAt)-new Date(a.updatedAt)).slice(0,5);
+    $('#recent-apps').innerHTML=rec.map(a=>`
+      <div class="list-row" data-open-app="${a.id}" tabindex="0">
+        <div style="min-width:0"><div class="cell-title">${esc(a.company)}</div><div class="cell-sub">${esc(a.role)}</div></div>
+        ${badge(a.status)}<span class="cell-sub" style="margin-left:auto;white-space:nowrap">${rel(a.updatedAt)}</span>
+      </div>`).join('');
+  };
+  if(!loaded.has('dashboard')){loaded.add('dashboard');widgets.hidden=true;skel.hidden=false;setTimeout(()=>{skel.hidden=true;widgets.hidden=false;paint();},550);}
+  else paint();
+}
+
+/* ---------- APPLICATIONS ---------- */
+function getFiltered(){
+  const f=state.filters;
+  let arr=apps.filter(a=>{
+    if(!f.includeArchived&&a.archivedAt)return false;
+    if(f.statuses.length&&!f.statuses.includes(a.status))return false;
+    if(f.tags.length&&!f.tags.some(t=>a.tagIds.includes(t)))return false;
+    if(f.remoteType&&a.remoteType!==f.remoteType)return false;
+    if(f.employmentType&&a.employmentType!==f.employmentType)return false;
+    if(f.source&&(a.source||'').toLowerCase()!==f.source.trim().toLowerCase())return false;
+    if(f.followUp&&fuState(a)!==f.followUp)return false;
+    if(f.appliedFrom&&(!a.appliedAt||a.appliedAt<f.appliedFrom))return false;
+    if(f.appliedTo&&(!a.appliedAt||a.appliedAt>f.appliedTo))return false;
+    if(f.search){const q=f.search.toLowerCase();
+      const hay=[a.company,a.role,a.location||'',tagsOf(a).map(t=>t.name).join(' '),a.notes.map(n=>n.content).join(' ')].join(' ').toLowerCase();
+      if(!hay.includes(q))return false;}
+    return true;
+  });
+  const {field,order}=state.sort;const dir=order==='asc'?1:-1;
+  const rank=k=>STATUSES.findIndex(s=>s.key===k);
+  arr.sort((a,b)=>{
+    let r=0;
+    if(field==='company'||field==='role')r=a[field].localeCompare(b[field]);
+    else if(field==='status')r=rank(a.status)-rank(b.status);
+    else if(field==='appliedAt'||field==='nextFollowUpAt'){const av=a[field],bv=b[field];if(!av&&!bv)r=0;else if(!av)r=1;else if(!bv)r=-1;else r=new Date(av)-new Date(bv);}
+    else r=new Date(a[field])-new Date(b[field]);
+    if(r===0)r=a.id<b.id?-1:1;
+    return r*dir;
+  });
+  return arr;
+}
+function kebab(a){return `
+  <div class="dropdown" data-stop>
+    <button class="btn btn-ghost btn-icon btn-sm" data-dd-toggle aria-label="Row actions"><svg class="icon"><use href="#i-more"/></svg></button>
+    <div class="dropdown-menu">
+      <button class="dropdown-item" data-act="status" data-id="${a.id}"><svg class="icon-sm icon"><use href="#i-clock"/></svg>Change status</button>
+      <button class="dropdown-item" data-act="edit" data-id="${a.id}"><svg class="icon-sm icon"><use href="#i-pencil"/></svg>Edit</button>
+      <button class="dropdown-item" data-act="archive" data-id="${a.id}"><svg class="icon-sm icon"><use href="#i-archive"/></svg>${a.archivedAt?'Unarchive':'Archive'}</button>
+      <div class="dropdown-sep"></div>
+      <button class="dropdown-item danger" data-act="delete" data-id="${a.id}"><svg class="icon-sm icon"><use href="#i-trash"/></svg>Delete</button>
+    </div>
+  </div>`;}
+function renderApplications(){
+  const body=$('#apps-body'),skel=$('#list-skel');
+  const paint=()=>{
+    const all=getFiltered();
+    $('#result-count').textContent=all.length+' application'+(all.length===1?'':'s');
+    buildFilterUI();buildChips();
+    const none=apps.filter(a=>!a.archivedAt).length===0;
+    $('#table-card').hidden=all.length===0;
+    $('#apps-empty').innerHTML=all.length===0?(none
+      ?`<div class="card"><div class="empty"><div class="empty-icon"><svg class="icon-xl icon"><use href="#i-inbox"/></svg></div><h4>No applications yet</h4><p>Start tracking your job search by adding your first application.</p><button class="btn btn-primary" style="margin-top:10px" id="empty-add"><svg class="icon"><use href="#i-plus"/></svg>Add your first application</button></div></div>`
+      :`<div class="card"><div class="empty"><div class="empty-icon"><svg class="icon-xl icon"><use href="#i-search"/></svg></div><h4>No results found</h4><p>Try a different search or clear filters.</p><button class="btn btn-secondary" style="margin-top:10px" id="empty-clear">Clear filters</button></div></div>`)
+      :'';
+    const ea=$('#empty-add');if(ea)ea.onclick=()=>openAppModal(null);
+    const ec=$('#empty-clear');if(ec)ec.onclick=clearFilters;
+    const totalPages=Math.max(1,Math.ceil(all.length/state.pageSize));
+    if(state.page>totalPages)state.page=totalPages;
+    const start=(state.page-1)*state.pageSize;
+    const slice=all.slice(start,start+state.pageSize);
+    $('#app-tbody').innerHTML=slice.map(a=>`
+      <tr data-open-app="${a.id}" tabindex="0">
+        <td><div class="cell-title">${esc(a.company)} ${a.archivedAt?'<span class="badge badge-withdrawn">Archived</span>':''}</div><div class="cell-sub">${esc(a.role)}</div></td>
+        <td>${badge(a.status)}</td>
+        <td>${tagsLine(a)}</td>
+        <td class="small">${a.appliedAt?fmtDate(a.appliedAt):'<span class="muted">—</span>'}</td>
+        <td>${fuCell(a)}</td>
+        <td class="small muted">${rel(a.updatedAt)}</td>
+        <td>${kebab(a)}</td>
+      </tr>`).join('');
+    $('#apps-cards').innerHTML=slice.map(a=>`
+      <div class="app-card-m" data-open-app="${a.id}" tabindex="0">
+        <div class="row1"><div><div class="cell-title">${esc(a.company)} ${a.archivedAt?'<span class="badge badge-withdrawn">Archived</span>':''}</div><div class="cell-sub">${esc(a.role)}</div></div>${badge(a.status)}</div>
+        <div style="display:flex;gap:6px;margin-top:8px;flex-wrap:wrap">${tagsLine(a)}</div>
+        <div style="display:flex;align-items:center;gap:6px;font-size:12px;margin-top:8px;color:var(--text-2)">Follow-up: ${fuCell(a)}</div>
+      </div>`).join('');
+    $('#pag-info').textContent=all.length?(innerWidth<768?`Page ${state.page} of ${totalPages}`:`Showing ${start+1}–${Math.min(start+state.pageSize,all.length)} of ${all.length}`):'';
+    let pg=`<button data-pg="prev" ${state.page===1?'disabled':''} aria-label="Previous page"><svg class="icon-sm icon"><use href="#i-chevron-left"/></svg></button>`;
+    for(let p=1;p<=totalPages;p++)pg+=`<button data-pg="${p}" class="${p===state.page?'active':''}" ${p===state.page?'aria-current="page"':''}>${p}</button>`;
+    pg+=`<button data-pg="next" ${state.page===totalPages?'disabled':''} aria-label="Next page"><svg class="icon-sm icon"><use href="#i-chevron-right"/></svg></button>`;
+    $('#pag-nav').innerHTML=pg;
+    $('#list-view').hidden=state.view==='board';
+    $('#board-view').hidden=state.view!=='board';
+    $('#board-hint').hidden=state.view!=='board';
+    if(state.view==='board'){
+      $('#board-view').innerHTML=STATUSES.map(s=>{
+        const cards=all.filter(a=>a.status===s.key);
+        return `<div class="board-col" data-status="${s.key}"><div class="board-col-head">${badge(s.key)}<span class="badge-count">${cards.length}</span></div>
+          ${cards.map(a=>`<div class="board-card" data-open-app="${a.id}" draggable="true" tabindex="0">
+            <div style="display:flex;justify-content:space-between;gap:6px;align-items:flex-start"><div class="cell-title">${esc(a.company)}</div>${kebab(a)}</div>
+            <div class="cell-sub">${esc(a.role)}</div>
+            ${fuState(a)!=='none'?`<div style="margin-top:6px">${fuCell(a)}</div>`:''}
+          </div>`).join('')||'<div class="small muted" style="padding:4px">No items</div>'}
+        </div>`;}).join('');
+    }
+    $('#sort-label').textContent=SORT_LABELS[state.sort.field];
+    $$('#sort-menu [data-sort]').forEach(b=>b.classList.toggle('selected',b.dataset.sort===state.sort.field));
+    $$('#sort-menu [data-order]').forEach(b=>b.classList.toggle('selected',b.dataset.order===state.sort.order));
+    $$('#view-toggle [data-viewmode]').forEach(b=>b.classList.toggle('active',b.dataset.viewmode===state.view));
+  };
+  if(!loaded.has('applications')){loaded.add('applications');body.hidden=true;skel.hidden=false;setTimeout(()=>{skel.hidden=true;body.hidden=false;paint();},550);}
+  else paint();
+}
+function buildFilterUI(){
+  $('#f-status-opts').innerHTML=STATUSES.map(s=>`<button type="button" class="tag ${state.filters.statuses.includes(s.key)?'selected':''}" data-fstatus="${s.key}">${s.label}</button>`).join('');
+  $('#f-tag-opts').innerHTML=tags.map(t=>`<button type="button" class="tag ${state.filters.tags.includes(t.id)?'selected':''}" data-ftag="${t.id}"><span class="dot" style="background:${t.color}"></span>${esc(t.name)}</button>`).join('');
+  $('#f-fu-opts').innerHTML=[['overdue','Overdue'],['today','Due today'],['upcoming','Upcoming'],['none','None']].map(([k,l])=>`<button type="button" class="tag ${state.filters.followUp===k?'selected':''}" data-ffu="${k}">${l}</button>`).join('');
+  $('#f-remote-opts').innerHTML=[['REMOTE','Remote'],['HYBRID','Hybrid'],['ONSITE','Onsite']].map(([k,l])=>`<button type="button" class="tag ${state.filters.remoteType===k?'selected':''}" data-fremote="${k}">${l}</button>`).join('');
+  $('#f-emp-opts').innerHTML=[['FULL_TIME','Full-time'],['CONTRACT','Contract'],['INTERNSHIP','Internship']].map(([k,l])=>`<button type="button" class="tag ${state.filters.employmentType===k?'selected':''}" data-femp="${k}">${l}</button>`).join('');
+  $('#f-source').value=state.filters.source;
+  $('#f-from').value=state.filters.appliedFrom;$('#f-to').value=state.filters.appliedTo;$('#f-archived').checked=state.filters.includeArchived;
+  $('#filter-count').textContent=activeFilterCount();
+}
+function activeFilterCount(){const f=state.filters;return f.statuses.length+f.tags.length+(f.followUp?1:0)+(f.remoteType?1:0)+(f.employmentType?1:0)+(f.source?1:0)+(f.appliedFrom||f.appliedTo?1:0)+(f.includeArchived?1:0);}
+function buildChips(){
+  const f=state.filters;let c='';
+  f.statuses.forEach(s=>c+=`<span class="chip"><strong>Status:</strong> ${sMeta(s).label} <button data-clear-chip="status:${s}" aria-label="Remove filter"><svg class="icon-sm icon"><use href="#i-x"/></svg></button></span>`);
+  f.tags.forEach(t=>{const tg=tags.find(x=>x.id===t);if(tg)c+=`<span class="chip"><strong>Tag:</strong> ${esc(tg.name)} <button data-clear-chip="tag:${t}" aria-label="Remove filter"><svg class="icon-sm icon"><use href="#i-x"/></svg></button></span>`;});
+  if(f.followUp)c+=`<span class="chip"><strong>Follow-up:</strong> ${f.followUp} <button data-clear-chip="followUp" aria-label="Remove filter"><svg class="icon-sm icon"><use href="#i-x"/></svg></button></span>`;
+  if(f.remoteType)c+=`<span class="chip"><strong>Remote:</strong> ${f.remoteType.toLowerCase()} <button data-clear-chip="remoteType" aria-label="Remove filter"><svg class="icon-sm icon"><use href="#i-x"/></svg></button></span>`;
+  if(f.employmentType)c+=`<span class="chip"><strong>Employment:</strong> ${({'FULL_TIME':'full-time','CONTRACT':'contract','INTERNSHIP':'internship'})[f.employmentType]} <button data-clear-chip="employmentType" aria-label="Remove filter"><svg class="icon-sm icon"><use href="#i-x"/></svg></button></span>`;
+  if(f.source)c+=`<span class="chip"><strong>Source:</strong> ${esc(f.source)} <button data-clear-chip="source" aria-label="Remove filter"><svg class="icon-sm icon"><use href="#i-x"/></svg></button></span>`;
+  if(f.appliedFrom||f.appliedTo)c+=`<span class="chip"><strong>Applied:</strong> ${f.appliedFrom||'…'} → ${f.appliedTo||'…'} <button data-clear-chip="dates" aria-label="Remove filter"><svg class="icon-sm icon"><use href="#i-x"/></svg></button></span>`;
+  if(f.includeArchived)c+=`<span class="chip"><strong>Includes archived</strong> <button data-clear-chip="archived" aria-label="Remove filter"><svg class="icon-sm icon"><use href="#i-x"/></svg></button></span>`;
+  if(c)c+=`<button class="clear" id="chips-clear">Clear all</button>`;
+  $('#chips-row').innerHTML=c;$('#chips-row').hidden=!c;
+  const cl=$('#chips-clear');if(cl)cl.onclick=clearFilters;
+}
+function clearFilters(){state.filters={search:'',statuses:[],tags:[],followUp:'',remoteType:'',employmentType:'',source:'',appliedFrom:'',appliedTo:'',includeArchived:false};$('#global-search').value='';state.page=1;if(state.route==='applications')renderApplications();}
+
+/* ---------- DETAIL ---------- */
+function renderDetail(id){
+  const a=appById(id);const root=$('#detail-root');
+  if(!a){root.innerHTML=`<div class="card" style="margin-top:40px"><div class="empty"><div class="empty-icon"><svg class="icon-xl icon"><use href="#i-alert-circle"/></svg></div><h4>Application not found</h4><p>It may have been deleted.</p><button class="btn btn-secondary" style="margin-top:10px" data-go="applications">Back to applications</button></div></div>`;return;}
+  const ivs=interviews.filter(i=>i.appId===a.id).sort((x,y)=>new Date(x.scheduledAt)-new Date(y.scheduledAt));
+  const notes=[...a.notes].sort((x,y)=>new Date(y.createdAt)-new Date(x.createdAt));
+  const hist=[...a.history].sort((x,y)=>new Date(y.changedAt)-new Date(x.changedAt));
+  const fuS=fuState(a);
+  root.innerHTML=`
+  <button class="btn btn-ghost btn-sm" data-go="applications" style="margin-bottom:14px"><svg class="icon-sm icon"><use href="#i-chevron-left"/></svg>Back to applications</button>
+  <div class="page-head">
+    <div>
+      <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap"><h1 style="font-size:22px">${esc(a.company)}</h1>${badge(a.status)}${a.archivedAt?'<span class="badge badge-withdrawn">Archived</span>':''}</div>
+      <p class="desc">${esc(a.role)} · Updated ${rel(a.updatedAt)}</p>
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <button class="btn btn-secondary" id="d-status">Change status <svg class="icon-sm icon"><use href="#i-chevron-down"/></svg></button>
+      <button class="btn btn-secondary" data-act="edit" data-id="${a.id}"><svg class="icon"><use href="#i-pencil"/></svg>Edit</button>
+      <div class="dropdown">
+        <button class="btn btn-ghost btn-icon" data-dd-toggle aria-label="More actions"><svg class="icon"><use href="#i-more"/></svg></button>
+        <div class="dropdown-menu">
+          <button class="dropdown-item" data-act="archive" data-id="${a.id}"><svg class="icon-sm icon"><use href="#i-archive"/></svg>${a.archivedAt?'Unarchive':'Archive'}</button>
+          <button class="dropdown-item danger" data-act="delete" data-id="${a.id}"><svg class="icon-sm icon"><use href="#i-trash"/></svg>Delete</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="card card-pad" style="margin-bottom:14px">
+    <div class="meta-grid">
+      <div class="meta-item"><div class="m-label">Location</div><div class="m-value"><svg class="icon-sm icon" style="color:var(--text-3)"><use href="#i-map-pin"/></svg>${esc(a.location||'—')}</div></div>
+      <div class="meta-item"><div class="m-label">Remote type</div><div class="m-value">${a.remoteType?({'REMOTE':'Remote','HYBRID':'Hybrid','ONSITE':'Onsite'})[a.remoteType]:'—'}</div></div>
+      <div class="meta-item"><div class="m-label">Employment</div><div class="m-value">${a.employmentType?({'FULL_TIME':'Full-time','CONTRACT':'Contract','INTERNSHIP':'Internship'})[a.employmentType]:'—'}</div></div>
+      <div class="meta-item"><div class="m-label">Source</div><div class="m-value">${esc(a.source||'—')}</div></div>
+      <div class="meta-item"><div class="m-label">Applied date</div><div class="m-value"><svg class="icon-sm icon" style="color:var(--text-3)"><use href="#i-calendar"/></svg>${a.appliedAt?fmtDate(a.appliedAt):'—'}</div></div>
+      <div class="meta-item"><div class="m-label">Follow-up</div><div class="m-value">${fuS==='overdue'?`<span class="flag-overdue"><svg class="icon-sm icon"><use href="#i-alert-triangle"/></svg>${fmtDT(a.nextFollowUpAt)}</span>`:fuS==='today'?`<span class="flag-today"><svg class="icon-sm icon"><use href="#i-clock"/></svg>Today, ${new Date(a.nextFollowUpAt).toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'})}</span>`:a.nextFollowUpAt?fmtDT(a.nextFollowUpAt):'—'}</div></div>
+      <div class="meta-item"><div class="m-label">Salary range</div><div class="m-value">${a.salaryMin!=null?`${Number(a.salaryMin).toLocaleString()}${a.salaryMax!=null?' – '+Number(a.salaryMax).toLocaleString():''} ${a.currency||''}`:'—'}</div></div>
+      <div class="meta-item"><div class="m-label">Job link</div><div class="m-value">${a.jobUrl?`<a href="${esc(a.jobUrl)}" target="_blank" rel="noopener">Open posting <svg class="icon-sm icon"><use href="#i-external"/></svg></a>`:'—'}</div></div>
+    </div>
+  </div>
+  <div class="card">
+    <div style="padding:0 16px"><div class="tabs" role="tablist">
+      <button class="tab active" data-dtab="overview" role="tab">Overview</button>
+      <button class="tab" data-dtab="notes" role="tab">Notes <span class="badge-count">${notes.length}</span></button>
+      <button class="tab" data-dtab="ivs" role="tab">Interviews <span class="badge-count">${ivs.length}</span></button>
+      <button class="tab" data-dtab="activity" role="tab">Activity</button>
+    </div></div>
+    <div class="card-body" data-dpanel="overview">
+      <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px">${tagsLine(a)}</div>
+      <h4 style="font-size:13px;font-weight:600;color:var(--text-2);margin-bottom:6px">LATEST NOTE</h4>
+      <p style="font-size:14px">${notes.length?esc(notes[0].content):'<span class="muted">No notes yet.</span>'}</p>
+    </div>
+    <div class="card-body" data-dpanel="notes" hidden>
+      <div class="field"><textarea class="textarea" id="note-input" placeholder="Add a note… (1–5000 characters)" aria-label="Note content"></textarea></div>
+      <div style="display:flex;justify-content:flex-end;margin-bottom:16px"><button class="btn btn-primary btn-sm" id="note-save">Add note</button></div>
+      ${notes.length?notes.map(n=>`
+        <div class="note-item">
+          <div class="note-head"><span class="small muted">${fmtDT(n.createdAt)}${n.updatedAt?' · edited':''}</span>
+            <span class="note-actions">
+              <span class="tip-wrap"><button class="btn btn-ghost btn-icon btn-sm" data-note-edit="${n.id}" aria-label="Edit note"><svg class="icon-sm icon"><use href="#i-pencil"/></svg></button><span class="tip">Edit</span></span>
+              <span class="tip-wrap"><button class="btn btn-ghost btn-icon btn-sm" data-note-del="${n.id}" aria-label="Delete note" style="color:var(--danger)"><svg class="icon-sm icon"><use href="#i-trash"/></svg></button><span class="tip">Delete</span></span>
+            </span>
+          </div>${esc(n.content)}
+        </div>`).join(''):'<p class="muted">No notes yet.</p>'}
+    </div>
+    <div class="card-body" data-dpanel="ivs" hidden>
+      <div style="display:flex;justify-content:flex-end;margin-bottom:12px"><button class="btn btn-primary btn-sm" id="d-add-iv"><svg class="icon-sm icon"><use href="#i-plus"/></svg>Add interview</button></div>
+      ${ivs.length?ivs.map(i=>`
+        <div class="iv-row">
+          <div class="iv-type"><svg class="icon"><use href="#${IV_TYPE[i.type][1]}"/></svg></div>
+          <div style="min-width:0;flex:1"><div class="cell-title">${IV_TYPE[i.type][0]} interview</div><div class="cell-sub">${fmtDT(i.scheduledAt)}${i.interviewerName?' · '+esc(i.interviewerName):''}</div></div>
+          <span class="badge ${IV_STATUS[i.status][1]}">${IV_STATUS[i.status][0]}</span>
+          ${i.meetingLink?`<a class="btn btn-secondary btn-sm" href="${esc(i.meetingLink)}" target="_blank" rel="noopener"><svg class="icon-sm icon"><use href="#i-video"/></svg>Join</a>`:''}
+          <span class="tip-wrap"><button class="btn btn-ghost btn-icon btn-sm" data-iv-edit="${i.id}" aria-label="Edit interview"><svg class="icon-sm icon"><use href="#i-pencil"/></svg></button><span class="tip">Edit</span></span>
+          <span class="tip-wrap"><button class="btn btn-ghost btn-icon btn-sm" data-iv-del="${i.id}" aria-label="Delete interview" style="color:var(--danger)"><svg class="icon-sm icon"><use href="#i-trash"/></svg></button><span class="tip">Delete</span></span>
+        </div>`).join(''):'<p class="muted">No interviews for this application yet.</p>'}
+    </div>
+    <div class="card-body" data-dpanel="activity" hidden>
+      ${hist.length?`<div class="timeline">${hist.map(h=>`
+        <div class="timeline-item">
+          <div style="font-size:14px;display:flex;gap:6px;align-items:center;flex-wrap:wrap">${badge(h.fromStatus)}<svg class="icon-sm icon" style="color:var(--text-3)"><use href="#i-arrow-right"/></svg>${badge(h.toStatus)}</div>
+          ${h.note?`<div class="small muted" style="margin:4px 0">“${esc(h.note)}”</div>`:''}
+          <div style="font-size:11px;color:var(--text-3);margin-top:2px">${fmtDT(h.changedAt)}</div>
+        </div>`).join('')}</div>`:'<p class="muted">No status changes yet.</p>'}
+    </div>
+  </div>`;
+  root.querySelectorAll('[data-dtab]').forEach(b=>b.onclick=()=>{
+    root.querySelectorAll('[data-dtab]').forEach(x=>x.classList.toggle('active',x===b));
+    root.querySelectorAll('[data-dpanel]').forEach(p=>p.hidden=p.dataset.dpanel!==b.dataset.dtab);
+  });
+  $('#d-status').onclick=()=>openStatusModal(a.id);
+  $('#d-add-iv').onclick=()=>openIvModal(null,a.id);
+  const ni=$('#note-input'),ns=$('#note-save');
+  ns.onclick=()=>{
+    if(guardOffline())return;
+    const v=ni.value.trim();
+    if(!v){toast('error','Note is empty','Note content is required.');return;}
+    if(v.length>5000){toast('error','Note too long','Maximum 5000 characters.');return;}
+    if(state.editingNote){const n=a.notes.find(x=>x.id===state.editingNote);n.content=v;n.updatedAt=new Date().toISOString();state.editingNote=null;toast('success','Saved','Note updated.');}
+    else{a.notes.push({id:uid(),content:v,createdAt:new Date().toISOString(),updatedAt:null});toast('success','Saved','Note added.');}
+    a.updatedAt=new Date().toISOString();renderDetail(a.id);
+  };
+  root.querySelectorAll('[data-note-edit]').forEach(b=>b.onclick=()=>{
+    const n=a.notes.find(x=>x.id===b.dataset.noteEdit);state.editingNote=n.id;ni.value=n.content;ns.textContent='Save note';ni.focus();
+  });
+  root.querySelectorAll('[data-note-del]').forEach(b=>b.onclick=()=>{
+    showConfirm({title:'Delete note?',body:'This note will be permanently removed from this application. This cannot be undone.',label:'Delete',cb:()=>{
+      if(guardOffline())return;a.notes=a.notes.filter(n=>n.id!==b.dataset.noteDel);a.updatedAt=new Date().toISOString();toast('success','Deleted','Note removed.');renderDetail(a.id);}});
+  });
+  root.querySelectorAll('[data-iv-edit]').forEach(b=>b.onclick=()=>openIvModal(b.dataset.ivEdit));
+  root.querySelectorAll('[data-iv-del]').forEach(b=>b.onclick=()=>{
+    showConfirm({title:'Delete interview?',body:'This interview will be permanently removed. This cannot be undone.',label:'Delete',cb:()=>{
+      if(guardOffline())return;interviews=interviews.filter(i=>i.id!==b.dataset.ivDel);toast('success','Deleted','Interview removed.');renderDetail(a.id);}});
+  });
+}
+
+/* ---------- INTERVIEWS PAGE ---------- */
+let ivTab='up';
+function renderInterviews(){
+  const now=new Date();
+  const up=interviews.filter(i=>new Date(i.scheduledAt)>=now).sort((a,b)=>new Date(a.scheduledAt)-new Date(b.scheduledAt));
+  const past=interviews.filter(i=>new Date(i.scheduledAt)<now).sort((a,b)=>new Date(b.scheduledAt)-new Date(a.scheduledAt));
+  $('#iv-up-count').textContent=up.length;$('#iv-past-count').textContent=past.length;
+  $('#iv-tab-up').classList.toggle('active',ivTab==='up');$('#iv-tab-past').classList.toggle('active',ivTab==='past');
+  $('#iv-up-body').hidden=ivTab!=='up';$('#iv-past-body').hidden=ivTab!=='past';
+  const row=i=>{const a=appById(i.appId);if(!a)return'';return `
+    <div class="iv-row">
+      <div class="iv-type"><svg class="icon"><use href="#${IV_TYPE[i.type][1]}"/></svg></div>
+      <div style="flex:1;min-width:180px;cursor:pointer" data-open-app="${a.id}">
+        <div class="cell-title">${esc(a.company)} · ${esc(a.role)}</div>
+        <div class="cell-sub">${IV_TYPE[i.type][0]}${i.interviewerName?' · '+esc(i.interviewerName):''}</div>
+      </div>
+      <div style="text-align:right"><div class="small" style="font-weight:500">${fmtDate(i.scheduledAt)}</div><div class="cell-sub">${new Date(i.scheduledAt).toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'})}</div></div>
+      <span class="badge ${IV_STATUS[i.status][1]}">${IV_STATUS[i.status][0]}</span>
+      ${i.meetingLink?`<a class="btn btn-secondary btn-sm" href="${esc(i.meetingLink)}" target="_blank" rel="noopener"><svg class="icon-sm icon"><use href="#i-video"/></svg>Join</a>`:''}
+      <span class="tip-wrap"><button class="btn btn-ghost btn-icon btn-sm" data-iv-edit="${i.id}" aria-label="Edit"><svg class="icon-sm icon"><use href="#i-pencil"/></svg></button><span class="tip">Edit</span></span>
+      <span class="tip-wrap"><button class="btn btn-ghost btn-icon btn-sm" data-iv-del="${i.id}" aria-label="Delete" style="color:var(--danger)"><svg class="icon-sm icon"><use href="#i-trash"/></svg></button><span class="tip">Delete</span></span>
+    </div>`;};
+  $('#iv-up-body').innerHTML=up.length?up.map(row).join(''):`<div class="empty"><div class="empty-icon"><svg class="icon-xl icon"><use href="#i-calendar"/></svg></div><h4>No interviews scheduled</h4><p>Add an interview from an application detail page.</p><button class="btn btn-primary" style="margin-top:10px" id="iv-empty-add"><svg class="icon"><use href="#i-plus"/></svg>Add interview</button></div>`;
+  $('#iv-past-body').innerHTML=past.length?past.map(row).join(''):`<div class="empty"><div class="empty-icon"><svg class="icon-xl icon"><use href="#i-clock"/></svg></div><h4>No past interviews</h4><p>Completed interviews will appear here.</p></div>`;
+  const ea=$('#iv-empty-add');if(ea)ea.onclick=()=>openIvModal(null);
+  $$('#iv-up-body [data-iv-edit],#iv-past-body [data-iv-edit]').forEach(b=>b.onclick=()=>openIvModal(b.dataset.ivEdit));
+  $$('#iv-up-body [data-iv-del],#iv-past-body [data-iv-del]').forEach(b=>b.onclick=()=>{
+    showConfirm({title:'Delete interview?',body:'This interview will be permanently removed. This cannot be undone.',label:'Delete',cb:()=>{
+      if(guardOffline())return;interviews=interviews.filter(i=>i.id!==b.dataset.ivDel);toast('success','Deleted','Interview removed.');renderInterviews();}});
+  });
+}
+$('#iv-tab-up').onclick=()=>{ivTab='up';renderInterviews();};
+$('#iv-tab-past').onclick=()=>{ivTab='past';renderInterviews();};
+
+/* ---------- SETTINGS ---------- */
+function renderTags(){
+  $('#tag-rows').innerHTML=tags.length?tags.map(t=>{
+    const used=apps.filter(a=>a.tagIds.includes(t.id)).length;
+    return `<div class="tag-row">
+      <span class="dot" style="background:${t.color};width:10px;height:10px;border-radius:50%"></span>
+      <input class="input" style="max-width:200px" value="${esc(t.name)}" data-tag-name="${t.id}" aria-label="Tag name">
+      <input class="input" type="color" value="${t.color}" style="width:40px;padding:3px" data-tag-color="${t.id}" aria-label="Tag color">
+      <span class="small muted" style="margin-left:auto">${used} application${used===1?'':'s'}</span>
+      <span class="tip-wrap"><button class="btn btn-ghost btn-icon btn-sm" data-tag-save="${t.id}" aria-label="Save tag"><svg class="icon-sm icon"><use href="#i-check"/></svg></button><span class="tip">Save</span></span>
+      <span class="tip-wrap"><button class="btn btn-ghost btn-icon btn-sm" data-tag-del="${t.id}" aria-label="Delete tag" style="color:var(--danger)"><svg class="icon-sm icon"><use href="#i-trash"/></svg></button><span class="tip">Delete</span></span>
+    </div>`;}).join(''):'<p class="muted">No tags yet.</p>';
+  $$('#tag-rows [data-tag-save]').forEach(b=>b.onclick=()=>{
+    if(guardOffline())return;
+    const t=tags.find(x=>x.id===b.dataset.tagSave);
+    const name=$(`[data-tag-name="${t.id}"]`).value.trim().toLowerCase();
+    if(!name){toast('error','Invalid tag','Tag name is required.');return;}
+    if(name.length>50){toast('error','Invalid tag','Maximum 50 characters.');return;}
+    if(tags.some(x=>x.id!==t.id&&x.name===name)){toast('error','Duplicate tag','You already have a tag with this name.');return;}
+    t.name=name;t.color=$(`[data-tag-color="${t.id}"]`).value;
+    toast('success','Saved','Tag updated.');renderTags();
+  });
+  $$('#tag-rows [data-tag-del]').forEach(b=>b.onclick=()=>{
+    const t=tags.find(x=>x.id===b.dataset.tagDel);
+    showConfirm({icon:'i-tag',tone:'warn',title:`Delete “${t.name}”?`,body:'This tag will be removed from all applications. The applications themselves are not deleted. This cannot be undone.',label:'Delete tag',cb:()=>{
+      if(guardOffline())return;
+      tags=tags.filter(x=>x.id!==t.id);apps.forEach(a=>a.tagIds=a.tagIds.filter(id=>id!==t.id));
+      state.filters.tags=state.filters.tags.filter(id=>id!==t.id);
+      toast('success','Deleted',`Tag “${t.name}” removed.`);renderTags();
+    }});
+  });
+}
+function renderProviders(){
+  const provs=[['google','Google','i-google'],['github','GitHub','i-github']];
+  $('#providers-list').innerHTML=provs.map(([k,label,icon])=>{
+    const connected=state.user.providers.includes(k);
+    return `<div class="provider-row">
+      <div class="provider-logo"><svg class="icon-lg icon"><use href="#${icon}"/></svg></div>
+      <div style="flex:1;min-width:120px"><div style="font-weight:500;font-size:14px">${label}</div><div class="small muted">${connected?(k==='google'?'john@gmail.com':'johndoe')+' · connected':'Not connected'}</div></div>
+      ${connected?`<button class="btn btn-secondary btn-sm" data-unlink="${k}">Disconnect</button>`:`<button class="btn btn-primary btn-sm" data-link="${k}">Connect</button>`}
+    </div>`;}).join('');
+  $$('#providers-list [data-link]').forEach(b=>b.onclick=()=>{
+    if(guardOffline())return;state.user.providers.push(b.dataset.link);
+    toast('success','Account connected',(b.dataset.link==='google'?'Google':'GitHub')+' is now linked.');renderProviders();
+  });
+  $$('#providers-list [data-unlink]').forEach(b=>b.onclick=()=>{
+    const k=b.dataset.link,label=k==='google'?'Google':'GitHub';
+    showConfirm({icon:'i-link',tone:'warn',title:`Disconnect ${label}?`,body:`You won’t be able to sign in with ${label} anymore. Make sure you have another login method available. You can reconnect at any time.`,label:'Disconnect',cb:()=>{
+      if(guardOffline())return;
+      const methods=state.user.providers.length-1+(state.user.hasPassword?1:0);
+      if(methods<1){toast('error','Cannot disconnect',`${label} is your last available login method.`);return;}
+      state.user.providers=state.user.providers.filter(p=>p!==k);
+      toast('success','Disconnected',`${label} was unlinked.`);renderProviders();
+    }});
+  });
+}
+state.user={name:'John Doe',email:'john@example.com',providers:['google'],hasPassword:true};
+
+/* ---------- APP MODAL ---------- */
+function openAppModal(appId){
+  if(guardOffline())return;
+  state.editingApp=appId;const a=appId?appById(appId):null;
+  $('#app-modal-title').textContent=a?'Edit application':'Add application';
+  $('#app-save-label').textContent=a?'Save changes':'Save application';
+  $('#af-status-wrap').hidden=!!a;
+  $('#af-note-wrap').hidden=!!a;
+  const set=(id,v)=>$('#'+id).value=v??'';
+  set('af-company',a?.company);set('af-role',a?.role);set('af-url',a?.jobUrl);set('af-location',a?.location);
+  set('af-remote',a?.remoteType||'');set('af-emp',a?.employmentType||'');set('af-source',a?.source);
+  $('#af-status').innerHTML=STATUSES.map(s=>`<option value="${s.key}" ${a&&a.status===s.key?'selected':(!a&&s.key==='WISHLIST'?'selected':'')}>${s.label}</option>`).join('');
+  set('af-applied',a?.appliedAt||'');set('af-smin',a?.salaryMin??'');set('af-smax',a?.salaryMax??'');set('af-cur',a?.currency||'');
+  set('af-fu',a?.nextFollowUpAt?toLocalInput(a.nextFollowUpAt):'');set('af-note','');
+  const sel=a?a.tagIds.slice():[];
+  const paintTags=()=>{$('#af-tags').innerHTML=tags.length?tags.map(t=>`<button type="button" class="tag ${sel.includes(t.id)?'selected':''}" data-aftag="${t.id}"><span class="dot" style="background:${t.color}"></span>${esc(t.name)} ${sel.includes(t.id)?'<svg class="icon-sm icon"><use href="#i-check"/></svg>':''}</button>`).join(''):'<span class="small muted">No tags yet — create them in Settings → Tags.</span>';
+    $$('#af-tags [data-aftag]').forEach(b=>b.onclick=()=>{const id=b.dataset.aftag;const i=sel.indexOf(id);if(i>-1)sel.splice(i,1);else sel.push(id);paintTags();});};
+  paintTags();
+  $('#af-tags').dataset.sel='';
+  $('#af-tags').getSel=()=>sel.slice();
+  $$('#form-app .field-error').forEach(e=>{e.hidden=true;e.textContent='';});
+  $$('#form-app .input,#form-app .textarea').forEach(e=>e.classList.remove('is-error'));
+  openModal('modal-app');
+}
+function setFormErr(name,msg){const e=$(`#form-app [data-err="${name}"]`);if(!e)return;e.textContent=msg;e.hidden=!msg;
+  const map={company:'#af-company',role:'#af-role',jobUrl:'#af-url',salaryMin:'#af-smin',salaryMax:'#af-smax',currency:'#af-cur',initialNote:'#af-note'};
+  const inp=$(map[name]);if(inp)inp.classList.toggle('is-error',!!msg);}
+$('#app-save').onclick=()=>{
+  if(guardOffline())return;
+  const company=$('#af-company').value.trim(),role=$('#af-role').value.trim(),url=$('#af-url').value.trim();
+  const smin=$('#af-smin').value,smax=$('#af-smax').value,cur=$('#af-cur').value,note=$('#af-note').value.trim();
+  let ok=true;
+  ['company','role','jobUrl','salaryMin','salaryMax','currency','initialNote'].forEach(n=>setFormErr(n,''));
+  if(!company){setFormErr('company','Company is required.');ok=false;}
+  else if(company.length>100){setFormErr('company','Maximum 100 characters.');ok=false;}
+  if(!role){setFormErr('role','Role is required.');ok=false;}
+  else if(role.length>100){setFormErr('role','Maximum 100 characters.');ok=false;}
+  if(url&&!/^https?:\/\//.test(url)){setFormErr('jobUrl','Enter a valid http(s) URL.');ok=false;}
+  if(smin&&Number(smin)<0){setFormErr('salaryMin','Must be 0 or more.');ok=false;}
+  if(smax&&smin&&Number(smax)<Number(smin)){setFormErr('salaryMax','Maximum salary must be at least the minimum.');ok=false;}
+  if((smin||smax)&&!cur){setFormErr('currency','Currency is required when a salary is provided.');ok=false;}
+  if(note&&note.length>5000){setFormErr('initialNote','Maximum 5000 characters.');ok=false;}
+  if(!ok)return;
+  const sel=$('#af-tags').getSel?$('#af-tags').getSel():[];
+  const btn=$('#app-save');btn.disabled=true;btn.innerHTML='<span class="spinner"></span>Saving…';
+  setTimeout(()=>{
+    btn.disabled=false;btn.innerHTML=`<svg class="icon"><use href="#i-check"/></svg><span id="app-save-label">${state.editingApp?'Save changes':'Save application'}</span>`;
+    const common={company,role,jobUrl:url||null,location:$('#af-location').value.trim()||null,remoteType:$('#af-remote').value||null,employmentType:$('#af-emp').value||null,source:$('#af-source').value.trim()||null,appliedAt:$('#af-applied').value||null,salaryMin:smin?Number(smin):null,salaryMax:smax?Number(smax):null,currency:cur||null,nextFollowUpAt:$('#af-fu').value?new Date($('#af-fu').value).toISOString():null,tagIds:sel};
+    if(state.editingApp){
+      const a=appById(state.editingApp);Object.assign(a,common);a.updatedAt=new Date().toISOString();
+      toast('success','Saved','Application updated successfully.');
+    }else{
+      const status=$('#af-status').value;const id=uid();const nowIso=new Date().toISOString();
+      const hist=status!=='WISHLIST'?[H('WISHLIST',status,'',nowIso)]:[];
+      apps.unshift({id,...common,status,archivedAt:null,createdAt:nowIso,updatedAt:nowIso,notes:note?[{id:uid(),content:note,createdAt:nowIso,updatedAt:null}]:[],history:hist});
+      toast('success','Saved','Application added successfully.');
+    }
+    closeModals();render();
+  },600);
+};
+
+/* ---------- STATUS MODAL ---------- */
+function openStatusModal(appId){
+  if(guardOffline())return;
+  const a=appById(appId);state.statusAppId=appId;
+  $('#status-app-name').innerHTML=`${esc(a.company)} · ${esc(a.role)} — currently ${badge(a.status)}`;
+  $('#st-select').innerHTML=STATUSES.map(s=>`<option value="${s.key}" ${s.key===a.status?'selected':''}>${s.label}</option>`).join('');
+  $('#st-note').value='';syncStatusSave();openModal('modal-status');
+}
+function syncStatusSave(){
+  const a=appById(state.statusAppId);if(!a)return;
+  const same=$('#st-select').value===a.status;
+  $('#st-save').disabled=same;$('#st-skip').textContent=same?'Cancel':'Skip';
+}
+$('#st-select').addEventListener('change',syncStatusSave);
+function applyStatusDirect(a,to,note){
+  a.history.push(H(a.status,to,note||'',new Date().toISOString()));
+  a.status=to;a.updatedAt=new Date().toISOString();
+  toast('success','Status updated',`Moved to ${sMeta(to).label}.`);
+  render();
+}
+function applyStatusFromModal(withNote){
+  const a=appById(state.statusAppId);if(!a){closeModals();return;}
+  const to=$('#st-select').value;
+  if(to===a.status){closeModals();return;}
+  const note=withNote?$('#st-note').value.trim():'';
+  closeModals();applyStatusDirect(a,to,note);
+}
+$('#st-save').onclick=()=>applyStatusFromModal(true);
+$('#st-skip').onclick=()=>{const a=appById(state.statusAppId);if(a&&$('#st-select').value!==a.status)applyStatusFromModal(false);else closeModals();};
+
+/* ---------- INTERVIEW MODAL ---------- */
+function openIvModal(ivId,preselectApp){
+  if(guardOffline())return;
+  const candidates=apps.filter(a=>!a.archivedAt);
+  if(!candidates.length){toast('error','No applications available','Create an application first — interviews must belong to one.');return;}
+  state.ivEditing=ivId;const iv=ivId?interviews.find(i=>i.id===ivId):null;
+  $('#iv-modal-title').textContent=iv?'Edit interview':'Add interview';
+  $('#ivf-app').innerHTML=candidates.map(a=>`<option value="${a.id}">${esc(a.company)} — ${esc(a.role)}</option>`).join('');
+  $('#ivf-app').disabled=!!iv;
+  $('#ivf-app').value=iv?iv.appId:(preselectApp||candidates[0].id);
+  $('#ivf-type').value=iv?.type||'TECHNICAL';$('#ivf-status').value=iv?.status||'SCHEDULED';
+  $('#ivf-when').value=iv?.scheduledAt?toLocalInput(iv.scheduledAt):'';
+  $('#ivf-who').value=iv?.interviewerName||'';$('#ivf-loc').value=iv?.location||'';
+  $('#ivf-link').value=iv?.meetingLink||'';$('#ivf-notes').value=iv?.notes||'';
+  $('#ivf-when-err').hidden=true;openModal('modal-interview');
+}
+$('#iv-save').onclick=()=>{
+  if(guardOffline())return;
+  const when=$('#ivf-when').value;
+  if(!when){$('#ivf-when-err').textContent='Scheduled date and time are required.';$('#ivf-when-err').hidden=false;return;}
+  const data={appId:$('#ivf-app').value,type:$('#ivf-type').value,status:$('#ivf-status').value,scheduledAt:new Date(when).toISOString(),interviewerName:$('#ivf-who').value.trim()||null,meetingLink:$('#ivf-link').value.trim()||null,location:$('#ivf-loc').value.trim()||null,notes:$('#ivf-notes').value.trim()||null};
+  if(state.ivEditing){Object.assign(interviews.find(i=>i.id===state.ivEditing),data);toast('success','Saved','Interview updated.');}
+  else{interviews.push({id:uid(),...data});toast('success','Saved','Interview added.');}
+  closeModals();render();
+};
+
+/* ---------- BOARD DRAG & DROP ---------- */
+let dragId=null;
+document.addEventListener('dragstart',e=>{const c=e.target.closest('.board-card');if(!c)return;dragId=c.dataset.openApp;c.classList.add('dragging');e.dataTransfer.effectAllowed='move';try{e.dataTransfer.setData('text/plain',dragId);}catch(_){}});
+document.addEventListener('dragend',()=>{dragId=null;$$('.board-card.dragging').forEach(c=>c.classList.remove('dragging'));$$('.board-col.drag-over').forEach(c=>c.classList.remove('drag-over'));});
+document.addEventListener('dragover',e=>{if(!dragId)return;const col=e.target.closest('.board-col');if(!col)return;e.preventDefault();$$('.board-col').forEach(x=>x.classList.toggle('drag-over',x===col));});
+document.addEventListener('drop',e=>{
+  if(!dragId)return;const col=e.target.closest('.board-col');
+  $$('.board-col.drag-over').forEach(x=>x.classList.remove('drag-over'));
+  if(!col)return;e.preventDefault();
+  const to=col.dataset.status;const a=appById(dragId);dragId=null;
+  if(!a||a.status===to)return;
+  if(guardOffline())return;
+  applyStatusDirect(a,to,'Changed from board');
+});
+
+/* ---------- GLOBAL ACTIONS ---------- */
+function handleAct(act,id){
+  const a=appById(id);if(!a)return;
+  if(act==='status')openStatusModal(id);
+  if(act==='edit')openAppModal(id);
+  if(act==='archive'){
+    if(guardOffline())return;
+    if(a.archivedAt){a.archivedAt=null;toast('success','Unarchived',`${a.company} is back in your list.`);}
+    else{a.archivedAt=new Date().toISOString();toast('success','Archived',`${a.company} is hidden from default views.`);}
+    render();
+  }
+  if(act==='delete'){
+    showConfirm({title:'Delete application?',body:`This permanently deletes ${a.company} — ${a.role}, including its notes, interviews, and status history. This action cannot be undone.`,label:'Delete',cb:()=>{
+      if(guardOffline())return;
+      apps=apps.filter(x=>x.id!==id);interviews=interviews.filter(i=>i.appId!==id);
+      toast('success','Deleted','Application removed.');
+      if(state.route==='detail')go('applications');else render();
+    }});
+  }
+}
+
+/* ---------- AUTH ---------- */
+function spin(btn,label,fn,ms=700){btn.disabled=true;const old=btn.innerHTML;btn.innerHTML=`<span class="spinner"></span>${label}`;setTimeout(()=>{btn.disabled=false;btn.innerHTML=old;fn();},ms);}
+function afterAuth(){
+  state.authed=true;
+  const dest=state.intended;state.intended=null;
+  if(dest)go(dest.route,dest.param);else go(state.landing||'dashboard');
+}
+$('#form-login').addEventListener('submit',e=>{
+  e.preventDefault();
+  const email=$('#lg-email').value.trim(),pass=$('#lg-pass').value;const al=$('#login-alert');
+  spin($('#lg-submit'),'Signing in…',()=>{
+    if(pass==='wrong'){al.hidden=false;al.innerHTML=`<div class="banner banner-error" role="alert" style="margin-bottom:14px"><svg class="icon"><use href="#i-alert-circle"/></svg><div>Check your email and password, then try again.</div></div>`;return;}
+    if(email.toLowerCase().startsWith('new@')){al.hidden=false;al.innerHTML=`<div class="banner banner-info" role="alert" style="margin-bottom:14px"><svg class="icon"><use href="#i-mail"/></svg><div>Your email isn’t verified yet. <a href="#/verify-email" data-go="verify-pending" style="font-weight:500;color:inherit;text-decoration:underline">Resend verification email</a>.</div></div>`;return;}
+    al.hidden=true;toast('success','Signed in','Welcome back, John.');afterAuth();
+  });
+});
+$$('[data-social]').forEach(b=>b.onclick=()=>{toast('info','Redirecting to provider','OAuth flow is handled by the backend in production.');setTimeout(afterAuth,600);});
+function fe(id,msg,input){const el=$('#'+id);el.textContent=msg;el.hidden=!msg;if(input)$(input).classList.toggle('is-error',!!msg);}
+$('#form-register').addEventListener('submit',e=>{
+  e.preventDefault();let ok=true;
+  const name=$('#rg-name').value.trim(),email=$('#rg-email').value.trim(),pass=$('#rg-pass').value;
+  fe('rg-name-err',name?'':'Enter your name.','#rg-name');if(!name)ok=false;
+  fe('rg-email-err',/^\S+@\S+\.\S+$/.test(email)?'':'Enter a valid email address.','#rg-email');if(!/^\S+@\S+\.\S+$/.test(email))ok=false;
+  fe('rg-pass-err',pass.length>=8?'':'Password must be at least 8 characters.','#rg-pass');if(pass.length<8)ok=false;
+  if(!ok)return;
+  spin($('#rg-submit'),'Creating account…',()=>{
+    $('#vp-email').textContent=email[0]+'***@'+email.split('@')[1];
+    suppressHash=true;location.hash='#/verify-email';setTimeout(()=>suppressHash=false,0);
+    state.route='verify-pending';state.authed=false;render();
+    toast('success','Account created','Check your email to verify your account.');
+  });
+});
+$('#rg-pass').addEventListener('input',e=>strength(e.target.value,'#rg-strength'));
+$('#rs-pass').addEventListener('input',e=>strength(e.target.value,'#rs-strength'));
+function strength(v,sel){const bars=$$(sel+' span');const score=v.length>=12?4:v.length>=10?3:v.length>=8?2:v.length>=4?1:0;bars.forEach((b,i)=>{b.className=i<score?(score>=3?'good':'ok'):'';});}
+let cdTimer=null;
+function startCooldown(){
+  clearInterval(cdTimer);let s=45;const b=$('#vp-resend');b.disabled=true;
+  const tick=()=>{b.textContent=s>0?`Resend verification email (0:${String(s).padStart(2,'0')})`:'Resend verification email';if(s<=0){clearInterval(cdTimer);b.disabled=false;}};
+  tick();cdTimer=setInterval(()=>{s--;tick();},1000);
+}
+$('#vp-resend').onclick=()=>{toast('success','Email sent','Verification email sent. Check your inbox.');startCooldown();};
+$$('[data-resend-again]').forEach(b=>b.onclick=()=>toast('success','Email sent','Verification email sent. Check your inbox.'));
+$('#form-forgot').addEventListener('submit',e=>{e.preventDefault();spin($('#fp-submit'),'Sending…',()=>{$('#fp-done').hidden=false;});});
+$('#form-reset').addEventListener('submit',e=>{
+  e.preventDefault();const p=$('#rs-pass').value,c=$('#rs-conf').value,er=$('#rs-err');
+  if(p.length<8){er.textContent='Password must be at least 8 characters.';er.hidden=false;return;}
+  if(p!==c){er.textContent='Passwords do not match.';er.hidden=false;return;}
+  er.hidden=true;toast('success','Password reset','You can now sign in with your new password.');go('login');
+});
+$('#rs-expired-demo').onclick=()=>{$('#rs-expired').hidden=false;$('#form-reset').hidden=true;$('#rs-expired-demo').hidden=true;};
+$('#rs-restore').onclick=()=>{$('#rs-expired').hidden=true;$('#form-reset').hidden=false;$('#rs-expired-demo').hidden=false;};
+$('#off-retry').onclick=()=>{state.offline=false;toast('success','Back online','Your connection was restored.');go(state.authed?'dashboard':'login');};
+$('#btn-logout').onclick=()=>{state.authed=false;closeDDs();toast('info','Signed out','See you soon.');go('login');};
+
+/* ---------- SETTINGS HANDLERS ---------- */
+$$('.settings-nav [data-stab]').forEach(b=>b.onclick=()=>{
+  $$('.settings-nav [data-stab]').forEach(x=>x.classList.toggle('active',x===b));
+  $$('[data-stab-panel]').forEach(p=>p.hidden=p.dataset.stabPanel!==b.dataset.stab);
+});
+$('#sp-save').onclick=()=>{if(guardOffline())return;const n=$('#sp-name').value.trim();
+  if(!n||n.length>100){toast('error','Invalid name','Name must be 1–100 characters.');return;}
+  spin($('#sp-save'),'Saving…',()=>toast('success','Saved','Profile updated.'));};
+$('#sc-oauth-demo').onchange=function(){
+  state.user.hasPassword=!this.checked;
+  $('#sc-cur-wrap').hidden=this.checked;
+  $('#sc-set-hint').hidden=!this.checked;
+  $('#sc-save').textContent=this.checked?'Set password':'Update password';
+};
+$('#sc-save').onclick=()=>{
+  if(guardOffline())return;
+  const cur=$('#sc-cur').value,nw=$('#sc-new').value,cf=$('#sc-conf').value,er=$('#sc-err');
+  if(state.user.hasPassword&&!cur){er.textContent='Enter your current password.';er.hidden=false;return;}
+  if(nw.length<8){er.textContent='New password must be at least 8 characters.';er.hidden=false;return;}
+  if(nw!==cf){er.textContent='Passwords do not match.';er.hidden=false;return;}
+  er.hidden=true;
+  spin($('#sc-save'),'Saving…',()=>{
+    ['sc-cur','sc-new','sc-conf'].forEach(i=>$('#'+i).value='');
+    state.user.hasPassword=true;$('#sc-oauth-demo').checked=false;$('#sc-oauth-demo').onchange.call($('#sc-oauth-demo'));
+    toast('success','Password updated','Your password was changed successfully.');renderProviders();
+  });
+};
+$('#tag-create').onclick=()=>{
+  if(guardOffline())return;
+  const name=$('#tag-new-name').value.trim().toLowerCase(),color=$('#tag-new-color').value;
+  if(!name){toast('error','Invalid tag','Tag name is required.');return;}
+  if(name.length>50){toast('error','Invalid tag','Maximum 50 characters.');return;}
+  if(tags.some(t=>t.name===name)){toast('error','Duplicate tag','You already have a tag with this name.');return;}
+  tags.push({id:uid(),name,color});$('#tag-new-name').value='';
+  toast('success','Created',`Tag “${name}” created.`);renderTags();
+};
+$('#pref-theme').addEventListener('click',e=>{
+  const b=e.target.closest('[data-themepref]');if(!b)return;
+  state.themePref=b.dataset.themepref;applyTheme();
+  toast('success','Theme updated',`Theme set to ${state.themePref}.`);
+});
+$('#pref-notif').onclick=function(){this.classList.toggle('on');this.setAttribute('aria-checked',this.classList.contains('on'));};
+$('#pref-save').onclick=()=>{if(guardOffline())return;
+  state.landing=$('#pref-landing').value==='applications'?'applications':'dashboard';
+  spin($('#pref-save'),'Saving…',()=>toast('success','Saved','Preferences updated.'));};
+$('#export-json').onclick=()=>toast('success','Export ready','tally-backup.json is downloading.');
+$('#export-csv').onclick=()=>toast('success','Export ready','applications.csv is downloading.');
+$('#import-pick').onclick=()=>{$('#import-file').textContent='tally-backup-2026-01-01.json · 42 KB';$('#import-go').disabled=false;};
+$('#import-go').onclick=()=>{
+  showConfirm({icon:'i-upload',tone:'warn',title:'Replace existing data?',body:'Importing tally-backup-2026-01-01.json will replace all of your current application data. Your account and preferences are kept. This cannot be undone.',label:'Import',cb:()=>{
+    if(guardOffline())return;toast('success','Import complete','Your data was replaced with the backup.');
+    $('#import-file').textContent='No file selected';$('#import-go').disabled=true;
+  }});
+};
+
+/* ---------- GLOBAL EVENTS ---------- */
+document.addEventListener('click',e=>{
+  if(e.target.closest('[data-stop]'))e.stopPropagation();
+  const dd=e.target.closest('[data-dd-toggle]');
+  if(dd){const wrap=dd.closest('.dropdown');const was=wrap.classList.contains('open');closeDDs();
+    if(!was){wrap.classList.add('open');placeMenu(wrap);}e.stopPropagation();return;}
+  const goEl=e.target.closest('[data-go]');
+  if(goEl){e.preventDefault();go(goEl.dataset.go);return;}
+  const dgo=e.target.closest('[data-demo-go]');
+  if(dgo){const r=dgo.dataset.demoGo;
+    if(['dashboard','applications','detail','interviews','settings','notfound'].includes(r))state.authed=true;
+    go(r,r==='detail'?apps[0].id:null);return;}
+  const openApp=e.target.closest('[data-open-app]');
+  if(openApp&&!e.target.closest('.dropdown')){go('detail',openApp.dataset.openApp);return;}
+  const act=e.target.closest('[data-act]');
+  if(act){handleAct(act.dataset.act,act.dataset.id);return;}
+  const chip=e.target.closest('[data-clear-chip]');
+  if(chip){const[k,v]=chip.dataset.clearChip.split(':');
+    if(k==='status')state.filters.statuses=state.filters.statuses.filter(s=>s!==v);
+    if(k==='tag')state.filters.tags=state.filters.tags.filter(t=>t!==v);
+    if(k==='followUp')state.filters.followUp='';
+    if(k==='remoteType')state.filters.remoteType='';
+    if(k==='employmentType')state.filters.employmentType='';
+    if(k==='source')state.filters.source='';
+    if(k==='dates'){state.filters.appliedFrom='';state.filters.appliedTo='';}
+    if(k==='archived')state.filters.includeArchived=false;
+    state.page=1;renderApplications();return;}
+  const pg=e.target.closest('[data-pg]');
+  if(pg&&!pg.disabled){const v=pg.dataset.pg;state.page=v==='prev'?state.page-1:v==='next'?state.page+1:Number(v);renderApplications();return;}
+  const fs=e.target.closest('[data-fstatus]');
+  if(fs){const k=fs.dataset.fstatus;const i=state.filters.statuses.indexOf(k);i>-1?state.filters.statuses.splice(i,1):state.filters.statuses.push(k);state.page=1;renderApplications();return;}
+  const ft=e.target.closest('[data-ftag]');
+  if(ft){const k=ft.dataset.ftag;const i=state.filters.tags.indexOf(k);i>-1?state.filters.tags.splice(i,1):state.filters.tags.push(k);state.page=1;renderApplications();return;}
+  const ffu=e.target.closest('[data-ffu]');
+  if(ffu){state.filters.followUp=state.filters.followUp===ffu.dataset.ffu?'':ffu.dataset.ffu;state.page=1;renderApplications();return;}
+  const fr=e.target.closest('[data-fremote]');
+  if(fr){state.filters.remoteType=state.filters.remoteType===fr.dataset.fremote?'':fr.dataset.fremote;state.page=1;renderApplications();return;}
+  const femp=e.target.closest('[data-femp]');
+  if(femp){state.filters.employmentType=state.filters.employmentType===femp.dataset.femp?'':femp.dataset.femp;state.page=1;renderApplications();return;}
+  const so=e.target.closest('[data-sort]');
+  if(so){state.sort.field=so.dataset.sort;renderApplications();return;}
+  const od=e.target.closest('[data-order]');
+  if(od){state.sort.order=od.dataset.order;renderApplications();return;}
+  const vm=e.target.closest('[data-viewmode]');
+  if(vm){state.view=vm.dataset.viewmode;renderApplications();return;}
+  const st=e.target.closest('[data-stat]');
+  if(st){const k=st.dataset.stat;
+    if(k==='interviews'){go('interviews');return;}
+    state.filters.statuses=k==='active'?['APPLIED','SCREENING','INTERVIEW']:k==='offers'?['OFFER']:[];
+    state.page=1;go('applications');return;}
+  const pw=e.target.closest('[data-pw]');
+  if(pw){const inp=$('#'+pw.dataset.pw);const show=inp.type==='password';inp.type=show?'text':'password';
+    pw.innerHTML=`<svg class="icon"><use href="#${show?'i-eye-off':'i-eye'}"/></svg>`;return;}
+  if(!e.target.closest('.dropdown-menu')&&!e.target.closest('[data-dd-toggle]'))closeDDs();
+});
+document.addEventListener('keydown',e=>{
+  if((e.key==='Enter'||e.key===' ')&&e.target.matches&&e.target.matches('[data-open-app],[data-stat]')&&e.target.tagName!=='BUTTON'){e.preventDefault();e.target.click();return;}
+  const ov=document.querySelector('.modal-overlay.open');
+  if(e.key==='Escape'){if(ov){closeModals();return;}closeDDs();closeSlide();return;}
+  if(ov&&e.key==='Tab'){trapTab(e);return;}
+  const typing=/INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName);
+  if(typing)return;
+  if(e.key==='/'){e.preventDefault();if(state.authed)$('#global-search').focus();return;}
+  if(!state.authed)return;
+  if(e.key==='n'){e.preventDefault();openAppModal(null);return;}
+  if(e.key==='g'){state._g=Date.now();return;}
+  if(state._g&&Date.now()-state._g<900){
+    if(e.key==='d')go('dashboard');
+    if(e.key==='a')go('applications');
+    state._g=0;
+  }
+});
+$('#cf-confirm').onclick=()=>{closeModals();if(state.confirmCb)state.confirmCb();state.confirmCb=null;};
+$$('[data-close]').forEach(b=>b.onclick=()=>closeModals());
+$$('.modal-overlay').forEach(m=>m.addEventListener('click',e=>{if(e.target===m)closeModals();}));
+$('#btn-add-top').onclick=()=>openAppModal(null);
+$('#btn-add-page').onclick=()=>openAppModal(null);
+$('#onboard-add').onclick=()=>openAppModal(null);
+$('#btn-add-iv').onclick=()=>openIvModal(null);
+$('#btn-theme').onclick=()=>{const dark=document.documentElement.getAttribute('data-theme')==='dark';state.themePref=dark?'light':'dark';applyTheme();};
+$('#f-clear').onclick=clearFilters;
+$('#f-apply').onclick=closeDDs;
+$('#f-from').onchange=e=>{state.filters.appliedFrom=e.target.value;state.page=1;renderApplications();};
+$('#f-to').onchange=e=>{state.filters.appliedTo=e.target.value;state.page=1;renderApplications();};
+$('#f-source').onchange=e=>{state.filters.source=e.target.value.trim();state.page=1;renderApplications();};
+$('#f-archived').onchange=e=>{state.filters.includeArchived=e.target.checked;state.page=1;renderApplications();};
+let searchTimer=null;
+$('#global-search').addEventListener('input',e=>{
+  clearTimeout(searchTimer);
+  searchTimer=setTimeout(()=>{state.filters.search=e.target.value.trim();state.page=1;
+    if(state.route==='applications')renderApplications();else if(e.target.value)go('applications');},300);
+});
+$('#global-search').addEventListener('keydown',e=>{if(e.key==='Enter'){state.filters.search=e.target.value.trim();go('applications');}});
+$('#install-dismiss').onclick=()=>$('#install-card').hidden=true;
+$('#install-go').onclick=()=>{toast('success','Installing','Tally is being added to your device.');$('#install-card').hidden=true;};
+$('#demo-expire').onclick=()=>{state.authed=false;state.intended={route:PROTECTED.includes(state.route)?state.route:'dashboard',param:state.routeParam};closeDDs();toast('warn','Session expired','Please sign in again.');go('login');};
+$('#demo-apierr').onclick=()=>{state.apiError=!state.apiError;state.authed=true;go('dashboard');};
+$('#demo-offline').onclick=()=>{state.offline=!state.offline;renderOffline();toast(state.offline?'warn':'success',state.offline?'You’re offline':'Back online',state.offline?'Changes are disabled until you reconnect.':'Your data has been refreshed.');};
+$('#demo-update').onclick=()=>toast('info','Update available','A new version is ready.',{label:'Reload',fn:()=>location.reload()});
+function closeSlide(){$('#sidebar').classList.remove('open');$('#scrim').classList.remove('open');}
+$('#btn-menu').onclick=()=>{$('#sidebar').classList.add('open');$('#scrim').classList.add('open');};
+$('#scrim').onclick=closeSlide;
+function mq(){const m=innerWidth<1024;$('#btn-menu').style.display=m?'inline-flex':'none';$('#topbar-brand').style.display=innerWidth<768?'inline':'none';}
+addEventListener('resize',()=>{mq();if(state.route==='applications')renderApplications();});
+mq();
+
+/* ---------- INIT ---------- */
+applyTheme();
+if(!location.hash)location.hash='#/login';
+applyHash();
+</script>
+</body>
+</html>

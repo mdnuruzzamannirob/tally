@@ -2,8 +2,9 @@
 
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useCallback, useEffect, useMemo, useState } from "react";
-import { BriefcaseBusiness, CalendarClock, ChevronRight, Filter, Plus, Search } from "lucide-react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import type { DragEvent } from "react";
+import { BriefcaseBusiness, CalendarClock, ChevronLeft, ChevronRight, Filter, Kanban, Plus, Search, Table2 } from "lucide-react";
 import {
   AppBadge,
   AppButton,
@@ -14,13 +15,16 @@ import {
   AppModal,
   AppMultiSelect,
   AppPagination,
+  AppPageHeader,
+  AppPopover,
   AppSelect,
+  AppSegmentedControl,
   AppSkeleton,
   AppTable,
   AppTextarea,
   toast,
 } from "@/components/app-ui";
-import { useApplicationsQuery, useCreateApplicationMutation } from "@/store/api/applications.api";
+import { useApplicationsQuery, useChangeApplicationStatusMutation, useCreateApplicationMutation } from "@/store/api/applications.api";
 import { useTagsQuery } from "@/store/api/tags.api";
 import type {
   Application,
@@ -50,6 +54,15 @@ const tones: Record<ApplicationStatus, "neutral" | "info" | "success" | "warning
 const statuses = Object.keys(labels) as ApplicationStatus[];
 const remoteTypes: RemoteType[] = ["ONSITE", "REMOTE", "HYBRID"];
 const employmentTypes: EmploymentType[] = ["FULL_TIME", "CONTRACT", "INTERNSHIP"];
+const boardAccents: Record<ApplicationStatus, string> = {
+  WISHLIST: "bg-slate-400",
+  APPLIED: "bg-indigo-500",
+  SCREENING: "bg-cyan-500",
+  INTERVIEW: "bg-violet-500",
+  OFFER: "bg-emerald-500",
+  REJECTED: "bg-rose-500",
+  WITHDRAWN: "bg-slate-300",
+};
 const humanize = (value: string) =>
   value
     .split("_")
@@ -58,6 +71,53 @@ const humanize = (value: string) =>
 const queryValue = (params: URLSearchParams, key: string) => params.get(key) ?? "";
 export function StatusBadge({ status }: { status: ApplicationStatus }) {
   return <AppBadge status={tones[status]}>{labels[status]}</AppBadge>;
+}
+
+function ApplicationBoard({ rows, onMove }: { rows: Application[]; onMove: (id: string, status: ApplicationStatus) => Promise<boolean> }) {
+  const [draggedId, setDraggedId] = useState<string | null>(null);
+  const [dragOverStatus, setDragOverStatus] = useState<ApplicationStatus | null>(null);
+  const [statusOverrides, setStatusOverrides] = useState<Record<string, ApplicationStatus>>({});
+  const boardRef = useRef<HTMLDivElement>(null);
+  const boardRows = useMemo(() => rows.map((row) => statusOverrides[row.id] ? { ...row, status: statusOverrides[row.id] } : row), [rows, statusOverrides]);
+  const dropApplication = async (id: string, status: ApplicationStatus) => {
+    const application = boardRows.find((row) => row.id === id);
+    if (!application || application.status === status) return;
+    const previousStatus = application.status;
+    setStatusOverrides((current) => ({ ...current, [id]: status }));
+    if (!await onMove(id, status)) setStatusOverrides((current) => ({ ...current, [id]: previousStatus }));
+  };
+  const scrollBoard = (direction: -1 | 1) => boardRef.current?.scrollBy({ left: direction * 480, behavior: "smooth" });
+  const autoScroll = (event: DragEvent<HTMLDivElement>) => {
+    const bounds = boardRef.current?.getBoundingClientRect();
+    if (!bounds) return;
+    if (event.clientX - bounds.left < 96) boardRef.current?.scrollBy({ left: -28 });
+    if (bounds.right - event.clientX < 96) boardRef.current?.scrollBy({ left: 28 });
+  };
+  return (
+    <div className="space-y-3">
+      <div className="flex items-center justify-between"><p className="text-sm text-muted-foreground">Drag an application to update its stage.</p><div className="flex gap-1"><AppButton aria-label="Scroll board left" onClick={() => scrollBoard(-1)} size="icon-sm" tone="outline"><ChevronLeft /></AppButton><AppButton aria-label="Scroll board right" onClick={() => scrollBoard(1)} size="icon-sm" tone="outline"><ChevronRight /></AppButton></div></div>
+    <div className="flex gap-3 overflow-x-auto pb-3 [scrollbar-width:thin]" onDragOver={autoScroll} ref={boardRef}>
+      {(["WISHLIST", "APPLIED", "SCREENING", "INTERVIEW", "OFFER", "REJECTED", "WITHDRAWN"] as ApplicationStatus[]).map((status) => (
+        <div className={`w-52 shrink-0 rounded-xl border bg-muted/30 transition-colors ${dragOverStatus === status ? "border-primary bg-primary/5 shadow-sm" : "border-border"}`} key={status} onDragEnter={() => setDragOverStatus(status)} onDragLeave={() => setDragOverStatus(null)} onDragOver={(event) => { event.preventDefault(); event.dataTransfer.dropEffect = "move"; }} onDrop={(event) => { event.preventDefault(); const id = event.dataTransfer.getData("application-id") || draggedId; if (id) void dropApplication(id, status); setDraggedId(null); setDragOverStatus(null); }}>
+          <div className="flex items-center justify-between border-b border-border px-4 py-3">
+            <span className="flex items-center gap-2 text-sm font-semibold"><span className={`size-2 rounded-full ${boardAccents[status]}`} />{labels[status]}</span>
+            <span className="rounded-full bg-background px-2 py-0.5 text-xs font-medium text-muted-foreground">{boardRows.filter((row) => row.status === status).length}</span>
+          </div>
+          <div className="min-h-44 space-y-2 p-2">
+            {boardRows.filter((row) => row.status === status).map((row) => (
+              <Link className="block cursor-grab rounded-lg border border-border bg-card p-3 shadow-sm transition-[border-color,box-shadow,transform] hover:-translate-y-0.5 hover:border-primary/50 hover:shadow-md active:cursor-grabbing" draggable onDragEnd={() => { setDraggedId(null); setDragOverStatus(null); }} onDragStart={(event) => { event.dataTransfer.effectAllowed = "move"; event.dataTransfer.setData("application-id", row.id); setDraggedId(row.id); }} href={`/applications/${row.id}`} key={row.id}>
+                <div className="flex items-start justify-between gap-2"><span className="text-sm font-semibold">{row.company}</span><ChevronRight className="size-4 shrink-0 text-muted-foreground" /></div>
+                <p className="mt-1 text-sm text-muted-foreground">{row.role}</p>
+                <div className="mt-3 flex flex-wrap gap-1.5"><StatusBadge status={row.status} />{row.remoteType ? <AppBadge>{humanize(row.remoteType)}</AppBadge> : null}</div>
+                {row.nextFollowUpAt ? <p className="mt-3 text-xs text-warning">Follow-up {new Date(row.nextFollowUpAt).toLocaleDateString()}</p> : null}
+              </Link>
+            ))}{!boardRows.some((row) => row.status === status) ? <div className={`flex min-h-36 items-center justify-center rounded-lg border border-dashed text-center text-xs text-muted-foreground ${dragOverStatus === status ? "border-primary text-primary" : "border-border/70"}`}>{draggedId ? "Drop application here" : "No applications"}</div> : null}
+          </div>
+        </div>
+      ))}
+    </div>
+    </div>
+  );
 }
 
 export function ApplicationWorkspace() {
@@ -81,14 +141,17 @@ export function ApplicationWorkspace() {
   const [tagIds, setTagIds] = useState<string[]>([]);
   const [remoteType, setRemoteType] = useState<RemoteType | "">("");
   const [employmentType, setEmploymentType] = useState<EmploymentType | "">("");
+  const [view, setView] = useState<"table" | "board">("table");
   const [createApplication, createState] = useCreateApplicationMutation();
+  const [changeApplicationStatus, changeStatusState] = useChangeApplicationStatusMutation();
   const { data: tags = [] } = useTagsQuery();
   const page = Number(queryValue(searchParams, "page") || "1");
+  const pageSize = [10, 20, 50].includes(Number(queryValue(searchParams, "pageSize"))) ? Number(queryValue(searchParams, "pageSize")) : 20;
   const status = (queryValue(searchParams, "status") as ApplicationStatus | "") || "";
   const query = useMemo(
     () => ({
       page,
-      pageSize: 20,
+      pageSize,
       ...(queryValue(searchParams, "search") ? { search: queryValue(searchParams, "search") } : {}),
       ...(status ? { status } : {}),
       ...(queryValue(searchParams, "tag") ? { tag: queryValue(searchParams, "tag") } : {}),
@@ -116,9 +179,9 @@ export function ApplicationWorkspace() {
         "updatedAt" | "createdAt" | "company" | "role" | "appliedAt" | "nextFollowUpAt" | "status",
       order: (queryValue(searchParams, "order") || "desc") as "asc" | "desc",
     }),
-    [page, searchParams, status],
+    [page, pageSize, searchParams, status],
   );
-  const { data, isError, isLoading, isFetching } = useApplicationsQuery(query);
+  const { data, isError, isLoading, isFetching, refetch } = useApplicationsQuery(query);
   const rows = data?.items ?? [];
   const updateUrl = useCallback(
     (changes: Record<string, string | undefined>) => {
@@ -142,6 +205,19 @@ export function ApplicationWorkspace() {
   const clearFilters = () => {
     setSearchInput("");
     router.replace(pathname);
+  };
+  const moveApplication = async (id: string, toStatus: ApplicationStatus) => {
+    const row = rows.find((item) => item.id === id);
+    if (!row || row.status === toStatus || changeStatusState.isLoading) return false;
+    try {
+      await changeApplicationStatus({ id, body: { toStatus } }).unwrap();
+      await refetch();
+      toast.success(`${row.company} moved to ${labels[toStatus]}.`);
+      return true;
+    } catch {
+      toast.error("Could not update application status.");
+      return false;
+    }
   };
   const resetCreate = () => {
     setCompany("");
@@ -195,7 +271,8 @@ export function ApplicationWorkspace() {
       toast.error("Could not add application.");
     }
   };
-  const hasFilters = searchParams.toString().length > 0;
+  const activeFilterCount = ["search", "status", "tag", "remoteType", "employmentType", "source", "appliedFrom", "appliedTo", "followUp", "includeArchived"].filter((key) => Boolean(read(key))).length;
+  const hasFilters = activeFilterCount > 0;
   if (isLoading)
     return (
       <div className="space-y-3">
@@ -215,11 +292,16 @@ export function ApplicationWorkspace() {
     );
   return (
     <>
-      <div className="space-y-5">
-        <div className="rounded-lg border border-border bg-card p-3">
-          <div className="flex flex-col gap-3 lg:flex-row lg:items-center">
+      <div className="space-y-6">
+        <AppPageHeader
+          title="Applications"
+          description={`${data?.meta?.total ?? 0} ${data?.meta?.total === 1 ? "application" : "applications"} · Organize opportunities, status changes, and follow-ups.`}
+          actions={<div className="flex items-center gap-2"><AppSegmentedControl className="w-42" onValueChange={(next) => next && setView(next as "table" | "board")} options={[{ value: "table", label: "Table", icon: <Table2 className="size-4" /> }, { value: "board", label: "Board", icon: <Kanban className="size-4" /> }]} value={view} /><AppButton onClick={() => setCreateOpen(true)}><Plus /> Add application</AppButton></div>}
+        />
+        <div className="flex items-center gap-2 rounded-xl border border-border bg-card p-2.5 shadow-sm">
+          <div className="contents">
             <AppInput
-              containerClassName="flex-1"
+              containerClassName="min-w-0 flex-1"
               leading={<Search />}
               onChange={(event) => setSearchInput(event.target.value)}
               placeholder="Search company, role, location, notes..."
@@ -234,7 +316,7 @@ export function ApplicationWorkspace() {
                 { label: "All statuses", value: "all" },
                 ...statuses.map((value) => ({ label: labels[value], value })),
               ]}
-              triggerClassName="lg:w-40"
+              triggerClassName="hidden"
               value={status || "all"}
             />
             <AppSelect
@@ -246,26 +328,11 @@ export function ApplicationWorkspace() {
                 { label: "All workplaces", value: "all" },
                 ...remoteTypes.map((value) => ({ label: humanize(value), value })),
               ]}
-              triggerClassName="lg:w-40"
+              triggerClassName="hidden"
               value={read("remoteType") || "all"}
             />
-            <AppButton aria-label="Add application" onClick={() => setCreateOpen(true)} size="icon">
-              <Plus />
-            </AppButton>
           </div>
-          <div className="mt-3 grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
-            <AppSelect
-              ariaLabel="Filter by employment"
-              onValueChange={(value) =>
-                updateUrl({ employmentType: value === "all" ? undefined : value || undefined })
-              }
-              options={[
-                { label: "All employment", value: "all" },
-                ...employmentTypes.map((value) => ({ label: humanize(value), value })),
-              ]}
-              triggerClassName="w-full"
-              value={read("employmentType") || "all"}
-            />
+          <div className="contents">
             <AppSelect
               ariaLabel="Filter by follow-up"
               onValueChange={(value) =>
@@ -278,7 +345,7 @@ export function ApplicationWorkspace() {
                 { label: "Upcoming", value: "upcoming" },
                 { label: "No follow-up", value: "none" },
               ]}
-              triggerClassName="w-full"
+              triggerClassName="hidden"
               value={read("followUp") || "all"}
             />
             <AppSelect
@@ -290,45 +357,17 @@ export function ApplicationWorkspace() {
                 { label: "All tags", value: "all" },
                 ...tags.map((tag) => ({ label: tag.name, value: tag.id })),
               ]}
-              triggerClassName="w-full"
+              triggerClassName="hidden"
               value={read("tag") || "all"}
             />
-            <AppInput
-              aria-label="Filter by source"
-              onChange={(event) => updateUrl({ source: event.target.value.trim() || undefined })}
-              placeholder="Source"
-              value={read("source")}
-            />
           </div>
-          <div className="mt-2 grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
-            <AppInput
-              aria-label="Applied from"
-              onChange={(event) => updateUrl({ appliedFrom: event.target.value || undefined })}
-              type="date"
-              value={read("appliedFrom")}
-            />
-            <AppInput
-              aria-label="Applied to"
-              onChange={(event) => updateUrl({ appliedTo: event.target.value || undefined })}
-              type="date"
-              value={read("appliedTo")}
-            />
-            <AppButton
-              onClick={() =>
-                updateUrl({
-                  includeArchived: read("includeArchived") === "true" ? undefined : "true",
-                })
-              }
-              tone={read("includeArchived") === "true" ? "primary" : "outline"}
-            >
-              Archived
-            </AppButton>
-            {hasFilters ? (
-              <AppButton onClick={clearFilters} tone="ghost">
-                <Filter /> Clear filters
-              </AppButton>
-            ) : null}
+          <div className="contents">
+            <AppPopover align="end" contentClassName="w-96" description="Narrow your workspace without losing your place." title="Filters" trigger={<AppButton className="shrink-0" tone={hasFilters ? "primary" : "outline"}><Filter /> Filters{activeFilterCount ? ` (${activeFilterCount})` : ""}</AppButton>}>
+              <div className="space-y-4"><div className="grid grid-cols-2 gap-3"><AppSelect ariaLabel="Filter by status" onValueChange={(value) => updateUrl({ status: value === "all" ? undefined : value || undefined })} options={[{ label: "All statuses", value: "all" }, ...statuses.map((value) => ({ label: labels[value], value }))]} value={status || "all"} /><AppSelect ariaLabel="Filter by tag" onValueChange={(value) => updateUrl({ tag: value === "all" ? undefined : value || undefined })} options={[{ label: "All tags", value: "all" }, ...tags.map((tag) => ({ label: tag.name, value: tag.id }))]} value={read("tag") || "all"} /><AppSelect ariaLabel="Filter by workplace" onValueChange={(value) => updateUrl({ remoteType: value === "all" ? undefined : value || undefined })} options={[{ label: "All workplaces", value: "all" }, ...remoteTypes.map((value) => ({ label: humanize(value), value }))]} value={read("remoteType") || "all"} /><AppSelect ariaLabel="Filter by follow-up" onValueChange={(value) => updateUrl({ followUp: value === "all" ? undefined : value || undefined })} options={[{ label: "Any follow-up", value: "all" }, { label: "Overdue", value: "overdue" }, { label: "Today", value: "today" }, { label: "Upcoming", value: "upcoming" }, { label: "No follow-up", value: "none" }]} value={read("followUp") || "all"} /><AppSelect ariaLabel="Filter by employment" onValueChange={(value) => updateUrl({ employmentType: value === "all" ? undefined : value || undefined })} options={[{ label: "All employment", value: "all" }, ...employmentTypes.map((value) => ({ label: humanize(value), value }))]} value={read("employmentType") || "all"} /><AppInput aria-label="Filter by source" onChange={(event) => updateUrl({ source: event.target.value.trim() || undefined })} placeholder="Source" value={read("source")} /></div><div className="grid grid-cols-2 gap-3"><AppInput aria-label="Applied from" onChange={(event) => updateUrl({ appliedFrom: event.target.value || undefined })} type="date" value={read("appliedFrom")} /><AppInput aria-label="Applied to" onChange={(event) => updateUrl({ appliedTo: event.target.value || undefined })} type="date" value={read("appliedTo")} /></div><AppButton className="w-full" onClick={() => updateUrl({ includeArchived: read("includeArchived") === "true" ? undefined : "true" })} tone={read("includeArchived") === "true" ? "primary" : "outline"}>{read("includeArchived") === "true" ? "Showing archived applications" : "Include archived applications"}</AppButton></div>
+            </AppPopover>
           </div>
+          <AppSelect ariaLabel="Sort applications" onValueChange={(value) => updateUrl({ sort: value === "updatedAt" ? undefined : value || undefined })} options={[{ label: "Recently updated", value: "updatedAt" }, { label: "Company", value: "company" }, { label: "Applied date", value: "appliedAt" }, { label: "Status", value: "status" }]} triggerClassName="w-44 shrink-0" value={read("sort") || "updatedAt"} />
+          {hasFilters ? <AppButton className="shrink-0" onClick={clearFilters} tone="ghost"><Filter /> Clear</AppButton> : null}
         </div>
         <div className="flex items-center justify-between gap-3">
           <p className="text-sm text-muted-foreground">
@@ -336,23 +375,9 @@ export function ApplicationWorkspace() {
               ? "Updating..."
               : `${data?.meta?.total ?? 0} application${(data?.meta?.total ?? 0) === 1 ? "" : "s"}`}
           </p>
-          <AppSelect
-            ariaLabel="Sort applications"
-            onValueChange={(value) =>
-              updateUrl({ sort: value === "updatedAt" ? undefined : value || undefined })
-            }
-            options={[
-              { label: "Recently updated", value: "updatedAt" },
-              { label: "Company", value: "company" },
-              { label: "Applied date", value: "appliedAt" },
-              { label: "Status", value: "status" },
-            ]}
-            triggerClassName="w-44"
-            value={read("sort") || "updatedAt"}
-          />
         </div>
-        {rows.length ? (
-          <AppCard className="overflow-hidden" padding="none">
+        {view === "board" ? <ApplicationBoard onMove={moveApplication} rows={rows} /> : rows.length ? (
+          <AppCard className="overflow-hidden shadow-sm" padding="none">
             <AppTable
               columns={[
                 {
@@ -371,6 +396,11 @@ export function ApplicationWorkspace() {
                   key: "status",
                   header: "Status",
                   render: (row) => <StatusBadge status={row.status} />,
+                },
+                {
+                  key: "tags",
+                  header: "Tags",
+                  render: (row) => row.tags.length ? <div className="flex max-w-48 flex-wrap gap-1.5">{row.tags.slice(0, 3).map((tag) => <AppBadge key={tag.id} size="sm">{tag.name}</AppBadge>)}</div> : <span className="text-muted-foreground">—</span>,
                 },
                 {
                   key: "details",
@@ -414,6 +444,10 @@ export function ApplicationWorkspace() {
               getRowKey={(row) => row.id}
               rows={rows}
             />
+            <div className="flex flex-col gap-3 border-t border-border bg-muted/20 px-5 py-3 sm:flex-row sm:items-center sm:justify-between">
+              <p className="text-sm text-muted-foreground">Showing {Math.min((page - 1) * (data?.meta?.limit ?? 20) + 1, data?.meta?.total ?? 0)}–{Math.min(page * (data?.meta?.limit ?? 20), data?.meta?.total ?? 0)} of {data?.meta?.total ?? 0} applications</p>
+              <div className="flex items-center gap-3"><span className="text-xs text-muted-foreground">Rows per page</span><AppSelect ariaLabel="Rows per page" onValueChange={(value) => updateUrl({ pageSize: value || "20", page: "1" })} options={[{ label: "10", value: "10" }, { label: "20", value: "20" }, { label: "50", value: "50" }]} size="sm" triggerClassName="w-18" value={String(pageSize)} /><AppPagination onPageChange={(nextPage) => updateUrl({ page: String(nextPage) })} page={page} totalPages={Math.max(1, data?.meta?.totalPages || 1)} /></div>
+            </div>
           </AppCard>
         ) : (
           <AppCard>
@@ -433,13 +467,7 @@ export function ApplicationWorkspace() {
             />
           </AppCard>
         )}
-        <div className="flex justify-end">
-          <AppPagination
-            onPageChange={(nextPage) => updateUrl({ page: String(nextPage) })}
-            page={page}
-            totalPages={Math.max(1, data?.meta?.totalPages || 1)}
-          />
-        </div>
+        {view === "board" ? <div className="flex justify-end"><AppPagination onPageChange={(nextPage) => updateUrl({ page: String(nextPage) })} page={page} totalPages={Math.max(1, data?.meta?.totalPages || 1)} /></div> : null}
       </div>
       <AppModal
         bodyClassName="max-h-[75vh]"
