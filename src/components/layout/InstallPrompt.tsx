@@ -1,6 +1,6 @@
 "use client";
 
-import { Download, X } from "lucide-react";
+import { Download, Target, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { AppButton, toast } from "@/components/app-ui";
 
@@ -49,20 +49,16 @@ export function InstallPrompt() {
 
   return (
     <div className="relative flex min-h-10 items-center justify-center border-b border-primary-border bg-primary-soft px-12 py-1.5">
-      <div className="flex min-w-0 items-center justify-center gap-2">
-        <span className="grid size-6 shrink-0 place-items-center rounded-md bg-primary/10 text-primary">
-          <Download className="size-3" />
+      <div className="flex min-w-0 items-center gap-2">
+        <span className="grid size-6 shrink-0 place-items-center rounded-md bg-primary text-primary-foreground">
+          <Target className="size-3" />
         </span>
-        <p className="text-xs font-medium text-foreground">
-          Install Tally{" "}
-          <span className="hidden font-normal text-muted-foreground sm:inline">
-            for faster offline access.
-          </span>
-        </p>
-        <AppButton aria-label="Add Tally to your device" className="h-6! px-2! text-primary hover:bg-primary/10!" onClick={() => void install()} size="xs" tone="ghost">
-          <Download className="size-3.5" />
-          <span className="hidden sm:inline">Add to device</span>
-          <span className="sm:hidden">Add</span>
+        <span className="text-xs font-semibold text-foreground">Tally</span>
+        <span aria-hidden="true" className="h-4 w-px bg-border-strong" />
+        <span className="text-xs text-foreground">Install Tally <span className="text-muted-foreground">for faster offline access</span></span>
+        <AppButton aria-label="Install Tally" className="h-6! px-2!" onClick={() => void install()} size="xs">
+          <Download className="size-3" />
+          Install
         </AppButton>
       </div>
 
