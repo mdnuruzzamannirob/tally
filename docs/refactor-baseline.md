@@ -28,11 +28,12 @@
 
 ## Baseline command result
 
-The local `pnpm@9.15.0` package-manager shim refused to run because its registry signature could not be verified in the current environment. No lockfile change was made. Typecheck, lint, unit, and build checks must be rerun after the package-manager trust issue is resolved.
+The local `pnpm@9.15.0` package-manager shim remains unusable because its registry signature cannot be verified in the current environment; no lockfile change was made. Direct local binaries were used instead: TypeScript, ESLint, Vitest (2 tests), and the Next production build pass. Playwright E2E was not run because its configured `pnpm dev` web server depends on the blocked package-manager shim.
 
 ## Phase 1 exit criteria
 
 - Route files only compose feature entry components.
 - Dashboard, applications, interviews, and settings ownership is under `features/`.
-- Compatibility exports preserve existing imports during incremental migration.
+- Routes use feature-owned entry components directly; unused compatibility shims were removed.
+- Raw shadcn imports are confined to `src/components/app-ui` and the generated `src/components/ui` dependency graph.
 - No backend/API contract changes are introduced.

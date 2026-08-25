@@ -1,1 +1,1 @@
-export { SettingsScreen } from "./components/SettingsScreen";
+export { SettingsUI } from "./SettingsUI";

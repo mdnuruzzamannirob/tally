@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Inter } from "next/font/google";
 import { ThemeProvider } from "next-themes";
 import type { ReactNode } from "react";
 
@@ -7,6 +8,12 @@ import { ServiceWorkerRegistration } from "@/components/providers/ServiceWorkerR
 import { StoreProvider } from "@/components/providers/StoreProvider";
 import { SessionBootstrap } from "@/features/auth/SessionBootstrap";
 import "./globals.css";
+
+const inter = Inter({
+  display: "swap",
+  subsets: ["latin"],
+  variable: "--font-inter",
+});
 
 export const metadata: Metadata = {
   title: { default: "Tally", template: "%s | Tally" },
@@ -27,7 +34,7 @@ export const viewport = {
 
 export default function RootLayout({ children }: Readonly<{ children: ReactNode }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html className={inter.variable} lang="en" suppressHydrationWarning>
       <body className="font-sans" suppressHydrationWarning>
         <StoreProvider>
           <ThemeProvider attribute="class" defaultTheme="system" enableSystem>

@@ -7,14 +7,14 @@ Last updated: 2026-08-25
 | Phase | Status | Completed work |
 | --- | --- | --- |
 | Phase 0 — Baseline and Refactor Safety | COMPLETED | Added `docs/refactor-baseline.md`, route acceptance matrix, worktree safety record, and baseline validation notes. |
-| Phase 1 — Folder Structure and Integration Boundary | COMPLETED — structural scope | Added feature entry points and compatibility exports; moved dashboard/interviews composition into feature folders; separated application board, status badge, config, and toolbar ownership; kept routes thin. |
-| Phase 2 — Global CSS | PENDING | Not started. |
+| Phase 1 — Folder Structure and Integration Boundary | COMPLETED | Feature-owned route entries are used directly; dashboard/interviews/settings/application detail composition lives in `features/`; application toolbar and board are real feature components; shell-specific shadcn composition is behind app-ui components; unused compatibility shims were removed. |
+| Phase 2 — Global CSS | COMPLETED — shadcn-compatible | `globals.css` keeps the generated shadcn imports and semantic variable contract, adds prototype-aligned light/dark/status tokens, 4px spacing, typography scale, compact radii, popover/modal shadow tokens, focus/disabled/reduced-motion behavior, and `next/font` Inter wiring. Raw `components/ui` remains unchanged. |
 | Phase 3 — `app-ui` Design System | PENDING | Not started. |
 | Phase 4–12 | PENDING | Not started. |
 
-Phase 1-এর deeper visual decomposition of the applications table/form and application-detail tabs is intentionally kept for Phases 6–7. No raw shadcn component or backend/API contract was changed.
+Phase 1-এর deeper visual redesign of the applications form and application-detail tabs remains in Phases 6–7; the route and ownership boundaries are already real feature boundaries. No raw shadcn component or backend/API contract was changed.
 
-Validation completed for Phase 0–1: TypeScript, ESLint, Next production build, and `git diff --check` passed. Vitest could not load its config because of the current sandbox permission issue.
+Validation completed for Phase 0–2: TypeScript, ESLint, Vitest (2 tests), Next production build, and `git diff --check` passed. Playwright E2E remains pending because its configured `pnpm dev` web server is blocked by the local pnpm signature issue.
 
 ## Summary
 
@@ -83,11 +83,11 @@ Exit criteria: বর্তমান behavior-এর documented baseline এব�
 - Dashboard-এর stats, follow-up, chart, recent applications এবং upcoming interviews আলাদা component করা।
 - Notes, tags, interviews এবং settings-এর feature-specific UI নিজ নিজ feature folder-এ নেওয়া।
 - `components/ui` import কেবল `components/app-ui`-এর মধ্যে সীমাবদ্ধ রাখা।
-- Existing direct imports-এর জন্য compatibility re-export রাখা, যাতে migration ধাপে ধাপে হয়।
+- Route and feature imports use direct feature-owned entries; temporary compatibility shims are not retained.
 
 Exit criteria: কোনো route monolithic UI file-এর উপর নির্ভর করবে না; backend/API behavior অপরিবর্তিত থাকবে।
 
-## Phase 2 — Design Tokens এবং Global CSS Redesign
+## Phase 2 — Design Tokens এবং Global CSS Redesign [COMPLETED]
 
 Prototype অনুযায়ী:
 

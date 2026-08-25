@@ -1,5 +1,5 @@
-import { SettingsScreen } from "@/features/settings";
+import { SettingsUI } from "@/features/settings";
 
 export default function SettingsPage() {
-  return <SettingsScreen />;
+  return <SettingsUI />;
 }
