@@ -1,7 +1,8 @@
-import { AppStatusBadge } from "@/components/app-ui";
+import { AppStatusBadge, type AppApplicationStatus } from "@/components/app-ui";
 import type { ApplicationStatus } from "@/types/application.types";
 import { applicationLabels } from "../application-config";
 
 export function ApplicationStatusBadge({ status }: { status: ApplicationStatus }) {
-  return <AppStatusBadge status={status.toLowerCase() as Lowercase<typeof status>}>{applicationLabels[status]}</AppStatusBadge>;
+  const normalizedStatus = status.toLowerCase() as AppApplicationStatus;
+  return <AppStatusBadge status={normalizedStatus}>{applicationLabels[status]}</AppStatusBadge>;
 }

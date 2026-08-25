@@ -21,6 +21,7 @@ import {
   AppInput,
   AppKbd,
   AppModal,
+  AppMobileList,
   AppMultiSelect,
   AppNumberInput,
   AppPageHeader,
@@ -33,6 +34,7 @@ import {
   AppSelect,
   AppSheet,
   AppSkeleton,
+  AppSection,
   AppStatCard,
   AppSwitch,
   AppTable,
@@ -40,6 +42,7 @@ import {
   AppTextarea,
   AppTimePicker,
   AppTooltip,
+  AppOfflineBanner,
 } from "@/components/app-ui";
 import { CreditCard, Mail, Plus, TrendingUp, WalletCards } from "lucide-react";
 import { useState } from "react";
@@ -64,6 +67,7 @@ export const componentPreviewItems = [
   { id: "file-upload", label: "File upload" },
   { id: "kbd", label: "Keyboard shortcut" },
   { id: "modal", label: "Modal" },
+  { id: "mobile-list", label: "Mobile list" },
   { id: "multi-select", label: "Multi-select" },
   { id: "number-input", label: "Number input" },
   { id: "page-header", label: "Page header" },
@@ -76,6 +80,8 @@ export const componentPreviewItems = [
   { id: "select", label: "Select" },
   { id: "sheet", label: "Sheet" },
   { id: "skeleton", label: "Skeleton" },
+  { id: "offline-banner", label: "Offline banner" },
+  { id: "section", label: "Section" },
   { id: "card-skeleton", label: "Card skeleton" },
   { id: "stat-card", label: "Stat card" },
   { id: "switch", label: "Switch" },
@@ -615,6 +621,47 @@ export function ComponentExamples({ component }: { component: ComponentPreviewId
             actions.
           </p>
         </AppModal>
+      </div>
+    );
+  }
+
+  if (component === "mobile-list") {
+    return (
+      <div>
+        <PreviewHeader description="A stacked data pattern for narrow screens." title="Mobile list" />
+        <AppMobileList
+          getItemKey={(item) => item.company}
+          items={[
+            { company: "Acme", role: "Product Designer", status: "Interview" },
+            { company: "Globex", role: "Frontend Engineer", status: "Applied" },
+          ]}
+          renderItem={(item) => (
+            <div className="flex items-center justify-between gap-4">
+              <div className="min-w-0"><p className="truncate text-sm font-medium">{item.company}</p><p className="truncate text-xs text-muted-foreground">{item.role}</p></div>
+              <AppBadge status={item.status === "Interview" ? "warning" : "info"}>{item.status}</AppBadge>
+            </div>
+          )}
+        />
+      </div>
+    );
+  }
+
+  if (component === "offline-banner") {
+    return (
+      <div>
+        <PreviewHeader description="A shared connection status message for mutation-aware screens." title="Offline banner" />
+        <AppOfflineBanner online={false} />
+      </div>
+    );
+  }
+
+  if (component === "section") {
+    return (
+      <div>
+        <PreviewHeader description="Responsive heading, description, actions, and content spacing." title="Section" />
+        <AppSection actions={<AppButton size="sm">Add item</AppButton>} description="Reusable content blocks keep page rhythm consistent." title="Recent applications">
+          <AppCard padding="sm"><p className="text-sm text-muted-foreground">Section content</p></AppCard>
+        </AppSection>
       </div>
     );
   }
