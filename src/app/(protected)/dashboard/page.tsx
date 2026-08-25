@@ -1,2 +1,5 @@
-import { DashboardUI } from "@/components/dashboard/DashboardUI";
-export default function DashboardPage() { return <DashboardUI />; }
+import { DashboardScreen } from "@/features/dashboard";
+
+export default function DashboardPage() {
+  return <DashboardScreen />;
+}

@@ -1,5 +1,21 @@
 # Tally Web Full Refactor Plan
 
+## Implementation Status
+
+Last updated: 2026-08-25
+
+| Phase | Status | Completed work |
+| --- | --- | --- |
+| Phase 0 — Baseline and Refactor Safety | COMPLETED | Added `docs/refactor-baseline.md`, route acceptance matrix, worktree safety record, and baseline validation notes. |
+| Phase 1 — Folder Structure and Integration Boundary | COMPLETED — structural scope | Added feature entry points and compatibility exports; moved dashboard/interviews composition into feature folders; separated application board, status badge, config, and toolbar ownership; kept routes thin. |
+| Phase 2 — Global CSS | PENDING | Not started. |
+| Phase 3 — `app-ui` Design System | PENDING | Not started. |
+| Phase 4–12 | PENDING | Not started. |
+
+Phase 1-এর deeper visual decomposition of the applications table/form and application-detail tabs is intentionally kept for Phases 6–7. No raw shadcn component or backend/API contract was changed.
+
+Validation completed for Phase 0–1: TypeScript, ESLint, Next production build, and `git diff --check` passed. Vitest could not load its config because of the current sandbox permission issue.
+
 ## Summary
 
 `prototype.html` এবং `docs/ui-ux-spec.md` হবে visual source of truth। Refactor-এর লক্ষ্য শুধু styling পরিবর্তন নয়; পুরো `tally_web` frontend-কে feature-based structure, reusable `app-ui` layer, responsive shell, stable API integration এবং testable screen architecture-এ নেওয়া।
@@ -48,7 +64,7 @@ src/
 
 Feature-specific UI, hooks, schemas, formatters এবং state logic feature folder-এর মধ্যে থাকবে। Route files শুধু feature entry component render করবে।
 
-## Phase 0 — Baseline এবং Refactor Safety
+## Phase 0 — Baseline এবং Refactor Safety [COMPLETED]
 
 - Existing uncommitted changes preserve করে current behavior inventory তৈরি।
 - সব route, API hook, mutation, loading/error/empty state এবং modal flow map করা।
@@ -59,7 +75,7 @@ Feature-specific UI, hooks, schemas, formatters এবং state logic feature fo
 
 Exit criteria: বর্তমান behavior-এর documented baseline এবং phase-wise acceptance checklist প্রস্তুত।
 
-## Phase 1 — Folder Structure এবং Integration Boundary
+## Phase 1 — Folder Structure এবং Integration Boundary [COMPLETED — STRUCTURAL SCOPE]
 
 - `DashboardUI`, `ApplicationWorkspace`, `ApplicationDetailUI`, settings এবং interview UI feature folders-এ ভাগ করা।
 - Route-level files thin করা।
