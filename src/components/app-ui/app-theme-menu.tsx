@@ -34,7 +34,7 @@ export function AppThemeMenu({
       >
         {resolvedTheme === "dark" ? <Moon className="size-4" /> : <Sun className="size-4" />}
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="w-44 rounded-md border-border p-2 shadow-popover">
+      <DropdownMenuContent align="end" sideOffset={4} className="w-44 rounded-md border-border p-2 shadow-popover">
         <DropdownMenuGroup>
           <DropdownMenuLabel className="px-2 py-2 text-sm text-foreground">
             Appearance

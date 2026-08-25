@@ -27,6 +27,7 @@ export function AppDropdownMenu({
       <DropdownMenuTrigger render={trigger} />
       <DropdownMenuContent
         align="end"
+        sideOffset={4}
         className="min-w-48 rounded-md border border-border p-1 shadow-popover ring-0"
       >
         {items.map((item, index) => (

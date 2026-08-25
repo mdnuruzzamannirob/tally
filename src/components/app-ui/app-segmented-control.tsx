@@ -16,7 +16,7 @@ export function AppSegmentedControl({
   return (
     <ToggleGroup
       className={cn(
-        "grid !h-10 w-full grid-flow-col !rounded-md border border-border bg-card !p-1 shadow-none",
+        "grid !h-10 w-full grid-flow-col !rounded-md border border-border bg-muted !p-1 shadow-none",
         className,
       )}
       multiple={false}
@@ -30,7 +30,7 @@ export function AppSegmentedControl({
     >
       {options.map((option) => (
         <ToggleGroupItem
-          className="!h-full min-h-0 min-w-0 !rounded-sm !border !border-transparent !px-3 !py-0 text-sm text-muted-foreground !shadow-none hover:text-foreground data-[state=on]:!border-border data-[state=on]:!bg-card data-[state=on]:!text-foreground [&:not([data-state='on']):hover]:!bg-transparent"
+          className="!h-full min-h-0 min-w-0 !rounded-sm !border !border-transparent !px-3 !py-0 text-sm text-muted-foreground !shadow-none [&:not([data-state='on']):hover]:!bg-background/70 [&:not([data-state='on']):hover]:!text-foreground data-[state=on]:!border-border data-[state=on]:!bg-card data-[state=on]:!text-foreground data-[state=on]:hover:!border-border data-[state=on]:hover:!bg-card data-[state=on]:hover:!text-foreground"
           key={option.value}
           value={option.value}
         >

@@ -54,6 +54,7 @@ export function AppCombobox({
       />
       <PopoverContent
         align="start"
+        sideOffset={4}
         className="w-max min-w-(--anchor-width) max-w-[calc(100vw-2rem)] gap-1.5 rounded-md border border-border bg-popover p-0 shadow-popover ring-0 data-open:animate-none data-closed:animate-none"
       >
         <AppInput
@@ -66,8 +67,8 @@ export function AppCombobox({
           {filtered.map((option) => (
             <button
               className={cn(
-                "flex w-full items-center gap-2 rounded-md px-2.5 py-2 text-left text-sm hover:bg-primary/10",
-                currentValue === option.value && "bg-primary/10 text-primary",
+                "flex w-full items-center gap-2 rounded-sm px-2 py-1.5 text-left text-sm hover:bg-muted hover:text-foreground",
+                currentValue === option.value && "bg-primary-soft text-primary-text hover:bg-primary-soft hover:text-primary-text",
               )}
               key={option.value}
               onClick={() => choose(option.value)}

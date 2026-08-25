@@ -35,6 +35,7 @@ export function AppDatePicker({
       />
       <PopoverContent
         align="start"
+        sideOffset={4}
         className="w-auto overflow-visible rounded-lg border border-border bg-popover p-0 shadow-popover ring-0"
       >
         <Calendar
@@ -87,6 +88,7 @@ export function AppDateRangePicker({
       />
       <PopoverContent
         align="start"
+        sideOffset={2}
         className="w-auto overflow-visible rounded-lg border border-border bg-popover p-0 shadow-popover ring-0"
       >
         <Calendar

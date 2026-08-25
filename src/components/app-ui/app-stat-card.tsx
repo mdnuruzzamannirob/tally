@@ -29,28 +29,28 @@ export function AppStatCard({
       <div className="flex items-start justify-between">
         <span
           className={cn(
-            'grid size-9 place-items-center rounded-md [&>svg]:size-4',
+            'grid size-8 place-items-center rounded-md [&>svg]:size-4',
             {
               primary:
                 variant === 'featured'
                   ? 'bg-primary-foreground/15 text-primary-foreground'
-                  : 'border border-primary-border bg-primary-soft text-primary-text',
+                  : 'bg-primary-soft text-primary-text',
               success:
                 variant === 'featured'
                   ? 'bg-primary-foreground/15 text-primary-foreground'
-                  : 'border border-success-border bg-success-soft text-success-text',
+                  : 'bg-success-soft text-success-text',
               warning:
                 variant === 'featured'
                   ? 'bg-primary-foreground/15 text-primary-foreground'
-                  : 'border border-warning-border bg-warning-soft text-warning-text',
+                  : 'bg-warning-soft text-warning-text',
               danger:
                 variant === 'featured'
                   ? 'bg-primary-foreground/15 text-primary-foreground'
-                  : 'border border-danger-border bg-danger-soft text-danger-text',
+                  : 'bg-danger-soft text-danger-text',
               info:
                 variant === 'featured'
                   ? 'bg-primary-foreground/15 text-primary-foreground'
-                  : 'border border-info-border bg-info-soft text-info-text',
+                  : 'bg-info-soft text-info-text',
             }[tone],
           )}
         >
@@ -69,13 +69,13 @@ export function AppStatCard({
       </div>
       <p
         className={cn(
-          'mt-4 text-sm',
+          'mt-2 text-sm',
           variant === 'featured' ? 'text-primary-foreground/80' : 'text-muted-foreground',
         )}
       >
         {label}
       </p>
-      <p className="mt-1 text-xl font-semibold tracking-tight">{value}</p>
+      <p className="mt-1 text-3xl font-semibold tracking-tight">{value}</p>
     </article>
   );
 }

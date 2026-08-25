@@ -804,30 +804,34 @@ export function ComponentExamples({ component }: { component: ComponentPreviewId
     return (
       <div>
         <PreviewHeader
-          description="Tabs with active, inactive, and disabled states."
+          description="Two tab patterns: an underline style for page sections and a boxed style for compact view switching."
           title="Tabs"
         />
         <ExampleFrame>
-          <AppTabs
-            items={[
-              {
-                content: <p className="p-2 text-sm text-muted-foreground">Overview content</p>,
-                label: "Overview",
-                value: "overview",
-              },
-              {
-                content: <p className="p-2 text-sm text-muted-foreground">Activity content</p>,
-                label: "Activity",
-                value: "activity",
-              },
-              {
-                content: <p className="p-2 text-sm text-muted-foreground">Settings content</p>,
-                disabled: true,
-                label: "Settings",
-                value: "settings",
-              },
-            ]}
-          />
+          <div className="space-y-8">
+            <div className="space-y-2">
+              <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Line tabs</p>
+              <AppTabs
+                items={[
+                  { content: <p className="p-2 text-sm text-muted-foreground">Overview content</p>, label: "Overview", value: "overview" },
+                  { content: <p className="p-2 text-sm text-muted-foreground">Activity content</p>, label: "Activity", value: "activity" },
+                  { content: <p className="p-2 text-sm text-muted-foreground">Settings content</p>, disabled: true, label: "Settings", value: "settings" },
+                ]}
+                variant="line"
+              />
+            </div>
+            <div className="space-y-2">
+              <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Box tabs</p>
+              <AppTabs
+                items={[
+                  { content: <p className="p-2 text-sm text-muted-foreground">List content</p>, label: "List", value: "list" },
+                  { content: <p className="p-2 text-sm text-muted-foreground">Board content</p>, label: "Board", value: "board" },
+                  { content: <p className="p-2 text-sm text-muted-foreground">Archived content</p>, label: "Archived", value: "archived" },
+                ]}
+                variant="box"
+              />
+            </div>
+          </div>
         </ExampleFrame>
       </div>
     );

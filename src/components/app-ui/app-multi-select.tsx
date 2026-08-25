@@ -56,6 +56,7 @@ export function AppMultiSelect({
       />
       <PopoverContent
         align="start"
+        sideOffset={4}
         className="w-max min-w-(--anchor-width) max-w-[calc(100vw-2rem)] gap-1.5 rounded-md border border-border bg-popover p-0 shadow-popover ring-0 data-open:animate-none data-closed:animate-none"
       >
         <AppInput
@@ -70,8 +71,8 @@ export function AppMultiSelect({
             return (
               <button
                 className={cn(
-                  "flex w-full items-start gap-2 rounded-md px-2.5 py-2 text-left transition-colors hover:bg-primary/10",
-                  selected && "bg-primary/10 text-primary",
+                  "flex w-full items-start gap-2 rounded-sm px-2 py-1.5 text-left transition-colors hover:bg-muted hover:text-foreground",
+                  selected && "bg-primary-soft text-primary-text hover:bg-primary-soft hover:text-primary-text",
                 )}
                 disabled={option.disabled}
                 key={option.value}
