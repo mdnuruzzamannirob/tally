@@ -44,8 +44,9 @@ export function ApplicationBoard({
     }
   };
 
-  const scrollBoard = (direction: -1 | 1) =>
-    boardRef.current?.scrollBy({ left: direction * 480, behavior: "smooth" });
+  const [isPanning, setIsPanning] = useState(false);
+  const [startX, setStartX] = useState(0);
+  const [scrollLeft, setScrollLeft] = useState(0);
 
   const autoScroll = (event: DragEvent<HTMLDivElement>) => {
     const bounds = boardRef.current?.getBoundingClientRect();
@@ -54,51 +55,70 @@ export function ApplicationBoard({
     if (bounds.right - event.clientX < 96) boardRef.current?.scrollBy({ left: 28 });
   };
 
+  const handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
+    // Only pan if clicking outside of draggable cards and buttons
+    const target = e.target as HTMLElement;
+    if (target.closest("button") || target.closest("a") || target.closest("[draggable='true']")) {
+      return;
+    }
+    setIsPanning(true);
+    setStartX(e.pageX - (boardRef.current?.offsetLeft || 0));
+    setScrollLeft(boardRef.current?.scrollLeft || 0);
+  };
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!isPanning || !boardRef.current) return;
+    e.preventDefault();
+    const x = e.pageX - (boardRef.current.offsetLeft || 0);
+    const walk = (x - startX) * 1.5;
+    boardRef.current.scrollLeft = scrollLeft - walk;
+  };
+
+  const handleMouseUpOrLeave = () => {
+    setIsPanning(false);
+  };
+
   return (
     <div className="space-y-3">
-      <div className="flex items-center justify-between">
-        <p className="text-xs text-muted-foreground sm:text-sm">
-          Drag cards between columns to change status — every card also has an accessible status menu.
-        </p>
-        <div className="flex gap-1">
-          <AppButton
-            aria-label="Scroll board left"
-            onClick={() => scrollBoard(-1)}
-            size="icon-sm"
-            tone="outline"
-          >
-            <ChevronLeft />
-          </AppButton>
-          <AppButton
-            aria-label="Scroll board right"
-            onClick={() => scrollBoard(1)}
-            size="icon-sm"
-            tone="outline"
-          >
-            <ChevronRight />
-          </AppButton>
-        </div>
-      </div>
       <div
-        className="flex gap-3 overflow-x-auto pb-3 [scrollbar-width:thin]"
+        className={`flex gap-3 overflow-x-auto pb-3 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden ${
+          isPanning ? "cursor-grabbing select-none" : "cursor-grab"
+        }`}
         onDragOver={autoScroll}
+        onMouseDown={handleMouseDown}
+        onMouseLeave={handleMouseUpOrLeave}
+        onMouseMove={handleMouseMove}
+        onMouseUp={handleMouseUpOrLeave}
         ref={boardRef}
       >
         {applicationStatuses.map((status) => {
           const cards = boardRows.filter((row) => row.status === status);
+          const isTargetDrop = dragOverStatus === status && Boolean(draggedId);
+
           return (
             <div
-              className={`w-[230px] shrink-0 rounded-lg border bg-surface-muted/90 p-2.5 transition-colors ${
-                dragOverStatus === status
-                  ? "border-primary bg-primary/10"
-                  : "border-border"
+              className={`w-[230px] shrink-0 rounded-lg border p-2.5 transition-all ${
+                isTargetDrop
+                  ? "border-primary bg-primary-soft ring-2 ring-primary/40 shadow-sm"
+                  : "border-border bg-surface-muted/90"
               }`}
               key={status}
-              onDragEnter={() => setDragOverStatus(status)}
-              onDragLeave={() => setDragOverStatus(null)}
+              onDragEnter={(event) => {
+                event.preventDefault();
+                setDragOverStatus(status);
+              }}
+              onDragLeave={(event) => {
+                // Only clear if leaving the column itself, not entering a child card
+                if (!event.currentTarget.contains(event.relatedTarget as Node)) {
+                  setDragOverStatus((current) => (current === status ? null : current));
+                }
+              }}
               onDragOver={(event) => {
                 event.preventDefault();
                 event.dataTransfer.dropEffect = "move";
+                if (dragOverStatus !== status) {
+                  setDragOverStatus(status);
+                }
               }}
               onDrop={(event) => {
                 event.preventDefault();

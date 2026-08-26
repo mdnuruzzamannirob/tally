@@ -423,12 +423,33 @@ export function ApplicationWorkspace() {
               onMove={moveApplication}
               rows={rows}
             />
-            <div className="flex justify-end pt-2">
-              <AppPagination
-                onPageChange={(nextPage) => updateUrl({ page: String(nextPage) })}
-                page={page}
-                totalPages={Math.max(1, data?.meta?.totalPages || 1)}
-              />
+            <div className="flex flex-col gap-3 rounded-lg border border-border bg-card px-4 py-2.5 sm:flex-row sm:items-center sm:justify-between shadow-2xs">
+              <p className="text-xs text-muted-foreground sm:text-sm">
+                Showing {Math.min((page - 1) * pageSize + 1, data?.meta?.total ?? 0)}–{Math.min(page * pageSize, data?.meta?.total ?? 0)} of{" "}
+                {data?.meta?.total ?? 0} applications
+              </p>
+              <div className="flex items-center gap-3">
+                <span className="text-xs text-muted-foreground">Cards per page</span>
+                <AppSelect
+                  ariaLabel="Cards per page"
+                  onValueChange={(value) =>
+                    updateUrl({ pageSize: value || "20", page: "1" })
+                  }
+                  options={[
+                    { label: "10", value: "10" },
+                    { label: "20", value: "20" },
+                    { label: "50", value: "50" },
+                  ]}
+                  size="sm"
+                  triggerClassName="w-18"
+                  value={String(pageSize)}
+                />
+                <AppPagination
+                  onPageChange={(nextPage) => updateUrl({ page: String(nextPage) })}
+                  page={page}
+                  totalPages={Math.max(1, data?.meta?.totalPages || 1)}
+                />
+              </div>
             </div>
           </>
         ) : rows.length ? (
