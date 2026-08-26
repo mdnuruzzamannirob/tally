@@ -5,32 +5,30 @@ import {
   AppButton,
   AppCard,
   AppEmptyState,
-  AppMobileList,
   AppPageHeader,
   AppSkeleton,
-  AppStatCard,
-  AppTable,
-  type AppTableColumn,
+  toast,
 } from "@/components/app-ui";
 import { useDashboardQuery } from "@/store/api/dashboard.api";
 import { useAppSelector } from "@/store/hooks";
 import type { DashboardSummary } from "@/types/dashboard.types";
-import * as echarts from "echarts";
 import {
-  ArrowUpRight,
+  AlertTriangle,
   BriefcaseBusiness,
   CalendarDays,
   CheckCircle2,
+  Clock,
   Clock3,
-  ExternalLink,
+  Phone,
   Plus,
   RefreshCw,
   TrendingUp,
+  Video,
 } from "lucide-react";
 import Link from "next/link";
-import { useEffect, useMemo, useRef } from "react";
+import { useMemo, useRef, useEffect } from "react";
 
-const labels: Record<string, string> = {
+const statusLabels: Record<string, string> = {
   WISHLIST: "Wishlist",
   APPLIED: "Applied",
   SCREENING: "Screening",
@@ -39,7 +37,8 @@ const labels: Record<string, string> = {
   REJECTED: "Rejected",
   WITHDRAWN: "Withdrawn",
 };
-const colors: Record<string, string> = {
+
+const statusColors: Record<string, string> = {
   WISHLIST: "#64748b",
   APPLIED: "#4f46e5",
   SCREENING: "#0891b2",
@@ -48,7 +47,8 @@ const colors: Record<string, string> = {
   REJECTED: "#dc2626",
   WITHDRAWN: "#94a3b8",
 };
-const tones: Record<string, "neutral" | "info" | "success" | "warning" | "danger"> = {
+
+const statusTones: Record<string, "neutral" | "info" | "success" | "warning" | "danger"> = {
   WISHLIST: "neutral",
   APPLIED: "info",
   SCREENING: "info",
@@ -57,68 +57,149 @@ const tones: Record<string, "neutral" | "info" | "success" | "warning" | "danger
   REJECTED: "danger",
   WITHDRAWN: "neutral",
 };
+
 const humanize = (value: string) =>
   value
     .split("_")
     .map((part) => part.charAt(0) + part.slice(1).toLowerCase())
     .join(" ");
-const formatDate = (value: string) =>
-  new Intl.DateTimeFormat(undefined, { month: "short", day: "numeric", year: "numeric" }).format(
-    new Date(value),
-  );
+
 const relative = (value: string) => {
-  const days = Math.round((Date.now() - new Date(value).getTime()) / 86400000);
-  return days <= 0 ? "Today" : days === 1 ? "Yesterday" : `${days}d ago`;
+  const diffMinutes = Math.round((Date.now() - new Date(value).getTime()) / 60000);
+  if (diffMinutes < 1) return "just now";
+  if (diffMinutes < 60) return `${diffMinutes}m ago`;
+  const diffHours = Math.round(diffMinutes / 60);
+  if (diffHours < 24) return `${diffHours}h ago`;
+  const diffDays = Math.round(diffHours / 24);
+  if (diffDays < 7) return `${diffDays}d ago`;
+  return `${Math.round(diffDays / 7)}w ago`;
 };
 
-function StatusChart({ counts }: { counts: DashboardSummary["statusCounts"] }) {
-  const ref = useRef<HTMLDivElement>(null);
-  const entries = useMemo(() => Object.entries(counts).filter(([, count]) => count > 0), [counts]);
-  useEffect(() => {
-    if (!ref.current) return;
-    const chart = echarts.init(ref.current);
-    chart.setOption({
-      animationDuration: 500,
-      tooltip: { trigger: "item", formatter: "{b}: {c} ({d}%)" },
-      series: [
-        {
-          type: "pie",
-          radius: ["54%", "78%"],
-          center: ["50%", "50%"],
-          label: { show: false },
-          itemStyle: { borderColor: "#fff", borderWidth: 3 },
-          data: entries.map(([name, value]) => ({
-            name: labels[name] ?? humanize(name),
-            value,
-            itemStyle: { color: colors[name] ?? "#64748b" },
-          })),
-        },
-      ],
-    });
-    const resize = () => chart.resize();
-    window.addEventListener("resize", resize);
-    return () => {
-      window.removeEventListener("resize", resize);
-      chart.dispose();
-    };
-  }, [entries]);
+const fmtDate = (v: string) =>
+  new Date(v).toLocaleDateString("en-US", { month: "short", day: "numeric" });
+
+const fmtTime = (v: string) =>
+  new Date(v).toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" });
+
+// Interview type icons
+function IvTypeIcon({ type }: { type: string }) {
+  if (type === "PHONE") return <Phone className="size-4" />;
+  if (type === "HR") return <Phone className="size-4" />;
+  return <Video className="size-4" />;
+}
+
+// SVG donut chart matching prototype
+function DonutChart({ counts }: { counts: DashboardSummary["statusCounts"] }) {
+  const total = Object.values(counts).reduce((sum, c) => sum + c, 0);
+  const statuses = Object.keys(statusLabels);
+
+  const segs = useMemo(() => {
+    if (!total) return [];
+    let offset = 0;
+    return statuses
+      .filter((s) => (counts[s] ?? 0) > 0)
+      .map((s) => {
+        const pct = ((counts[s] ?? 0) / total) * 100;
+        const seg = { status: s, pct, offset };
+        offset += pct;
+        return seg;
+      });
+  }, [counts, total, statuses]);
+
   return (
-    <div ref={ref} className="h-56 w-full sm:h-64" aria-label="Application status distribution" />
+    <svg
+      aria-label="Status distribution chart"
+      className="h-[150px] w-[150px] shrink-0"
+      role="img"
+      viewBox="0 0 100 100"
+    >
+      <g transform="rotate(-90 50 50)">
+        <circle
+          cx="50"
+          cy="50"
+          fill="none"
+          r="40"
+          stroke="var(--muted)"
+          strokeWidth="13"
+        />
+        {segs.map((seg) => (
+          <circle
+            cx="50"
+            cy="50"
+            fill="none"
+            key={seg.status}
+            pathLength="100"
+            r="40"
+            stroke={statusColors[seg.status] ?? "#94a3b8"}
+            strokeDasharray={`${seg.pct} ${100 - seg.pct}`}
+            strokeDashoffset={-seg.offset}
+            strokeWidth="13"
+          />
+        ))}
+      </g>
+    </svg>
+  );
+}
+
+// Prototype stat card design
+function StatCard({
+  icon,
+  label,
+  value,
+  sub,
+  href,
+}: {
+  icon: React.ReactNode;
+  label: string;
+  value: number;
+  sub: string;
+  href?: string;
+}) {
+  const inner = (
+    <div className="flex w-full flex-col p-4">
+      {/* Icon — primary-subtle bg, primary text, 32px */}
+      <div className="mb-2.5 flex size-8 items-center justify-center rounded-md bg-primary/10 text-primary [&>svg]:size-4">
+        {icon}
+      </div>
+      <div className="text-[13px] text-muted-foreground">{label}</div>
+      <div className="mt-1 text-3xl font-semibold leading-none tracking-tight">{value}</div>
+      <div className="mt-1 text-xs text-muted-foreground">{sub}</div>
+    </div>
+  );
+
+  if (href)
+    return (
+      <Link
+        className="group block rounded-lg border border-border bg-card transition-colors hover:border-primary/40 hover:bg-muted/30"
+        href={href}
+      >
+        {inner}
+      </Link>
+    );
+
+  return (
+    <div className="rounded-lg border border-border bg-card transition-colors hover:border-primary/40 hover:bg-muted/30 cursor-pointer">
+      {inner}
+    </div>
   );
 }
 
 function DashboardSkeleton() {
   return (
-    <div className="space-y-6">
-      <AppSkeleton className="h-14 w-full max-w-2xl" />
-      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        {[1, 2, 3, 4].map((item) => (
-          <AppSkeleton className="h-32" key={item} />
+    <div className="space-y-5">
+      <AppSkeleton className="h-14 w-full max-w-lg" />
+      <div className="grid gap-3.5 sm:grid-cols-2 xl:grid-cols-4">
+        {[1, 2, 3, 4].map((i) => (
+          <AppSkeleton className="h-28" key={i} />
         ))}
       </div>
-      <div className="grid gap-5 xl:grid-cols-2">
-        <AppSkeleton className="h-96" />
-        <AppSkeleton className="h-96" />
+      <div className="grid gap-3.5 sm:grid-cols-2">
+        <AppSkeleton className="h-72" />
+        <AppSkeleton className="h-72" />
+      </div>
+      <div className="grid gap-3.5 sm:grid-cols-2">
+        <AppSkeleton className="h-72" />
+        <AppSkeleton className="h-72" />
       </div>
     </div>
   );
@@ -127,6 +208,7 @@ function DashboardSkeleton() {
 export function DashboardScreen() {
   const { data, isLoading, isError, refetch } = useDashboardQuery();
   const user = useAppSelector((state) => state.auth.user);
+
   if (isLoading) return <DashboardSkeleton />;
   if (isError || !data)
     return (
@@ -143,70 +225,28 @@ export function DashboardScreen() {
         />
       </AppCard>
     );
+
   const followUps = [
-    ...data.followUps.overdue.map((item) => ({ ...item, due: "Overdue", danger: true })),
-    ...data.followUps.today.map((item) => ({ ...item, due: "Due today", danger: false })),
-  ].slice(0, 5);
-  const recentColumns: readonly AppTableColumn<DashboardSummary["recentApplications"][number]>[] = [
-    {
-      key: "company",
-      header: "Company",
-      render: (item) => (
-        <Link className="font-medium hover:text-primary" href={`/applications/${item.id}`}>
-          {item.company}
-        </Link>
-      ),
-    },
-    {
-      key: "role",
-      header: "Role",
-      render: (item) => <span className="text-muted-foreground">{item.role}</span>,
-    },
-    {
-      key: "status",
-      header: "Status",
-      render: (item) => (
-        <AppBadge status={tones[item.status]}>
-          {labels[item.status] ?? humanize(item.status)}
-        </AppBadge>
-      ),
-    },
-    {
-      key: "updated",
-      header: "Updated",
-      render: (item) => <span className="text-muted-foreground">{relative(item.updatedAt)}</span>,
-    },
-    {
-      key: "open",
-      header: "",
-      align: "right",
-      render: (item) => (
-        <Link aria-label={`Open ${item.company}`} href={`/applications/${item.id}`}>
-          <ArrowUpRight className="size-4 text-muted-foreground" />
-        </Link>
-      ),
-    },
-  ];
+    ...data.followUps.overdue.map((item) => ({ ...item, kind: "overdue" as const })),
+    ...data.followUps.today.map((item) => ({ ...item, kind: "today" as const })),
+  ].slice(0, 6);
+
+  const statusKeys = Object.keys(statusLabels);
+  const totalApps = data.totalApplications;
+
   return (
-    <section className="min-w-0 space-y-6">
-      <AppPageHeader
-        title="Dashboard"
-        description={`Welcome back${user?.name ? `, ${user.name}` : ""}. Here's your job search at a glance.`}
-        actions={
-          <>
-            <Link className="w-full sm:w-auto" href="/applications">
-              <AppButton className="w-full sm:w-auto" tone="outline">
-                View applications
-              </AppButton>
-            </Link>
-            <Link className="w-full sm:w-auto" href="/applications">
-              <AppButton className="w-full sm:w-auto">
-                <Plus /> Add application
-              </AppButton>
-            </Link>
-          </>
-        }
-      />
+    <section className="min-w-0 space-y-5">
+      {/* Page Head */}
+      <div className="flex items-start justify-between gap-3 flex-wrap">
+        <div>
+          <h1 className="text-2xl font-semibold">Dashboard</h1>
+          <p className="mt-0.5 text-[13px] text-muted-foreground">
+            Your job search at a glance — archived applications excluded.
+          </p>
+        </div>
+      </div>
+
+      {/* Empty / onboarding */}
       {data.totalApplications === 0 ? (
         <AppCard>
           <AppEmptyState
@@ -223,205 +263,203 @@ export function DashboardScreen() {
           />
         </AppCard>
       ) : null}
-      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        <AppStatCard
+
+      {/* ===== STAT GRID ===== */}
+      <div className="grid gap-3.5 sm:grid-cols-2 xl:grid-cols-4">
+        <StatCard
+          href="/applications"
           icon={<BriefcaseBusiness />}
           label="Total applications"
+          sub="All statuses · incl. closed"
           value={data.totalApplications}
-          change="All time"
         />
-        <AppStatCard
-          icon={<TrendingUp />}
+        <StatCard
+          href="/applications?status=APPLIED"
+          icon={<Clock />}
           label="Active applications"
-          tone="info"
+          sub="Applied · Screening · Interview"
           value={data.activeApplications}
-          change="In pipeline"
         />
-        <AppStatCard
+        <StatCard
+          href="/interviews"
           icon={<CalendarDays />}
           label="Scheduled interviews"
-          tone="warning"
+          sub={
+            data.upcomingInterviews.length
+              ? `Next: ${fmtDate(data.upcomingInterviews[0].scheduledAt)}, ${fmtTime(data.upcomingInterviews[0].scheduledAt)}`
+              : "None upcoming"
+          }
           value={data.scheduledInterviews}
-          change={`${data.followUps.todayCount} due today`}
         />
-        <AppStatCard
+        <StatCard
+          href="/applications?status=OFFER"
           icon={<CheckCircle2 />}
           label="Offers"
-          tone="success"
+          sub={data.offers > 0 ? "Congratulations!" : "Keep going!"}
           value={data.offers}
-          change="Keep going"
         />
       </div>
-      <div className="grid gap-5 xl:grid-cols-[minmax(0,1.25fr)_minmax(20rem,.75fr)]">
+
+      {/* ===== DASH GRID ROW 1: Follow-ups + Status distribution ===== */}
+      <div className="grid gap-3.5 xl:grid-cols-2">
+        {/* Follow-ups */}
         <AppCard padding="none">
-          <div className="flex items-start justify-between border-b border-border p-5">
-            <div>
-              <h2 className="font-semibold">Follow-ups</h2>
-              <p className="mt-1 text-sm text-muted-foreground">Stay ahead of your next steps.</p>
+          <div className="flex items-center justify-between px-4 py-3.5 border-b border-border">
+            <div className="flex items-center gap-2.5">
+              <h2 className="font-semibold text-sm">Follow-ups</h2>
+              <span className="rounded border border-border bg-muted px-1.5 py-0.5 text-[11px] text-muted-foreground font-medium">
+                {followUps.length}
+              </span>
             </div>
-            <Link
-              className="text-sm font-medium text-primary hover:underline"
-              href="/applications?followUp=upcoming"
-            >
-              View all
-            </Link>
           </div>
           <div className="divide-y divide-border">
             {followUps.map((item) => (
               <Link
-                className="flex items-center gap-3 px-5 py-4 hover:bg-muted/40"
+                className="flex items-center gap-3 px-4 py-3 hover:bg-muted/40 cursor-pointer"
                 href={`/applications/${item.id}`}
-                key={`${item.id}-${item.due}`}
+                key={`${item.id}-${item.kind}`}
               >
+                <div className="min-w-0 flex-1">
+                  <div className="truncate text-sm font-medium">{item.company}</div>
+                  <div className="truncate text-xs text-muted-foreground">{item.role}</div>
+                </div>
+                <AppBadge status={statusTones[item.status]}>
+                  {statusLabels[item.status] ?? humanize(item.status)}
+                </AppBadge>
                 <span
-                  className={`size-2 shrink-0 rounded-full ${item.danger ? "bg-danger" : "bg-warning"}`}
-                />
-                <span className="min-w-0 flex-1">
-                  <span className="block truncate text-sm font-medium">{item.company}</span>
-                  <span className="block truncate text-xs text-muted-foreground">
-                    {item.role} · {labels[item.status] ?? humanize(item.status)}
-                  </span>
-                </span>
-                <span
-                  className={`text-xs font-medium ${item.danger ? "text-danger" : "text-warning"}`}
+                  className={`flex items-center gap-1 whitespace-nowrap text-xs font-medium ${
+                    item.kind === "overdue" ? "text-danger" : "text-warning"
+                  }`}
                 >
-                  {item.due}
+                  {item.kind === "overdue" ? (
+                    <AlertTriangle className="size-3.5" />
+                  ) : (
+                    <Clock className="size-3.5" />
+                  )}
+                  {item.kind === "overdue"
+                    ? `Overdue · ${fmtDate(item.nextFollowUpAt ?? "")}`
+                    : "Due today"}
                 </span>
               </Link>
             ))}
             {!followUps.length ? (
               <AppEmptyState
                 className="py-8"
-                description="You're all caught up."
+                description="No follow-ups due today."
                 icon={<CheckCircle2 />}
-                title="No follow-ups"
+                title="You're all caught up"
               />
             ) : null}
           </div>
         </AppCard>
+
+        {/* Status distribution */}
         <AppCard padding="none">
-          <div className="flex items-start justify-between border-b border-border p-5">
-            <div>
-              <h2 className="font-semibold">Status distribution</h2>
-              <p className="mt-1 text-sm text-muted-foreground">
-                Across {data.totalApplications} applications
-              </p>
-            </div>
-            <span className="text-sm text-muted-foreground">All time</span>
+          <div className="flex items-center justify-between px-4 py-3.5 border-b border-border">
+            <h2 className="font-semibold text-sm">Status distribution</h2>
+            <span className="text-[13px] text-muted-foreground">{totalApps} total</span>
           </div>
-          <div className="grid items-center gap-3 p-4 lg:grid-cols-[minmax(0,1fr)_9rem]">
-            <StatusChart counts={data.statusCounts} />
-            <div className="space-y-2">
-              {Object.entries(data.statusCounts).map(([status, count]) => (
-                <div className="flex items-center justify-between gap-3 text-xs" key={status}>
-                  <span className="flex items-center gap-1.5 text-muted-foreground">
-                    <span
-                      className="size-2 rounded-full"
-                      style={{ backgroundColor: colors[status] }}
-                    />
-                    {labels[status] ?? humanize(status)}
+          <div className="flex flex-wrap items-center gap-5 p-4">
+            <DonutChart counts={data.statusCounts} />
+            <div className="flex flex-col gap-1.5 text-[13px] flex-1 min-w-[140px]">
+              {statusKeys.map((s) => (
+                <div className="flex items-center gap-2" key={s}>
+                  <span
+                    className="size-2 shrink-0 rounded-sm"
+                    style={{ backgroundColor: statusColors[s] }}
+                  />
+                  <span className="flex-1 text-muted-foreground">{statusLabels[s]}</span>
+                  <span className="font-medium text-foreground">
+                    {data.statusCounts[s] ?? 0}
                   </span>
-                  <span className="font-semibold">{count}</span>
                 </div>
               ))}
             </div>
           </div>
         </AppCard>
       </div>
-      <div className="grid gap-5 xl:grid-cols-[minmax(0,1.3fr)_minmax(20rem,.7fr)]">
+
+      {/* ===== DASH GRID ROW 2: Upcoming interviews + Recent applications ===== */}
+      <div className="grid gap-3.5 xl:grid-cols-2">
+        {/* Upcoming interviews */}
         <AppCard padding="none">
-          <div className="flex items-start justify-between border-b border-border p-5">
-            <div>
-              <h2 className="font-semibold">Recent applications</h2>
-              <p className="mt-1 text-sm text-muted-foreground">Your latest activity</p>
-            </div>
-            <Link className="text-sm font-medium text-primary hover:underline" href="/applications">
-              View all
-            </Link>
-          </div>
-          <div className="hidden sm:block">
-            <AppTable
-              columns={recentColumns}
-              getRowKey={(item) => item.id}
-              rows={data.recentApplications}
-              empty="No applications yet. Add your first application to get started."
-            />
-          </div>
-          <div className="p-3 sm:hidden">
-            <AppMobileList
-              getItemKey={(item) => item.id}
-              items={data.recentApplications}
-              empty="No applications yet. Add your first application to get started."
-              renderItem={(item) => (
-                <Link className="block" href={`/applications/${item.id}`}>
-                  <div className="flex items-start justify-between gap-3">
-                    <span className="min-w-0">
-                      <span className="block truncate text-sm font-medium">{item.company}</span>
-                      <span className="mt-1 block truncate text-xs text-muted-foreground">
-                        {item.role}
-                      </span>
-                    </span>
-                    <AppBadge status={tones[item.status]}>
-                      {labels[item.status] ?? humanize(item.status)}
-                    </AppBadge>
-                  </div>
-                  <div className="mt-2 flex justify-between text-xs text-muted-foreground">
-                    <span>Updated</span>
-                    <span>{relative(item.updatedAt)}</span>
-                  </div>
-                </Link>
-              )}
-            />
-          </div>
-        </AppCard>
-        <AppCard padding="none">
-          <div className="flex items-start justify-between border-b border-border p-5">
-            <div>
-              <h2 className="font-semibold">Upcoming interviews</h2>
-              <p className="mt-1 text-sm text-muted-foreground">
-                Your next scheduled conversations
-              </p>
-            </div>
-            <Link className="text-sm font-medium text-primary hover:underline" href="/interviews">
+          <div className="flex items-center justify-between px-4 py-3.5 border-b border-border">
+            <h2 className="font-semibold text-sm">Upcoming interviews</h2>
+            <Link
+              className="text-sm font-medium text-primary hover:underline"
+              href="/interviews"
+            >
               View all
             </Link>
           </div>
           <div className="divide-y divide-border">
             {data.upcomingInterviews.map((item) => (
               <Link
-                className="flex gap-3 p-5 hover:bg-muted/40"
+                className="flex items-center gap-3 px-4 py-3 hover:bg-muted/40"
                 href={`/applications/${item.application.id}`}
                 key={item.id}
               >
-                <span className="grid size-11 shrink-0 place-items-center rounded-md bg-primary/10 text-center text-primary">
-                  <span className="text-sm font-semibold leading-none">
-                    {new Date(item.scheduledAt).getDate()}
-                  </span>
-                  <span className="mt-1 text-[9px] uppercase">
-                    {new Date(item.scheduledAt).toLocaleString(undefined, { month: "short" })}
-                  </span>
-                </span>
-                <span className="min-w-0">
-                  <span className="block truncate text-sm font-semibold">
-                    {item.application.company} · {item.application.role}
-                  </span>
-                  <span className="mt-1 block text-xs text-muted-foreground">
-                    {formatDate(item.scheduledAt)} · {humanize(item.type)}
-                  </span>
-                  <span className="mt-2 inline-flex items-center gap-1 text-xs text-primary">
-                    {item.status === "SCHEDULED" ? "Scheduled" : humanize(item.status)}{" "}
-                    <ExternalLink className="size-3" />
-                  </span>
-                </span>
+                {/* Interview type icon */}
+                <div className="flex size-9 shrink-0 items-center justify-center rounded-md bg-primary/10 text-primary">
+                  <IvTypeIcon type={item.type} />
+                </div>
+                <div className="min-w-0 flex-1">
+                  <div className="truncate text-sm font-semibold">
+                    {humanize(item.type)} · {item.application.company}
+                  </div>
+                  <div className="truncate text-xs text-muted-foreground">
+                    {item.application.role}
+                  </div>
+                </div>
+                {/* Date + time right-aligned */}
+                <div className="shrink-0 text-right">
+                  <div className="text-[13px] font-medium">{fmtDate(item.scheduledAt)}</div>
+                  <div className="text-xs text-muted-foreground">{fmtTime(item.scheduledAt)}</div>
+                </div>
               </Link>
             ))}
             {!data.upcomingInterviews.length ? (
               <AppEmptyState
                 className="py-8"
-                description="Scheduled interviews will appear here."
+                description="Add an interview from an application."
                 icon={<Clock3 />}
-                title="No upcoming interviews"
+                title="No interviews scheduled"
               />
+            ) : null}
+          </div>
+        </AppCard>
+
+        {/* Recent applications */}
+        <AppCard padding="none">
+          <div className="flex items-center justify-between px-4 py-3.5 border-b border-border">
+            <h2 className="font-semibold text-sm">Recent applications</h2>
+            <Link className="text-sm font-medium text-primary hover:underline" href="/applications">
+              View all
+            </Link>
+          </div>
+          <div className="divide-y divide-border">
+            {data.recentApplications.map((item) => (
+              <Link
+                className="flex items-center gap-3 px-4 py-3 hover:bg-muted/40"
+                href={`/applications/${item.id}`}
+                key={item.id}
+              >
+                <div className="min-w-0 flex-1">
+                  <div className="truncate text-sm font-medium">{item.company}</div>
+                  <div className="truncate text-xs text-muted-foreground">{item.role}</div>
+                </div>
+                <AppBadge status={statusTones[item.status]}>
+                  {statusLabels[item.status] ?? humanize(item.status)}
+                </AppBadge>
+                <span className="shrink-0 whitespace-nowrap text-xs text-muted-foreground">
+                  {relative(item.updatedAt)}
+                </span>
+              </Link>
+            ))}
+            {!data.recentApplications.length ? (
+              <div className="py-8 text-center text-sm text-muted-foreground">
+                No applications yet.
+              </div>
             ) : null}
           </div>
         </AppCard>

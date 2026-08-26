@@ -2,20 +2,24 @@
 
 import Link from "next/link";
 import { useMemo, useRef, useState, type DragEvent } from "react";
-import { AlertTriangle, CalendarClock, ChevronLeft, ChevronRight, Clock, MoreHorizontal, Pencil } from "lucide-react";
+import { Archive, ArrowRightLeft, CalendarClock, ChevronLeft, ChevronRight, MoreHorizontal, Pencil, Trash2 } from "lucide-react";
 import { AppBadge, AppButton, AppDropdownMenu } from "@/components/app-ui";
 import type { Application, ApplicationStatus } from "@/types/application.types";
-import { applicationLabels, applicationStatuses, boardAccents, humanizeApplicationValue } from "../application-config";
+import { applicationLabels, applicationStatuses } from "../application-config";
 import { ApplicationStatusBadge } from "./ApplicationStatusBadge";
 
 export function ApplicationBoard({
   rows,
   onMove,
   onEdit,
+  onArchive,
+  onDelete,
 }: {
   rows: Application[];
   onMove: (id: string, status: ApplicationStatus) => Promise<boolean>;
   onEdit?: (application: Application) => void;
+  onArchive?: (application: Application) => void;
+  onDelete?: (application: Application) => void;
 }) {
   const [draggedId, setDraggedId] = useState<string | null>(null);
   const [dragOverStatus, setDragOverStatus] = useState<ApplicationStatus | null>(null);
@@ -84,9 +88,9 @@ export function ApplicationBoard({
           const cards = boardRows.filter((row) => row.status === status);
           return (
             <div
-              className={`w-64 shrink-0 rounded-xl border bg-muted/30 p-2 transition-colors ${
+              className={`w-[230px] shrink-0 rounded-lg border bg-surface-muted/90 p-2.5 transition-colors ${
                 dragOverStatus === status
-                  ? "border-primary bg-primary/5 shadow-sm"
+                  ? "border-primary bg-primary/10"
                   : "border-border"
               }`}
               key={status}
@@ -104,15 +108,15 @@ export function ApplicationBoard({
                 setDragOverStatus(null);
               }}
             >
-              <div className="flex items-center justify-between border-b border-border px-2 py-2 mb-2">
-                <span className="flex items-center gap-2 text-sm font-semibold">
-                  <span className={`size-2 rounded-full ${boardAccents[status]}`} />
-                  {applicationLabels[status]}
-                </span>
-                <span className="rounded bg-background border border-border px-1.5 py-0.5 text-xs font-semibold text-muted-foreground">
+              {/* Header with status badge and count pill matching prototype .board-col-head */}
+              <div className="flex items-center gap-2 pb-2.5 pt-0.5 px-0.5">
+                <ApplicationStatusBadge status={status} />
+                <span className="text-xs font-semibold text-muted-foreground ml-0.5">
                   {cards.length}
                 </span>
               </div>
+
+              {/* Cards Container */}
               <div className="min-h-44 space-y-2">
                 {cards.map((row) => {
                   const fuDate = row.nextFollowUpAt ? new Date(row.nextFollowUpAt) : null;
@@ -123,7 +127,9 @@ export function ApplicationBoard({
 
                   return (
                     <div
-                      className="group relative block rounded-lg border border-border bg-card p-3 shadow-xs transition-[border-color,box-shadow,transform] hover:border-primary/50 hover:shadow-sm"
+                      className={`group relative rounded-lg border border-border bg-surface p-3 shadow-2xs transition-all hover:border-card-hover-bd cursor-grab active:cursor-grabbing ${
+                        draggedId === row.id ? "opacity-75 border-primary" : ""
+                      }`}
                       draggable
                       key={row.id}
                       onDragEnd={() => {
@@ -136,28 +142,46 @@ export function ApplicationBoard({
                         setDraggedId(row.id);
                       }}
                     >
-                      <div className="flex items-start justify-between gap-2">
+                      <div className="flex items-start justify-between gap-1.5">
                         <Link
-                          className="font-medium text-sm hover:text-primary focus:outline-hidden"
+                          className="font-semibold text-sm text-foreground hover:underline line-clamp-1"
                           href={`/applications/${row.id}`}
                         >
                           {row.company}
                         </Link>
                         <AppDropdownMenu
                           items={[
-                            ...applicationStatuses
-                              .filter((st) => st !== row.status)
-                              .map((targetStatus) => ({
-                                label: `Move to ${applicationLabels[targetStatus]}`,
-                                onSelect: () => void dropApplication(row.id, targetStatus),
-                              })),
+                            {
+                              label: "Change status",
+                              icon: <ArrowRightLeft className="size-3.5" />,
+                              onSelect: () => {
+                                void onMove(row.id, row.status);
+                              },
+                            },
                             ...(onEdit
                               ? [
                                   {
-                                    label: "Edit details",
+                                    label: "Edit",
                                     icon: <Pencil className="size-3.5" />,
                                     onSelect: () => onEdit(row),
-                                    separatorBefore: true,
+                                  },
+                                ]
+                              : []),
+                            ...(onArchive
+                              ? [
+                                  {
+                                    label: row.archivedAt ? "Unarchive" : "Archive",
+                                    icon: <Archive className="size-3.5" />,
+                                    onSelect: () => onArchive(row),
+                                  },
+                                ]
+                              : []),
+                            ...(onDelete
+                              ? [
+                                  {
+                                    label: "Delete",
+                                    icon: <Trash2 className="size-3.5 text-danger" />,
+                                    onSelect: () => onDelete(row),
                                   },
                                 ]
                               : []),
@@ -165,32 +189,20 @@ export function ApplicationBoard({
                           trigger={
                             <button
                               aria-label={`Actions for ${row.company}`}
-                              className="rounded p-1 text-muted-foreground opacity-60 hover:bg-muted hover:opacity-100 focus:opacity-100"
+                              className="rounded p-0.5 text-muted-foreground opacity-60 hover:bg-muted hover:opacity-100 focus:opacity-100"
                               type="button"
                             >
-                              <MoreHorizontal className="size-4" />
+                              <MoreHorizontal className="size-3.5" />
                             </button>
                           }
                         />
                       </div>
-                      <p className="mt-0.5 text-xs text-muted-foreground">{row.role}</p>
+                      <div className="mt-0.5 text-xs text-muted-foreground line-clamp-1">{row.role}</div>
 
-                      <div className="mt-2.5 flex flex-wrap items-center gap-1.5">
-                        {row.tags.slice(0, 2).map((tag) => (
-                          <AppBadge key={tag.id} size="sm">
-                            {tag.name}
-                          </AppBadge>
-                        ))}
-                        {row.remoteType ? (
-                          <span className="text-[11px] text-muted-foreground">
-                            {humanizeApplicationValue(row.remoteType)}
-                          </span>
-                        ) : null}
-                      </div>
-
-                      {fuDate ? (
+                      {/* Follow-up date matching screenshot format */}
+                      {fuDate && (
                         <div
-                          className={`mt-2 flex items-center gap-1 text-xs font-medium ${
+                          className={`mt-2 flex items-center gap-1.5 text-xs font-medium ${
                             isOverdue
                               ? "text-danger"
                               : isToday
@@ -199,31 +211,20 @@ export function ApplicationBoard({
                           }`}
                         >
                           {isOverdue ? (
-                            <AlertTriangle className="size-3" />
+                            <span>⚠️ {fuDate.toLocaleDateString(undefined, { month: "short", day: "numeric" })}</span>
+                          ) : isToday ? (
+                            <span>🕒 Today</span>
                           ) : (
-                            <CalendarClock className="size-3" />
+                            <span>{fuDate.toLocaleDateString(undefined, { month: "short", day: "numeric" })}</span>
                           )}
-                          <span>
-                            {isOverdue
-                              ? `Overdue · ${fuDate.toLocaleDateString(undefined, { month: "short", day: "numeric" })}`
-                              : isToday
-                                ? "Due today"
-                                : fuDate.toLocaleDateString(undefined, { month: "short", day: "numeric" })}
-                          </span>
                         </div>
-                      ) : null}
+                      )}
                     </div>
                   );
                 })}
                 {!cards.length ? (
-                  <div
-                    className={`flex min-h-32 items-center justify-center rounded-lg border border-dashed text-center text-xs text-muted-foreground ${
-                      dragOverStatus === status
-                        ? "border-primary text-primary"
-                        : "border-border/70"
-                    }`}
-                  >
-                    {draggedId ? "Drop application here" : "No items"}
+                  <div className="p-2 text-xs text-muted-foreground">
+                    No items
                   </div>
                 ) : null}
               </div>

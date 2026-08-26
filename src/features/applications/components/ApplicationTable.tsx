@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { AlertTriangle, CalendarClock, MoreHorizontal, Pencil, Trash2 } from "lucide-react";
+import { AlertTriangle, Archive, ArrowRightLeft, CalendarClock, MoreHorizontal, Pencil, Trash2 } from "lucide-react";
 import { AppBadge, AppCard, AppDropdownMenu, AppPagination, AppSelect, AppTable } from "@/components/app-ui";
 import type { Application, ApplicationStatus } from "@/types/application.types";
 import { applicationLabels, applicationStatuses, humanizeApplicationValue } from "../application-config";
@@ -157,41 +157,35 @@ export function ApplicationTable({
               >
                 <AppDropdownMenu
                   items={[
-                    ...applicationStatuses
-                      .filter((st) => st !== row.status)
-                      .map((targetStatus) => ({
-                        label: `Change status to ${applicationLabels[targetStatus]}`,
-                        onSelect: () => onMove?.(row.id, targetStatus),
-                      })),
-                    ...(onEdit
-                      ? [
-                          {
-                            label: "Edit details",
-                            icon: <Pencil className="size-3.5" />,
-                            onSelect: () => onEdit(row),
-                            separatorBefore: true,
-                          },
-                        ]
-                      : []),
-                    ...(onArchive
-                      ? [
-                          {
-                            label: row.archivedAt ? "Unarchive" : "Archive",
-                            onSelect: () => onArchive(row),
-                          },
-                        ]
-                      : []),
-                    ...(onDelete
-                      ? [
-                          {
-                            label: "Delete",
-                            icon: <Trash2 className="size-3.5" />,
-                            variant: "destructive" as const,
-                            separatorBefore: true,
-                            onSelect: () => onDelete(row),
-                          },
-                        ]
-                      : []),
+                    {
+                      label: "Change status",
+                      icon: <ArrowRightLeft className="size-3.5" />,
+                      onSelect: () => {
+                        // In prototype, clicking "Change status" opens the change status modal.
+                        // We trigger this by calling onMove with the current status, which in Workspace
+                        // can open the Change Status modal for this application.
+                        if (onMove) {
+                          void onMove(row.id, row.status);
+                        }
+                      },
+                    },
+                    {
+                      label: "Edit",
+                      icon: <Pencil className="size-3.5" />,
+                      onSelect: () => onEdit?.(row),
+                    },
+                    {
+                      label: row.archivedAt ? "Unarchive" : "Archive",
+                      icon: <Archive className="size-3.5" />,
+                      onSelect: () => onArchive?.(row),
+                    },
+                    {
+                      label: "Delete",
+                      icon: <Trash2 className="size-3.5" />,
+                      variant: "destructive" as const,
+                      separatorBefore: true,
+                      onSelect: () => onDelete?.(row),
+                    },
                   ]}
                   trigger={
                     <button

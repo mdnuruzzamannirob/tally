@@ -16,7 +16,6 @@ import {
   AppModal,
   AppMultiSelect,
   AppPagination,
-  AppPageHeader,
   AppSelect,
   AppSkeleton,
   AppTextarea,
@@ -60,6 +59,9 @@ export function ApplicationWorkspace() {
   const [createOpen, setCreateOpen] = useState(() => queryValue(searchParams, "create") === "1");
   const [editApp, setEditApp] = useState<Application | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<Application | null>(null);
+  const [statusTarget, setStatusTarget] = useState<Application | null>(null);
+  const [targetNewStatus, setTargetNewStatus] = useState<ApplicationStatus>("APPLIED");
+  const [statusNote, setStatusNote] = useState("");
   const [searchInput, setSearchInput] = useState(searchParams.get("search") ?? "");
 
   const [company, setCompany] = useState("");
@@ -163,17 +165,50 @@ export function ApplicationWorkspace() {
     router.replace(pathname);
   };
 
+  const openStatusChangeModal = (app: Application) => {
+    setStatusTarget(app);
+    setTargetNewStatus(app.status);
+    setStatusNote("");
+  };
+
   const moveApplication = async (id: string, toStatus: ApplicationStatus) => {
-    const row = rows.find((item) => item.id === id);
-    if (!row || row.status === toStatus || changeStatusState.isLoading) return false;
-    try {
-      await changeApplicationStatus({ id, body: { toStatus } }).unwrap();
-      await refetch();
-      toast.success(`${row.company} moved to ${labels[toStatus]}.`);
+    const app = rows.find((r) => r.id === id);
+    if (!app) return false;
+    // If called directly with a new status (e.g., from drag & drop)
+    if (toStatus !== app.status) {
+      try {
+        await changeApplicationStatus({
+          id,
+          body: { toStatus },
+        }).unwrap();
+        toast.success(`Status updated to ${labels[toStatus]}`);
+        return true;
+      } catch {
+        toast.error("Could not update status.");
+        return false;
+      }
+    } else {
+      // Called from menu item without specific new status -> open modal
+      openStatusChangeModal(app);
       return true;
+    }
+  };
+
+  const submitStatusChange = async () => {
+    if (!statusTarget) return;
+    try {
+      await changeApplicationStatus({
+        id: statusTarget.id,
+        body: {
+          toStatus: targetNewStatus,
+          ...(statusNote.trim() ? { note: statusNote.trim() } : {}),
+        },
+      }).unwrap();
+      toast.success("Status updated.");
+      setStatusTarget(null);
+      setStatusNote("");
     } catch {
-      toast.error("Could not update application status.");
-      return false;
+      toast.error("Could not update status.");
     }
   };
 
@@ -343,11 +378,24 @@ export function ApplicationWorkspace() {
 
   return (
     <>
-      <div className="space-y-6">
-        <AppPageHeader
-          description={`${data?.meta?.total ?? 0} ${data?.meta?.total === 1 ? "application" : "applications"} · Organize opportunities, status changes, and follow-ups.`}
-          title="Applications"
-        />
+      <div className="space-y-4">
+        {/* Page head: title + Add application button (matches prototype page-head) */}
+        <div className="flex items-start justify-between gap-3 flex-wrap">
+          <div>
+            <h1 className="text-2xl font-semibold">Applications</h1>
+            <p className="mt-0.5 text-[13px] text-muted-foreground">
+              Browse, search, filter, and manage your applications.
+            </p>
+          </div>
+          <AppButton
+            onClick={() => {
+              resetForm();
+              setCreateOpen(true);
+            }}
+          >
+            <Plus className="size-4" /> Add application
+          </AppButton>
+        </div>
         <ApplicationToolbar
           activeFilterCount={activeFilterCount}
           hasFilters={hasFilters}
@@ -361,20 +409,16 @@ export function ApplicationWorkspace() {
           read={read}
           searchInput={searchInput}
           tags={tags}
+          totalCount={data?.meta?.total ?? 0}
           updateUrl={updateUrl}
           view={view}
         />
-        <div className="flex items-center justify-between gap-3">
-          <p className="text-sm text-muted-foreground">
-            {isFetching
-              ? "Updating..."
-              : `${data?.meta?.total ?? 0} application${(data?.meta?.total ?? 0) === 1 ? "" : "s"}`}
-          </p>
-        </div>
 
         {view === "board" ? (
           <>
             <ApplicationBoard
+              onArchive={archiveApp}
+              onDelete={(app) => setDeleteTarget(app)}
               onEdit={openEditModal}
               onMove={moveApplication}
               rows={rows}
@@ -725,6 +769,57 @@ export function ApplicationWorkspace() {
             </AppField>
           </div>
         </div>
+      </AppModal>
+
+      <AppModal
+        footer={
+          <>
+            <AppButton onClick={() => setStatusTarget(null)} tone="ghost">
+              Cancel
+            </AppButton>
+            <AppButton
+              disabled={statusTarget?.status === targetNewStatus}
+              loading={changeStatusState.isLoading}
+              onClick={() => void submitStatusChange()}
+            >
+              Update status
+            </AppButton>
+          </>
+        }
+        onOpenChange={(open) => {
+          if (!open) setStatusTarget(null);
+        }}
+        open={Boolean(statusTarget)}
+        title="Change status"
+      >
+        {statusTarget && (
+          <div className="space-y-4">
+            <p className="text-xs text-muted-foreground">
+              <span className="font-medium text-foreground">{statusTarget.company}</span> · {statusTarget.role} — currently{" "}
+              <ApplicationStatusBadge status={statusTarget.status} />
+            </p>
+            <AppField label="New status" required>
+              <AppSelect
+                onValueChange={(val) => setTargetNewStatus(val as ApplicationStatus)}
+                options={Object.entries(labels).map(([val, lbl]) => ({
+                  label: lbl,
+                  value: val,
+                }))}
+                value={targetNewStatus}
+              />
+            </AppField>
+            <div>
+              <AppField label="Note (optional)">
+                <AppTextarea
+                  onChange={(e) => setStatusNote(e.target.value)}
+                  placeholder="e.g. Recruiter confirmed technical interview"
+                  value={statusNote}
+                />
+              </AppField>
+              <p className="mt-1 text-[11px] text-muted-foreground">Saved with the status history entry.</p>
+            </div>
+          </div>
+        )}
       </AppModal>
 
       <AppConfirmDialog
