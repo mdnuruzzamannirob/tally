@@ -19,12 +19,14 @@ export function AppTable<T>({
   columns,
   empty = "No records found",
   getRowKey,
+  onRowClick,
   rows,
 }: {
   className?: string;
   columns: readonly AppTableColumn<T>[];
   empty?: ReactNode;
   getRowKey: (row: T) => string | number;
+  onRowClick?: (row: T) => void;
   rows: readonly T[];
 }) {
   return (
@@ -51,8 +53,19 @@ export function AppTable<T>({
             {rows.length ? (
               rows.map((row) => (
                 <TableRow
-                  className="border-b border-border/55 transition-colors last:border-b-0 hover:bg-muted/40"
+                  className={cn(
+                    "border-b border-border/55 transition-colors last:border-b-0 hover:bg-muted/40",
+                    onRowClick && "cursor-pointer",
+                  )}
                   key={getRowKey(row)}
+                  onClick={() => onRowClick?.(row)}
+                  onKeyDown={(e) => {
+                    if (onRowClick && (e.key === "Enter" || e.key === " ")) {
+                      e.preventDefault();
+                      onRowClick(row);
+                    }
+                  }}
+                  tabIndex={onRowClick ? 0 : undefined}
                 >
                   {columns.map((column, index) => (
                     <TableCell

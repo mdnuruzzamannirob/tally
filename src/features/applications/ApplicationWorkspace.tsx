@@ -3,25 +3,33 @@
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { BriefcaseBusiness, CalendarClock, ChevronRight, Plus } from "lucide-react";
+import { BriefcaseBusiness, CalendarClock, Plus } from "lucide-react";
 import {
   AppBadge,
   AppButton,
   AppCard,
+  AppConfirmDialog,
   AppEmptyState,
   AppField,
   AppInput,
+  AppMobileList,
   AppModal,
   AppMultiSelect,
   AppPagination,
   AppPageHeader,
   AppSelect,
   AppSkeleton,
-  AppTable,
   AppTextarea,
   toast,
 } from "@/components/app-ui";
-import { useApplicationsQuery, useChangeApplicationStatusMutation, useCreateApplicationMutation } from "@/store/api/applications.api";
+import {
+  useApplicationsQuery,
+  useArchiveApplicationMutation,
+  useChangeApplicationStatusMutation,
+  useCreateApplicationMutation,
+  useDeleteApplicationMutation,
+  useUpdateApplicationMutation,
+} from "@/store/api/applications.api";
 import { useTagsQuery } from "@/store/api/tags.api";
 import type {
   Application,
@@ -31,8 +39,15 @@ import type {
 } from "@/types/application.types";
 import { ApplicationBoard } from "./components/ApplicationBoard";
 import { ApplicationStatusBadge } from "./components/ApplicationStatusBadge";
+import { ApplicationTable } from "./components/ApplicationTable";
 import { ApplicationToolbar } from "./components/ApplicationToolbar";
-import { applicationLabels as labels, applicationStatuses as statuses, employmentTypes, humanizeApplicationValue as humanize, remoteTypes } from "./application-config";
+import {
+  applicationLabels as labels,
+  employmentTypes,
+  humanizeApplicationValue as humanize,
+  remoteTypes,
+} from "./application-config";
+
 const queryValue = (params: URLSearchParams, key: string) => params.get(key) ?? "";
 export { ApplicationStatusBadge as StatusBadge } from "./components/ApplicationStatusBadge";
 
@@ -41,8 +56,12 @@ export function ApplicationWorkspace() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const read = useCallback((key: string) => queryValue(searchParams, key), [searchParams]);
+
   const [createOpen, setCreateOpen] = useState(() => queryValue(searchParams, "create") === "1");
+  const [editApp, setEditApp] = useState<Application | null>(null);
+  const [deleteTarget, setDeleteTarget] = useState<Application | null>(null);
   const [searchInput, setSearchInput] = useState(searchParams.get("search") ?? "");
+
   const [company, setCompany] = useState("");
   const [role, setRole] = useState("");
   const [jobUrl, setJobUrl] = useState("");
@@ -58,12 +77,20 @@ export function ApplicationWorkspace() {
   const [remoteType, setRemoteType] = useState<RemoteType | "">("");
   const [employmentType, setEmploymentType] = useState<EmploymentType | "">("");
   const [view, setView] = useState<"table" | "board">("table");
+
   const [createApplication, createState] = useCreateApplicationMutation();
+  const [updateApplication, updateState] = useUpdateApplicationMutation();
+  const [archiveApplication] = useArchiveApplicationMutation();
+  const [deleteApplication] = useDeleteApplicationMutation();
   const [changeApplicationStatus, changeStatusState] = useChangeApplicationStatusMutation();
+
   const { data: tags = [] } = useTagsQuery();
   const page = Number(queryValue(searchParams, "page") || "1");
-  const pageSize = [10, 20, 50].includes(Number(queryValue(searchParams, "pageSize"))) ? Number(queryValue(searchParams, "pageSize")) : 20;
+  const pageSize = [10, 20, 50].includes(Number(queryValue(searchParams, "pageSize")))
+    ? Number(queryValue(searchParams, "pageSize"))
+    : 20;
   const status = (queryValue(searchParams, "status") as ApplicationStatus | "") || "";
+
   const query = useMemo(
     () => ({
       page,
@@ -87,18 +114,29 @@ export function ApplicationWorkspace() {
       ...(queryValue(searchParams, "followUp")
         ? {
             followUp: queryValue(searchParams, "followUp") as
-              "overdue" | "today" | "upcoming" | "none",
+              | "overdue"
+              | "today"
+              | "upcoming"
+              | "none",
           }
         : {}),
       ...(queryValue(searchParams, "includeArchived") === "true" ? { includeArchived: true } : {}),
       sort: (queryValue(searchParams, "sort") || "updatedAt") as
-        "updatedAt" | "createdAt" | "company" | "role" | "appliedAt" | "nextFollowUpAt" | "status",
+        | "updatedAt"
+        | "createdAt"
+        | "company"
+        | "role"
+        | "appliedAt"
+        | "nextFollowUpAt"
+        | "status",
       order: (queryValue(searchParams, "order") || "desc") as "asc" | "desc",
     }),
     [page, pageSize, searchParams, status],
   );
+
   const { data, isError, isLoading, isFetching, refetch } = useApplicationsQuery(query);
   const rows = data?.items ?? [];
+
   const updateUrl = useCallback(
     (changes: Record<string, string | undefined>) => {
       const next = new URLSearchParams(searchParams.toString());
@@ -111,6 +149,7 @@ export function ApplicationWorkspace() {
     },
     [pathname, router, searchParams],
   );
+
   useEffect(() => {
     const timer = window.setTimeout(() => {
       if (queryValue(searchParams, "search") !== searchInput.trim())
@@ -118,10 +157,12 @@ export function ApplicationWorkspace() {
     }, 300);
     return () => window.clearTimeout(timer);
   }, [searchInput, searchParams, updateUrl]);
+
   const clearFilters = () => {
     setSearchInput("");
     router.replace(pathname);
   };
+
   const moveApplication = async (id: string, toStatus: ApplicationStatus) => {
     const row = rows.find((item) => item.id === id);
     if (!row || row.status === toStatus || changeStatusState.isLoading) return false;
@@ -135,7 +176,8 @@ export function ApplicationWorkspace() {
       return false;
     }
   };
-  const resetCreate = () => {
+
+  const resetForm = () => {
     setCompany("");
     setRole("");
     setJobUrl("");
@@ -150,7 +192,28 @@ export function ApplicationWorkspace() {
     setTagIds([]);
     setRemoteType("");
     setEmploymentType("");
+    setEditApp(null);
   };
+
+  const openEditModal = (app: Application) => {
+    setCompany(app.company);
+    setRole(app.role);
+    setJobUrl(app.jobUrl ?? "");
+    setLocation(app.location ?? "");
+    setSource(app.source ?? "");
+    setAppliedAt(app.appliedAt ? app.appliedAt.slice(0, 10) : "");
+    setNextFollowUpAt(
+      app.nextFollowUpAt ? new Date(app.nextFollowUpAt).toISOString().slice(0, 16) : "",
+    );
+    setSalaryMin(app.salaryMin !== null && app.salaryMin !== undefined ? String(app.salaryMin) : "");
+    setSalaryMax(app.salaryMax !== null && app.salaryMax !== undefined ? String(app.salaryMax) : "");
+    setCurrency(app.currency ?? "USD");
+    setTagIds(app.tags.map((t) => t.id));
+    setRemoteType(app.remoteType ?? "");
+    setEmploymentType(app.employmentType ?? "");
+    setEditApp(app);
+  };
+
   const submitCreate = async () => {
     if (!company.trim() || !role.trim()) return;
     const min = salaryMin ? Number(salaryMin) : undefined;
@@ -181,14 +244,85 @@ export function ApplicationWorkspace() {
         ...(initialNote.trim() ? { initialNote: initialNote.trim() } : {}),
       }).unwrap();
       toast.success("Application added.");
-      resetCreate();
+      resetForm();
       setCreateOpen(false);
     } catch {
       toast.error("Could not add application.");
     }
   };
-  const activeFilterCount = ["search", "status", "tag", "remoteType", "employmentType", "source", "appliedFrom", "appliedTo", "followUp", "includeArchived"].filter((key) => Boolean(read(key))).length;
+
+  const submitUpdate = async () => {
+    if (!editApp || !company.trim() || !role.trim()) return;
+    const min = salaryMin ? Number(salaryMin) : null;
+    const max = salaryMax ? Number(salaryMax) : null;
+    if ((min !== null || max !== null) && !currency) {
+      toast.error("Currency is required with salary.");
+      return;
+    }
+    if (min !== null && max !== null && max < min) {
+      toast.error("Salary maximum cannot be below minimum.");
+      return;
+    }
+    try {
+      await updateApplication({
+        id: editApp.id,
+        body: {
+          company: company.trim(),
+          role: role.trim(),
+          jobUrl: jobUrl.trim() || null,
+          location: location.trim() || null,
+          source: source.trim() || null,
+          remoteType: remoteType || null,
+          employmentType: employmentType || null,
+          appliedAt: appliedAt || null,
+          salaryMin: min,
+          salaryMax: max,
+          currency: min !== null || max !== null ? currency.toUpperCase() : null,
+          nextFollowUpAt: nextFollowUpAt ? new Date(nextFollowUpAt).toISOString() : null,
+        },
+      }).unwrap();
+      toast.success("Application updated.");
+      resetForm();
+      setEditApp(null);
+    } catch {
+      toast.error("Could not update application.");
+    }
+  };
+
+  const archiveApp = async (app: Application) => {
+    try {
+      await archiveApplication({ id: app.id, archived: !app.archivedAt }).unwrap();
+      toast.success(app.archivedAt ? `${app.company} unarchived.` : `${app.company} archived.`);
+    } catch {
+      toast.error("Could not update archive status.");
+    }
+  };
+
+  const confirmDeleteApp = async () => {
+    if (!deleteTarget) return;
+    try {
+      await deleteApplication(deleteTarget.id).unwrap();
+      toast.success("Application deleted.");
+      setDeleteTarget(null);
+    } catch {
+      toast.error("Could not delete application.");
+    }
+  };
+
+  const activeFilterCount = [
+    "search",
+    "status",
+    "tag",
+    "remoteType",
+    "employmentType",
+    "source",
+    "appliedFrom",
+    "appliedTo",
+    "followUp",
+    "includeArchived",
+  ].filter((key) => Boolean(read(key))).length;
   const hasFilters = activeFilterCount > 0;
+
   if (isLoading)
     return (
       <div className="space-y-3">
@@ -206,14 +340,30 @@ export function ApplicationWorkspace() {
         />
       </AppCard>
     );
+
   return (
     <>
       <div className="space-y-6">
         <AppPageHeader
-          title="Applications"
           description={`${data?.meta?.total ?? 0} ${data?.meta?.total === 1 ? "application" : "applications"} · Organize opportunities, status changes, and follow-ups.`}
+          title="Applications"
         />
-        <ApplicationToolbar activeFilterCount={activeFilterCount} hasFilters={hasFilters} onClearFilters={clearFilters} onCreate={() => setCreateOpen(true)} onSearchChange={setSearchInput} onViewChange={setView} read={read} searchInput={searchInput} tags={tags} updateUrl={updateUrl} view={view} />
+        <ApplicationToolbar
+          activeFilterCount={activeFilterCount}
+          hasFilters={hasFilters}
+          onClearFilters={clearFilters}
+          onCreate={() => {
+            resetForm();
+            setCreateOpen(true);
+          }}
+          onSearchChange={setSearchInput}
+          onViewChange={setView}
+          read={read}
+          searchInput={searchInput}
+          tags={tags}
+          updateUrl={updateUrl}
+          view={view}
+        />
         <div className="flex items-center justify-between gap-3">
           <p className="text-sm text-muted-foreground">
             {isFetching
@@ -221,82 +371,113 @@ export function ApplicationWorkspace() {
               : `${data?.meta?.total ?? 0} application${(data?.meta?.total ?? 0) === 1 ? "" : "s"}`}
           </p>
         </div>
-        {view === "board" ? <ApplicationBoard onMove={moveApplication} rows={rows} /> : rows.length ? (
-          <AppCard className="overflow-hidden shadow-sm" padding="none">
-            <AppTable
-              columns={[
-                {
-                  key: "company",
-                  header: "Company & role",
-                  render: (row: Application) => (
-                    <Link className="group block" href={`/applications/${row.id}`}>
-                      <span className="block font-medium group-hover:text-primary">
-                        {row.company}
-                      </span>
-                      <span className="block text-xs text-muted-foreground">{row.role}</span>
-                    </Link>
-                  ),
-                },
-                {
-                  key: "status",
-                  header: "Status",
-                  render: (row) => <ApplicationStatusBadge status={row.status} />,
-                },
-                {
-                  key: "tags",
-                  header: "Tags",
-                  render: (row) => row.tags.length ? <div className="flex max-w-48 flex-wrap gap-1.5">{row.tags.slice(0, 3).map((tag) => <AppBadge key={tag.id} size="sm">{tag.name}</AppBadge>)}</div> : <span className="text-muted-foreground">—</span>,
-                },
-                {
-                  key: "details",
-                  header: "Details",
-                  render: (row) => (
-                    <span className="text-muted-foreground">
-                      {[row.location, row.remoteType ? humanize(row.remoteType) : ""]
-                        .filter(Boolean)
-                        .join(" · ") || "—"}
-                    </span>
-                  ),
-                },
-                {
-                  key: "followup",
-                  header: "Follow-up",
-                  render: (row) =>
-                    row.nextFollowUpAt ? (
-                      <span className="inline-flex items-center gap-1 text-warning">
-                        <CalendarClock className="size-3.5" />
-                        {new Date(row.nextFollowUpAt).toLocaleDateString()}
-                      </span>
-                    ) : (
-                      <span className="text-muted-foreground">—</span>
-                    ),
-                },
-                {
-                  key: "open",
-                  header: <span className="sr-only">Open application</span>,
-                  align: "right",
-                  render: (row) => (
-                    <Link
-                      aria-label={`Open ${row.company}`}
-                      className="inline-flex text-muted-foreground hover:text-primary"
-                      href={`/applications/${row.id}`}
-                    >
-                      <ChevronRight className="size-4" />
-                    </Link>
-                  ),
-                },
-              ]}
-              getRowKey={(row) => row.id}
+
+        {view === "board" ? (
+          <>
+            <ApplicationBoard
+              onEdit={openEditModal}
+              onMove={moveApplication}
               rows={rows}
             />
-            <div className="flex flex-col gap-3 border-t border-border bg-muted/20 px-5 py-3 sm:flex-row sm:items-center sm:justify-between">
-              <p className="text-sm text-muted-foreground">Showing {Math.min((page - 1) * (data?.meta?.limit ?? 20) + 1, data?.meta?.total ?? 0)}–{Math.min(page * (data?.meta?.limit ?? 20), data?.meta?.total ?? 0)} of {data?.meta?.total ?? 0} applications</p>
-              <div className="flex items-center gap-3"><span className="text-xs text-muted-foreground">Rows per page</span><AppSelect ariaLabel="Rows per page" onValueChange={(value) => updateUrl({ pageSize: value || "20", page: "1" })} options={[{ label: "10", value: "10" }, { label: "20", value: "20" }, { label: "50", value: "50" }]} size="sm" triggerClassName="w-18" value={String(pageSize)} /><AppPagination onPageChange={(nextPage) => updateUrl({ page: String(nextPage) })} page={page} totalPages={Math.max(1, data?.meta?.totalPages || 1)} /></div>
+            <div className="flex justify-end pt-2">
+              <AppPagination
+                onPageChange={(nextPage) => updateUrl({ page: String(nextPage) })}
+                page={page}
+                totalPages={Math.max(1, data?.meta?.totalPages || 1)}
+              />
             </div>
-          </AppCard>
+          </>
+        ) : rows.length ? (
+          <>
+            <div className="hidden sm:block">
+              <ApplicationTable
+                onArchive={archiveApp}
+                onDelete={(app) => setDeleteTarget(app)}
+                onEdit={openEditModal}
+                onMove={moveApplication}
+                onPageChange={(nextPage) => updateUrl({ page: String(nextPage) })}
+                onPageSizeChange={(newSize) =>
+                  updateUrl({ pageSize: newSize || "20", page: "1" })
+                }
+                page={page}
+                pageSize={pageSize}
+                rows={rows}
+                total={data?.meta?.total ?? 0}
+                totalPages={data?.meta?.totalPages || 1}
+              />
+            </div>
+            <div className="space-y-3 sm:hidden">
+              <AppMobileList
+                getItemKey={(item) => item.id}
+                items={rows}
+                renderItem={(item) => (
+                  <div
+                    className="cursor-pointer space-y-2"
+                    onClick={() => router.push(`/applications/${item.id}`)}
+                  >
+                    <div className="flex items-start justify-between gap-2">
+                      <div>
+                        <div className="flex items-center gap-1.5 font-medium">
+                          <span>{item.company}</span>
+                          {item.archivedAt ? (
+                            <AppBadge size="sm" status="neutral">
+                              Archived
+                            </AppBadge>
+                          ) : null}
+                        </div>
+                        <div className="text-xs text-muted-foreground">{item.role}</div>
+                      </div>
+                      <ApplicationStatusBadge status={item.status} />
+                    </div>
+                    {item.tags.length > 0 && (
+                      <div className="flex flex-wrap gap-1">
+                        {item.tags.map((t) => (
+                          <span
+                            className="inline-flex items-center gap-1 rounded border border-border bg-secondary px-1.5 py-0.5 text-[11px] font-medium"
+                            key={t.id}
+                          >
+                            <span
+                              className="size-1.5 rounded-full"
+                              style={{ backgroundColor: t.color || "var(--primary)" }}
+                            />
+                            {t.name}
+                          </span>
+                        ))}
+                      </div>
+                    )}
+                    <div className="flex items-center justify-between border-t border-border/50 pt-1 text-xs text-muted-foreground">
+                      <span>
+                        {item.location || (item.remoteType ? humanize(item.remoteType) : "—")}
+                      </span>
+                      {item.nextFollowUpAt ? (
+                        <span className="inline-flex items-center gap-1 text-warning">
+                          <CalendarClock className="size-3" />
+                          {new Date(item.nextFollowUpAt).toLocaleDateString()}
+                        </span>
+                      ) : (
+                        <span>Updated {new Date(item.updatedAt).toLocaleDateString()}</span>
+                      )}
+                    </div>
+                  </div>
+                )}
+              />
+              <div className="flex justify-center">
+                <AppPagination
+                  onPageChange={(nextPage) => updateUrl({ page: String(nextPage) })}
+                  page={page}
+                  totalPages={Math.max(1, data?.meta?.totalPages || 1)}
+                />
+              </div>
+            </div>
+          </>
         ) : (
           <AppCard>
             <AppEmptyState
+              action={
+                <AppButton onClick={() => setCreateOpen(true)}>
+                  <Plus /> Add application
+                </AppButton>
+              }
               description={
                 hasFilters
                   ? "Try a different search or clear your filters."
@@ -304,16 +485,11 @@ export function ApplicationWorkspace() {
               }
               icon={<BriefcaseBusiness />}
               title={hasFilters ? "No matching applications" : "No applications yet"}
-              action={
-                <AppButton onClick={() => setCreateOpen(true)}>
-                  <Plus /> Add application
-                </AppButton>
-              }
             />
           </AppCard>
         )}
-        {view === "board" ? <div className="flex justify-end"><AppPagination onPageChange={(nextPage) => updateUrl({ page: String(nextPage) })} page={page} totalPages={Math.max(1, data?.meta?.totalPages || 1)} /></div> : null}
       </div>
+
       <AppModal
         bodyClassName="max-h-[75vh]"
         description="Capture the opportunity now and enrich it later."
@@ -437,6 +613,130 @@ export function ApplicationWorkspace() {
           </AppField>
         </div>
       </AppModal>
+
+      <AppModal
+        bodyClassName="max-h-[75vh]"
+        description="Update key application details."
+        footer={
+          <>
+            <AppButton onClick={() => setEditApp(null)} tone="ghost">
+              Cancel
+            </AppButton>
+            <AppButton
+              disabled={!company.trim() || !role.trim()}
+              loading={updateState.isLoading}
+              onClick={() => void submitUpdate()}
+            >
+              Save changes
+            </AppButton>
+          </>
+        }
+        onOpenChange={(open) => {
+          if (!open) setEditApp(null);
+        }}
+        open={Boolean(editApp)}
+        title="Edit application"
+      >
+        <div className="space-y-4">
+          <div className="grid gap-4 sm:grid-cols-2">
+            <AppField label="Company" required>
+              <AppInput onChange={(event) => setCompany(event.target.value)} value={company} />
+            </AppField>
+            <AppField label="Role" required>
+              <AppInput onChange={(event) => setRole(event.target.value)} value={role} />
+            </AppField>
+            <AppField label="Job URL">
+              <AppInput
+                onChange={(event) => setJobUrl(event.target.value)}
+                type="url"
+                value={jobUrl}
+              />
+            </AppField>
+            <AppField label="Location">
+              <AppInput onChange={(event) => setLocation(event.target.value)} value={location} />
+            </AppField>
+            <AppField label="Workplace">
+              <AppSelect
+                onValueChange={(value) =>
+                  setRemoteType(value === "unset" || !value ? "" : (value as RemoteType))
+                }
+                options={[
+                  { label: "Not set", value: "unset" },
+                  ...remoteTypes.map((value) => ({ label: humanize(value), value })),
+                ]}
+                value={remoteType || "unset"}
+              />
+            </AppField>
+            <AppField label="Employment">
+              <AppSelect
+                onValueChange={(value) =>
+                  setEmploymentType(value === "unset" || !value ? "" : (value as EmploymentType))
+                }
+                options={[
+                  { label: "Not set", value: "unset" },
+                  ...employmentTypes.map((value) => ({ label: humanize(value), value })),
+                ]}
+                value={employmentType || "unset"}
+              />
+            </AppField>
+            <AppField label="Source">
+              <AppInput
+                onChange={(event) => setSource(event.target.value)}
+                placeholder="LinkedIn, referral..."
+                value={source}
+              />
+            </AppField>
+            <AppField label="Applied date">
+              <AppInput
+                onChange={(event) => setAppliedAt(event.target.value)}
+                type="date"
+                value={appliedAt}
+              />
+            </AppField>
+            <AppField label="Follow-up">
+              <AppInput
+                onChange={(event) => setNextFollowUpAt(event.target.value)}
+                type="datetime-local"
+                value={nextFollowUpAt}
+              />
+            </AppField>
+          </div>
+          <div className="grid gap-4 sm:grid-cols-3">
+            <AppField label="Minimum salary">
+              <AppInput
+                inputMode="decimal"
+                onChange={(event) => setSalaryMin(event.target.value)}
+                value={salaryMin}
+              />
+            </AppField>
+            <AppField label="Maximum salary">
+              <AppInput
+                inputMode="decimal"
+                onChange={(event) => setSalaryMax(event.target.value)}
+                value={salaryMax}
+              />
+            </AppField>
+            <AppField label="Currency">
+              <AppInput
+                maxLength={3}
+                onChange={(event) => setCurrency(event.target.value.toUpperCase())}
+                value={currency}
+              />
+            </AppField>
+          </div>
+        </div>
+      </AppModal>
+
+      <AppConfirmDialog
+        confirmLabel="Delete"
+        description="This will permanently delete this application along with all its notes, interviews, and status history. This action cannot be undone."
+        onConfirm={() => void confirmDeleteApp()}
+        onOpenChange={(open) => {
+          if (!open) setDeleteTarget(null);
+        }}
+        open={Boolean(deleteTarget)}
+        title={`Delete application for ${deleteTarget?.company ?? ""}?`}
+      />
     </>
   );
 }

@@ -2,7 +2,7 @@
 
 ## Implementation Status
 
-Last updated: 2026-08-25
+Last updated: 2026-08-26
 
 | Phase | Status | Completed work |
 | --- | --- | --- |
@@ -11,9 +11,11 @@ Last updated: 2026-08-25
 | Phase 2 — Global CSS | COMPLETED — shadcn-compatible | `globals.css` keeps the generated shadcn imports and semantic variable contract, adds prototype-aligned light/dark/status tokens, 4px spacing, typography scale, compact radii, popover/modal shadow tokens, focus/disabled/reduced-motion behavior, and `next/font` Inter wiring. Raw `components/ui` remains unchanged. |
 | Phase 3 — `app-ui` Design System | COMPLETED | Added app-owned reusable primitives and patterns, typed application/interview status variants, responsive section and mobile-list APIs, offline banner, and expanded `ui-preview` examples while preserving existing App* APIs. |
 | Phase 4 — App Shell and Public Screens | COMPLETED | Added prototype-aligned responsive shell with desktop sidebar, tablet drawer/scrim, mobile bottom navigation, sticky topbar actions, skip links, install prompt, offline fallback/banner, and redesigned public error/loading/not-found/auth surfaces without changing routes or API behavior. |
-| Phase 5–12 | PENDING | Not started. |
+| Phase 5 — Dashboard Refactor | COMPLETED | Responsive dashboard composition with page actions, stat summary, follow-ups, status chart/legend, upcoming interviews, recent applications, loading/error/empty states, and shell install/offline affordances. |
+| Phase 6 — Applications List এবং Workspace | COMPLETED | Prototype-aligned Applications workspace with search, filter popover with multi-criteria selection, active filter chips row, sort popover, list/board segmented control, responsive table with quick action kebab menu, mobile stacked card list, drag-and-drop Kanban board with accessible status update dropdowns, add/edit application modal, and delete confirmation dialog. |
+| Phase 7–12 | PENDING | Not started. |
 
-Phase 1-এর deeper visual redesign of the applications form and application-detail tabs remains in Phases 6–7; the route and ownership boundaries are already real feature boundaries. No raw shadcn component or backend/API contract was changed.
+Phase 1-এর deeper visual redesign of the applications form and application-detail tabs remains in Phases 6–7; the route and ownership boundaries are already real feature boundaries. The dashboard API implementation and its OpenAPI response shape are now documented and consumed by the frontend; no raw shadcn component was changed.
 
 Validation completed for Phase 0–2: TypeScript, ESLint, Vitest (2 tests), Next production build, and `git diff --check` passed. Playwright E2E remains pending because its configured `pnpm dev` web server is blocked by the local pnpm signature issue.
 
