@@ -551,3 +551,49 @@
     transition-duration: 0.01ms !important;
   }
 }
+
+/* Settings follows the compact reference layout: a vertical rail on desktop and
+   a scrollable tab strip on smaller screens. */
+@layer components {
+  .settings-tab {
+    width: 100%;
+    border: 0;
+    border-radius: 0.375rem;
+    color: var(--muted-foreground);
+    text-align: left;
+    margin-bottom: 0.25rem;
+    transition: background-color 150ms, color 150ms;
+  }
+
+  .settings-tab:hover { color: var(--foreground); background: var(--muted); }
+  .settings-tab.is-active { background: var(--primary-soft); color: var(--primary); }
+
+  .setting-row {
+    display: flex;
+    min-height: 68px;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.75rem 0;
+  }
+
+  .setting-row p + p { margin-top: 0.25rem; }
+
+  .setting-row.group\/switch { border: 0; border-radius: 0; background: transparent; }
+
+  /* Color is intentionally represented by the swatch in the tags table; the
+     raw hex value is available from the swatch tooltip and would be redundant. */
+  .settings-nav + div table td:nth-child(2) span { font-size: 0; }
+  .settings-nav + div table td:nth-child(2) i { display: block; }
+  .settings-nav + div table td:first-child i { display: none; }
+
+  @media (max-width: 1023px) {
+    .settings-tab { width: auto; border: 0; border-radius: 0.375rem; margin-bottom: 0; white-space: nowrap; }
+    .settings-tab.is-active { background: var(--primary-soft); color: var(--primary); }
+  }
+
+  @media (max-width: 639px) {
+    .setting-row { align-items: flex-start; flex-direction: column; }
+    .setting-row > [data-slot="select"], .setting-row .min-w-64 { width: 100%; min-width: 0; }
+  }
+}

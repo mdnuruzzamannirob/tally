@@ -12,6 +12,7 @@ import {
 import { useDashboardQuery } from "@/store/api/dashboard.api";
 import { useAppSelector } from "@/store/hooks";
 import type { DashboardSummary } from "@/types/dashboard.types";
+import * as echarts from "echarts";
 import {
   AlertTriangle,
   BriefcaseBusiness,
@@ -26,7 +27,7 @@ import {
   Video,
 } from "lucide-react";
 import Link from "next/link";
-import { useMemo, useRef, useEffect } from "react";
+import { useEffect, useRef } from "react";
 
 const statusLabels: Record<string, string> = {
   WISHLIST: "Wishlist",
@@ -88,56 +89,54 @@ function IvTypeIcon({ type }: { type: string }) {
   return <Video className="size-4" />;
 }
 
-// SVG donut chart matching prototype
 function DonutChart({ counts }: { counts: DashboardSummary["statusCounts"] }) {
-  const total = Object.values(counts).reduce((sum, c) => sum + c, 0);
-  const statuses = Object.keys(statusLabels);
+  const chartRef = useRef<HTMLDivElement>(null);
 
-  const segs = useMemo(() => {
-    if (!total) return [];
-    let offset = 0;
-    return statuses
-      .filter((s) => (counts[s] ?? 0) > 0)
-      .map((s) => {
-        const pct = ((counts[s] ?? 0) / total) * 100;
-        const seg = { status: s, pct, offset };
-        offset += pct;
-        return seg;
-      });
-  }, [counts, total, statuses]);
+  useEffect(() => {
+    if (!chartRef.current) return;
+
+    const chart = echarts.init(chartRef.current);
+    const data = Object.keys(statusLabels)
+      .map((status) => ({
+        name: statusLabels[status],
+        value: counts[status] ?? 0,
+        itemStyle: { color: statusColors[status] ?? "#94a3b8" },
+      }))
+      .filter((item) => item.value > 0);
+
+    chart.setOption({
+      animation: true,
+      aria: { enabled: true, decal: { show: true } },
+      tooltip: { trigger: "item", formatter: "{b}: {c} ({d}%)" },
+      series: [
+        {
+          type: "pie",
+          radius: ["62%", "82%"],
+          center: ["50%", "50%"],
+          avoidLabelOverlap: true,
+          label: { show: false },
+          labelLine: { show: false },
+          data,
+        },
+      ],
+    });
+
+    const resizeObserver = new ResizeObserver(() => chart.resize());
+    resizeObserver.observe(chartRef.current);
+
+    return () => {
+      resizeObserver.disconnect();
+      chart.dispose();
+    };
+  }, [counts]);
 
   return (
-    <svg
+    <div
       aria-label="Status distribution chart"
-      className="h-[150px] w-[150px] shrink-0"
+      className="h-[200px] w-[200px] shrink-0"
+      ref={chartRef}
       role="img"
-      viewBox="0 0 100 100"
-    >
-      <g transform="rotate(-90 50 50)">
-        <circle
-          cx="50"
-          cy="50"
-          fill="none"
-          r="40"
-          stroke="var(--muted)"
-          strokeWidth="13"
-        />
-        {segs.map((seg) => (
-          <circle
-            cx="50"
-            cy="50"
-            fill="none"
-            key={seg.status}
-            pathLength="100"
-            r="40"
-            stroke={statusColors[seg.status] ?? "#94a3b8"}
-            strokeDasharray={`${seg.pct} ${100 - seg.pct}`}
-            strokeDashoffset={-seg.offset}
-            strokeWidth="13"
-          />
-        ))}
-      </g>
-    </svg>
+    />
   );
 }
 

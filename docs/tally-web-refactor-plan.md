@@ -14,7 +14,8 @@ Last updated: 2026-08-26
 | Phase 5 — Dashboard Refactor | COMPLETED | Responsive dashboard composition with page actions, stat summary, follow-ups, status chart/legend, upcoming interviews, recent applications, loading/error/empty states, and shell install/offline affordances. |
 | Phase 6 — Applications List এবং Workspace | COMPLETED | Prototype-aligned Applications workspace with search, filter popover with multi-criteria selection, active filter chips row, sort popover, list/board segmented control, responsive table with quick action kebab menu, mobile stacked card list, drag-and-drop Kanban board with accessible status update dropdowns, add/edit application modal, and delete confirmation dialog. |
 | Phase 7 — Application Detail Screen | COMPLETED | Prototype-aligned Application Detail page with top header actions (change status modal, edit application modal, archive/delete kebab menu), metadata grid (Location, Remote type, Employment, Source, Applied date, Follow-up alert, Salary, Job link), and tabbed sections for Overview, Notes (add, edit, delete), Interviews (schedule, edit, join link, delete), and Activity timeline. |
-| Phase 8–12 | PENDING | Not started. |
+| Phase 8 — Interviews Screen | COMPLETED | Responsive upcoming/past interview workspace with count badges, application/date/type/interviewer/status/location/meeting details, add/edit modal, delete confirmation, loading/error/empty states, and timezone-aware formatting. |
+| Phase 9–12 | PENDING | Not started. |
 
 Phase 1-এর deeper visual redesign of the applications form and application-detail tabs remains in Phases 6–7; the route and ownership boundaries are already real feature boundaries. The dashboard API implementation and its OpenAPI response shape are now documented and consumed by the frontend; no raw shadcn component was changed.
 
