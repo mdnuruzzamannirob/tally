@@ -61,9 +61,6 @@ export function InstallPrompt() {
     <>
       <div className="relative hidden min-h-8 items-center justify-center border-b border-primary-border bg-primary-soft px-8 py-1 sm:flex">
         <div className="flex min-w-0 items-center gap-1.5">
-          <span className="grid size-5 shrink-0 place-items-center rounded-md bg-primary text-primary-foreground">
-            <Target className="size-2.5" />
-          </span>
           <TallyLogo className="text-sm" />
           <span aria-hidden="true" className="h-3 w-px bg-border-strong" />
           <span className="text-[10px] leading-3.5 text-foreground">
@@ -92,9 +89,7 @@ export function InstallPrompt() {
       </div>
       <div className="relative flex min-h-8 items-center border-b border-primary-border bg-primary-soft px-3 py-1 pr-10 sm:hidden">
         <div className="flex min-w-0 items-center gap-2">
-          <span className="grid size-6 shrink-0 place-items-center rounded-md bg-primary text-primary-foreground">
-            <Target className="size-3" />
-          </span>
+          <TallyLogo className="text-sm" />
           <span className="min-w-0 truncate text-[10px] leading-3.5 text-foreground">
             Install Tally <span className="text-muted-foreground">· offline access</span>
           </span>
