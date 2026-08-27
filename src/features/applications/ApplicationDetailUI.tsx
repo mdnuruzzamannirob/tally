@@ -8,6 +8,7 @@ import {
   Archive,
   ArrowLeft,
   ArrowRight,
+  ArrowRightLeft,
   Calendar,
   CalendarClock,
   ExternalLink,
@@ -24,12 +25,12 @@ import {
   AppCard,
   AppConfirmDialog,
   AppDatePicker,
+  AppDateTimePicker,
   AppDropdownMenu,
   AppEmptyState,
   AppField,
   AppInput,
   AppModal,
-  AppNumberInput,
   AppSelect,
   AppSkeleton,
   AppTextarea,
@@ -158,6 +159,7 @@ export function ApplicationDetailUI({ id }: { id: string }) {
   const [currency, setCurrency] = useState("USD");
   const [remoteType, setRemoteType] = useState<RemoteType | "">("");
   const [employmentType, setEmploymentType] = useState<EmploymentType | "">("");
+  const [tagIds, setTagIds] = useState<string[]>([]);
 
   // Delete App State
   const [confirmDeleteApp, setConfirmDeleteApp] = useState(false);
@@ -165,6 +167,7 @@ export function ApplicationDetailUI({ id }: { id: string }) {
   // Note State
   const [noteInput, setNoteInput] = useState("");
   const [editingNoteId, setEditingNoteId] = useState<string | null>(null);
+  const [noteModalOpen, setNoteModalOpen] = useState(false);
   const [deleteNoteTarget, setDeleteNoteTarget] = useState<string | null>(null);
 
   // Interview Modal State
@@ -230,6 +233,7 @@ export function ApplicationDetailUI({ id }: { id: string }) {
     setCurrency(application.currency ?? "USD");
     setRemoteType(application.remoteType ?? "");
     setEmploymentType(application.employmentType ?? "");
+    setTagIds(application.tags.map((tag) => tag.id));
     setEditAppOpen(true);
   };
 
@@ -260,6 +264,7 @@ export function ApplicationDetailUI({ id }: { id: string }) {
           salaryMin: min,
           salaryMax: max,
           currency: min !== null || max !== null ? currency.toUpperCase() : null,
+          tagIds,
           nextFollowUpAt: nextFollowUpAt ? new Date(nextFollowUpAt).toISOString() : null,
         },
       }).unwrap();
@@ -322,6 +327,7 @@ export function ApplicationDetailUI({ id }: { id: string }) {
         toast.success("Note added.");
       }
       setNoteInput("");
+      setNoteModalOpen(false);
     } catch {
       toast.error("Could not save note.");
     }
@@ -330,6 +336,7 @@ export function ApplicationDetailUI({ id }: { id: string }) {
   const handleEditNote = (noteItem: (typeof notes)[number]) => {
     setEditingNoteId(noteItem.id);
     setNoteInput(noteItem.content);
+    setNoteModalOpen(true);
   };
 
   const handleConfirmDeleteNote = async () => {
@@ -449,6 +456,7 @@ export function ApplicationDetailUI({ id }: { id: string }) {
         </div>
         <div className="flex flex-wrap items-center gap-2">
           <AppButton onClick={openStatusModal} size="sm" tone="secondary">
+            <ArrowRightLeft className="size-3.5" />
             Change status
           </AppButton>
           <AppButton onClick={openEditAppModal} size="sm" tone="secondary">
@@ -661,6 +669,35 @@ export function ApplicationDetailUI({ id }: { id: string }) {
         {/* Overview Tab Content */}
         {activeTab === "overview" && (
           <div className="space-y-4 p-5">
+            <div className="hidden">
+              {[
+                ["Location", application.location],
+                ["Workplace", application.remoteType],
+                ["Employment", application.employmentType],
+                ["Source", application.source],
+                ["Applied date", application.appliedAt ? formatDate(application.appliedAt) : null],
+                [
+                  "Follow-up",
+                  application.nextFollowUpAt ? formatDateTime(application.nextFollowUpAt) : null,
+                ],
+                [
+                  "Salary",
+                  application.salaryMin || application.salaryMax
+                    ? `${application.salaryMin ?? "—"} – ${application.salaryMax ?? "—"} ${application.currency ?? ""}`
+                    : null,
+                ],
+                ["Job URL", application.jobUrl],
+              ].map(([label, value]) => (
+                <div key={label}>
+                  <span className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+                    {label}
+                  </span>
+                  <p className="mt-1 text-sm">
+                    {value || <span className="text-muted-foreground">Not set</span>}
+                  </p>
+                </div>
+              ))}
+            </div>
             <div>
               <span className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
                 Tags
@@ -703,7 +740,19 @@ export function ApplicationDetailUI({ id }: { id: string }) {
         {/* Notes Tab Content */}
         {activeTab === "notes" && (
           <div className="space-y-4 p-5">
-            <div className="space-y-2">
+            <div className="flex justify-end">
+              <AppButton
+                onClick={() => {
+                  setEditingNoteId(null);
+                  setNoteInput("");
+                  setNoteModalOpen(true);
+                }}
+                size="sm"
+              >
+                <Plus className="size-3.5" /> Add note
+              </AppButton>
+            </div>
+            <div className="hidden">
               <AppTextarea
                 aria-label="Note content"
                 onChange={(e) => setNoteInput(e.target.value)}
@@ -727,7 +776,7 @@ export function ApplicationDetailUI({ id }: { id: string }) {
                 <AppButton
                   disabled={!noteInput.trim()}
                   loading={createNoteState.isLoading || updateNoteState.isLoading}
-                  onClick={() => void handleSaveNote()}
+                  onClick={() => setNoteModalOpen(true)}
                   size="sm"
                 >
                   {editingNoteId ? "Save note" : "Add note"}
@@ -735,14 +784,11 @@ export function ApplicationDetailUI({ id }: { id: string }) {
               </div>
             </div>
 
-            <div className="space-y-3 pt-2">
+            <div className="space-y-3">
               {notes.length ? (
                 notes.map((n) => (
-                  <div
-                    className="rounded-lg border border-border bg-card p-3.5 shadow-2xs"
-                    key={n.id}
-                  >
-                    <div className="flex items-center justify-between border-b border-border/40 pb-2 mb-2">
+                  <div className="rounded-lg border border-border bg-background p-3" key={n.id}>
+                    <div className="mb-2 flex items-center justify-between border-b border-border/40 pb-2">
                       <span className="text-xs text-muted-foreground">
                         {formatDateTime(n.createdAt)}
                         {n.updatedAt ? " · edited" : ""}
@@ -1010,49 +1056,39 @@ export function ApplicationDetailUI({ id }: { id: string }) {
             </AppField>
             <AppField label="Applied date">
               <AppDatePicker
-                onValueChange={(date) => setAppliedAt(date ? date.toISOString().slice(0, 10) : "")}
+                onValueChange={(date) =>
+                  setAppliedAt(
+                    date
+                      ? `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`
+                      : "",
+                  )
+                }
                 placeholder="Pick application date"
                 value={appliedAt ? new Date(`${appliedAt}T00:00:00`) : undefined}
               />
             </AppField>
-            <AppField label="Follow-up">
-              <div className="grid grid-cols-2 gap-2">
-                <AppDatePicker
-                  onValueChange={(date) =>
-                    setNextFollowUpAt(
-                      date
-                        ? `${date.toISOString().slice(0, 10)}T${nextFollowUpAt.slice(11, 16) || "09:00"}`
-                        : "",
-                    )
-                  }
-                  placeholder="Pick date"
-                  value={
-                    nextFollowUpAt ? new Date(`${nextFollowUpAt.slice(0, 10)}T00:00:00`) : undefined
-                  }
-                />
-                <AppTimePicker
-                  onValueChange={(time) =>
-                    setNextFollowUpAt(`${nextFollowUpAt.slice(0, 10)}T${time ?? "09:00"}`)
-                  }
-                  value={nextFollowUpAt.slice(11, 16)}
-                />
-              </div>
-            </AppField>
           </div>
-          <div className="grid gap-4 sm:grid-cols-3">
+          <div className="grid gap-4 sm:grid-cols-2">
             <AppField label="Minimum salary">
-              <AppNumberInput
-                min={0}
-                onValueChange={(value) => setSalaryMin(String(value))}
-                value={Number(salaryMin) || 0}
+              <AppInput
+                inputMode="decimal"
+                onChange={(e) => setSalaryMin(e.target.value)}
+                placeholder="e.g. 50000"
+                type="number"
+                value={salaryMin}
               />
             </AppField>
             <AppField label="Maximum salary">
-              <AppNumberInput
-                min={0}
-                onValueChange={(value) => setSalaryMax(String(value))}
-                value={Number(salaryMax) || 0}
+              <AppInput
+                inputMode="decimal"
+                onChange={(e) => setSalaryMax(e.target.value)}
+                placeholder="e.g. 80000"
+                type="number"
+                value={salaryMax}
               />
+            </AppField>
+            <AppField label="Follow-up">
+              <AppDateTimePicker onChange={setNextFollowUpAt} value={nextFollowUpAt} />
             </AppField>
             <AppField label="Currency">
               <AppSelect
@@ -1066,6 +1102,33 @@ export function ApplicationDetailUI({ id }: { id: string }) {
               />
             </AppField>
           </div>
+          <AppField label="Tags">
+            <div className="flex flex-wrap items-center gap-2">
+              {tags.map((tag) => {
+                const selected = tagIds.includes(tag.id);
+                return (
+                  <AppButton
+                    className={`h-7! rounded-md! border-border! bg-card! px-2! text-xs! ${selected ? "border-primary! bg-primary/15! text-foreground!" : ""}`}
+                    key={tag.id}
+                    onClick={() =>
+                      setTagIds((current) =>
+                        selected ? current.filter((id) => id !== tag.id) : [...current, tag.id],
+                      )
+                    }
+                    size="sm"
+                    tone="outline"
+                    type="button"
+                  >
+                    <span
+                      className="size-2 rounded-full"
+                      style={{ backgroundColor: tag.color ?? "#64748b" }}
+                    />
+                    {tag.name}
+                  </AppButton>
+                );
+              })}
+            </div>
+          </AppField>
         </div>
       </AppModal>
 
@@ -1158,6 +1221,35 @@ export function ApplicationDetailUI({ id }: { id: string }) {
             />
           </AppField>
         </div>
+      </AppModal>
+
+      <AppModal
+        footer={
+          <>
+            <AppButton onClick={() => setNoteModalOpen(false)} tone="ghost">
+              Cancel
+            </AppButton>
+            <AppButton
+              disabled={!noteInput.trim()}
+              loading={createNoteState.isLoading || updateNoteState.isLoading}
+              onClick={() => void handleSaveNote()}
+            >
+              {editingNoteId ? "Save note" : "Add note"}
+            </AppButton>
+          </>
+        }
+        onOpenChange={setNoteModalOpen}
+        open={noteModalOpen}
+        title={editingNoteId ? "Edit note" : "Add note"}
+      >
+        <AppField label="Note content" required>
+          <AppTextarea
+            onChange={(e) => setNoteInput(e.target.value)}
+            placeholder="Write your note..."
+            rows={5}
+            value={noteInput}
+          />
+        </AppField>
       </AppModal>
 
       {/* Delete Application Confirmation */}

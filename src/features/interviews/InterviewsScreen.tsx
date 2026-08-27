@@ -108,23 +108,56 @@ function InterviewList({
       />
     );
   return (
-    <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+    <div className="space-y-2.5">
       {data.items.map((item) => (
         <article
           aria-label={(item.application?.company ?? "Application") + " interview"}
-          className={`flex min-h-[224px] flex-col rounded-[10px] border border-border bg-card p-[18px] ${item.status === "COMPLETED" ? "opacity-60" : ""}`}
+          className={`flex items-center gap-4 rounded-lg border border-border bg-background p-3 ${item.status === "COMPLETED" ? "opacity-60" : ""}`}
           key={item.id}
         >
-          <div className="relative min-w-0">
+          <div className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
+            {item.type === "PHONE" ? (
+              <Phone className="size-4" />
+            ) : item.type === "ONSITE" ? (
+              <MapPin className="size-4" />
+            ) : (
+              <Video className="size-4" />
+            )}
+          </div>
+          <div className="relative min-w-0 flex-1">
             <div className="min-w-0">
               <Link
                 className="min-w-0 w-full"
                 href={"/applications/" + (item.application?.id ?? item.applicationId)}
               >
-                <p className="pr-24 font-semibold leading-5 tracking-tight">
+                <p className="flex items-center gap-3 font-semibold leading-5 tracking-tight">
+                  {humanize(item.type)} Interview{" "}
+                  <AppBadge
+                    className="h-5! px-1.5! py-0! text-[10px]!"
+                    size="sm"
+                    status={badgeStatus(item.status)}
+                  >
+                    {humanize(item.status)}
+                  </AppBadge>
+                </p>
+                <p className="mt-1 flex flex-wrap items-center gap-x-1.5 text-xs text-muted-foreground">
+                  <span>{formatInterviewDate(item.scheduledAt)}</span>
+                  <span aria-hidden="true">·</span>
+                  <span>{formatInterviewTime(item.scheduledAt)}</span>
+                  {item.interviewerName ? (
+                    <>
+                      <span aria-hidden="true">·</span>
+                      <span>with </span>
+                      <span className="font-medium text-foreground">
+                        {String(item.interviewerName)}
+                      </span>
+                    </>
+                  ) : null}
+                </p>
+                <p className="hidden pr-24 font-semibold leading-5 tracking-tight">
                   {item.application?.company ?? "Application"} · {item.application?.role ?? ""}
                 </p>
-                <div className="mt-4 flex flex-col gap-2 text-[13px]">
+                <div className="hidden mt-1 flex flex-col gap-1 text-[13px]">
                   <div className="order-2 flex min-w-0 items-center gap-2 text-[13px] text-muted-foreground">
                     {item.type === "PHONE" ? (
                       <Phone className="size-3.5 shrink-0" />
@@ -155,7 +188,7 @@ function InterviewList({
               </Link>
             </div>
             <AppBadge
-              className="absolute top-0 right-0 uppercase tracking-wide"
+              className="hidden absolute top-0 right-0 uppercase tracking-wide"
               size="sm"
               status={badgeStatus(item.status)}
             >
@@ -163,12 +196,12 @@ function InterviewList({
             </AppBadge>
           </div>
           {item.location || item.meetingLink ? (
-            <div className="mt-3 flex items-center gap-2 pb-4 text-[13px] text-muted-foreground">
+            <div className="hidden flex shrink-0 items-center gap-2 text-[13px] text-muted-foreground">
               <MapPin className="size-3.5" />
               <span className="truncate text-muted-foreground">{item.location ?? "Online"}</span>
             </div>
           ) : null}
-          <div className="mt-auto flex items-center justify-end gap-1.5 border-t border-border pt-3">
+          <div className="ml-auto flex shrink-0 items-center justify-end gap-1.5">
             {item.meetingLink ? (
               <a
                 aria-label="Open meeting link"
@@ -292,7 +325,7 @@ export function InterviewsScreen() {
             label: (
               <>
                 All{" "}
-                <span className="ml-1 rounded bg-muted px-1.5 py-0.5 text-xs">
+                <span className="rounded bg-muted px-1.5 py-0.5 text-xs">
                   {all?.items.length ?? 0}
                 </span>
               </>
@@ -304,7 +337,7 @@ export function InterviewsScreen() {
             label: (
               <>
                 Upcoming{" "}
-                <span className="ml-1 rounded bg-muted px-1.5 py-0.5 text-xs">
+                <span className="rounded bg-muted px-1.5 py-0.5 text-xs">
                   {upcoming?.items.length ?? 0}
                 </span>
               </>
@@ -316,7 +349,7 @@ export function InterviewsScreen() {
             label: (
               <>
                 Past{" "}
-                <span className="ml-1 rounded bg-muted px-1.5 py-0.5 text-xs">
+                <span className="rounded bg-muted px-1.5 py-0.5 text-xs">
                   {past?.items.length ?? 0}
                 </span>
               </>
