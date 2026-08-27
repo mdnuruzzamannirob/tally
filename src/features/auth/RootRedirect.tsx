@@ -3,6 +3,7 @@
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAppSelector } from "@/store/hooks";
+import { AuthRouteLoading } from "./AuthRouteLoading";
 
 export function RootRedirect() {
   const router = useRouter();
@@ -13,5 +14,6 @@ export function RootRedirect() {
     else if (!user.emailVerified) router.replace(`/verify-email?email=${encodeURIComponent(user.email)}`);
     else router.replace(user.preferences.defaultLandingPage === "applications" ? "/applications" : "/dashboard");
   }, [initialized, router, user]);
-  return <p aria-live="polite">Loading Tally...</p>;
+  return <AuthRouteLoading />;
 }
+

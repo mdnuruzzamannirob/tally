@@ -32,6 +32,10 @@ const registerSchema = z.object({
   name: z.string().trim().max(100).optional(),
   email: emailSchema,
   password: passwordSchema,
+  confirmPassword: z.string(),
+}).refine((values) => values.password === values.confirmPassword, {
+  path: ["confirmPassword"],
+  message: "Passwords must match.",
 });
 
 function getErrorMessage(error: unknown, fallback: string) {
@@ -110,15 +114,14 @@ export function LoginForm() {
               placeholder="Enter your password"
               {...register("password")}
             />
-          </AppField>
-          <AppCheckbox
+          </AppField>          <AppCheckbox
             checked={remember}
             label="Keep me signed in for 30 days"
             onCheckedChange={(value) => setRemember(value === true)}
             size="sm"
           />
           <AppButton className="h-10 w-full" loading={isLoading} type="submit">
-            {isLoading ? "Signing in…" : "Sign in"}
+            {isLoading ? "Signing inÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚Â¦" : "Sign in"}
           </AppButton>
           <AuthDivider />
           <SocialLogin />
@@ -148,14 +151,16 @@ export function RegisterForm() {
     mode: "onBlur",
   });
   const passwordField = register("password");
+  const confirmPasswordField = register("confirmPassword");
 
-  const onSubmit = async (values: { name?: string; email: string; password: string }) => {
+  const onSubmit = async (values: z.infer<typeof registerSchema>) => {
     if (!terms) {
       toast.error("Please agree to the Terms and Privacy Policy.");
       return;
     }
     try {
-      const payload = { ...values, name: values.name?.trim() || undefined };
+      const { confirmPassword: _confirmPassword, ...payloadValues } = values;
+      const payload = { ...payloadValues, name: values.name?.trim() || undefined };
       await registerUser(payload).unwrap();
       router.replace(`/verify-email?email=${encodeURIComponent(values.email)}`);
     } catch (submitError) {
@@ -206,7 +211,14 @@ export function RegisterForm() {
             />
             <PasswordStrength password={password} />
           </AppField>
-          <AppCheckbox
+          <AppField error={errors.confirmPassword?.message} label="Confirm password" required>
+            <PasswordInput
+              {...confirmPasswordField}
+              aria-invalid={Boolean(errors.confirmPassword)}
+              autoComplete="new-password"
+              placeholder="Repeat your password"
+            />
+          </AppField>\r\n          <AppCheckbox
             checked={terms}
             label={
               <span>
@@ -224,7 +236,7 @@ export function RegisterForm() {
             size="sm"
           />
           <AppButton className="h-10 w-full" loading={isLoading} type="submit">
-            {isLoading ? "Creating account…" : "Create account"}
+            {isLoading ? "Creating accountÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚Â¦" : "Create account"}
           </AppButton>
           <AuthDivider />
           <SocialLogin />
@@ -282,7 +294,7 @@ export function ForgotPasswordForm() {
             />
           </AppField>
           <AppButton className="h-10 w-full" loading={isLoading} type="submit">
-            {isLoading ? "Sending…" : "Send reset link"}
+            {isLoading ? "SendingÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¦" : "Send reset link"}
           </AppButton>
         </form>
         <AuthFooter>
@@ -329,7 +341,7 @@ export function ResetPasswordForm() {
     }
     try {
       await resetPassword({ token, password }).unwrap();
-      toast.success("Password reset successfully. Taking you to sign in…");
+      toast.success("Password reset successfully. Taking you to sign inÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¦");
       window.setTimeout(() => router.replace("/login"), 900);
     } catch (submitError) {
       toast.error(getErrorMessage(submitError, "This reset link is invalid or has expired."));
@@ -379,7 +391,7 @@ export function ResetPasswordForm() {
             />
           </AppField>
           <AppButton className="h-10 w-full" loading={isLoading} type="submit">
-            {isLoading ? "Resetting password…" : "Reset password"}
+            {isLoading ? "Resetting passwordÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¦" : "Reset password"}
           </AppButton>
         </form>
       </AuthCard>

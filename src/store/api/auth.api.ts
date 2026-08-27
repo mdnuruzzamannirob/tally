@@ -24,7 +24,6 @@ export const authApi = baseApi.injectEndpoints({
         if (!response.success) throw new Error(response.message);
         return response.data;
       },
-      invalidatesTags: ["Auth"],
     }),
     logout: build.mutation<void, void>({
       query: () => ({

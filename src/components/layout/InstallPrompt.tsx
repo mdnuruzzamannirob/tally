@@ -3,6 +3,7 @@
 import { Download, Target, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { AppButton, toast } from "@/components/app-ui";
+import { TallyLogo } from "@/components/shared/TallyLogo";
 
 type InstallPromptEvent = Event & {
   prompt: () => Promise<void>;
@@ -35,7 +36,7 @@ export function InstallPrompt() {
 
   const install = async () => {
     if (!event) {
-      toast.info("To install Tally, open your browser menu and choose ‘Install Tally’ or ‘Add to home screen’.");
+      toast.info("To install Tally, open your browser menu and choose Ã¢â‚¬ËœInstall TallyÃ¢â‚¬â„¢ or Ã¢â‚¬ËœAdd to home screenÃ¢â‚¬â„¢.");
       return;
     }
     await event.prompt();
@@ -54,7 +55,7 @@ export function InstallPrompt() {
           <span className="grid size-5 shrink-0 place-items-center rounded-md bg-primary text-primary-foreground">
             <Target className="size-2.5" />
           </span>
-          <span className="text-[10px] font-semibold leading-3.5 text-foreground">Tally</span>
+          <TallyLogo className="text-sm" />
           <span aria-hidden="true" className="h-3 w-px bg-border-strong" />
           <span className="text-[10px] leading-3.5 text-foreground">
             Install Tally <span className="text-muted-foreground">for faster offline access</span>
@@ -86,7 +87,7 @@ export function InstallPrompt() {
             <Target className="size-3" />
           </span>
           <span className="min-w-0 truncate text-[10px] leading-3.5 text-foreground">
-            Install Tally <span className="text-muted-foreground">· offline access</span>
+            Install Tally <span className="text-muted-foreground">Ã‚Â· offline access</span>
           </span>
         </div>
         <AppButton

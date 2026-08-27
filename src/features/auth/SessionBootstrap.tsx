@@ -1,17 +1,31 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 
-import { clearSession, setCurrentUser } from "@/store/slices/auth.slice";
 import { useAppDispatch } from "@/store/hooks";
-import { useCurrentUserQuery } from "@/store/api/auth.api";
+import { clearSession, setSession } from "@/store/slices/auth.slice";
+import { useLazyCurrentUserQuery, useRefreshMutation } from "@/store/api/auth.api";
 
 export function SessionBootstrap() {
   const dispatch = useAppDispatch();
-  const { data, isError, isSuccess } = useCurrentUserQuery();
+  const [refresh] = useRefreshMutation();
+  const [loadUser] = useLazyCurrentUserQuery();
+  const started = useRef(false);
+
   useEffect(() => {
-    if (isSuccess && data) dispatch(setCurrentUser(data));
-    if (isError) dispatch(clearSession());
-  }, [data, dispatch, isError, isSuccess]);
+    if (started.current) return;
+    started.current = true;
+
+    void refresh()
+      .unwrap()
+      .then(async ({ accessToken }) => {
+        const user = await loadUser().unwrap();
+        dispatch(setSession({ accessToken, user }));
+      })
+      .catch(() => {
+        dispatch(clearSession());
+      });
+  }, [dispatch, loadUser, refresh]);
+
   return null;
 }

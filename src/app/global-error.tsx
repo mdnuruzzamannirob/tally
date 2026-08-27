@@ -1,21 +1,18 @@
 "use client";
 
-export default function GlobalError({
-  reset,
-}: {
-  error: Error & { digest?: string };
-  reset: () => void;
-}) {
+import { RefreshCw } from "lucide-react";
+import { TallyLogo } from "@/components/shared/TallyLogo";
+
+export default function GlobalError({ reset }: { error: Error & { digest?: string }; reset: () => void }) {
   return (
     <html lang="en">
       <body>
-        <main className="flex min-h-[100dvh] items-center justify-center bg-[#f8fafc] px-4 py-10 text-[#0f172a]" id="main-content" role="alert">
-          <section className="w-full max-w-[420px] rounded-lg border border-[#e2e8f0] bg-white p-6 text-center shadow-none">
-            <h1 className="text-xl font-semibold">Something went wrong</h1>
-            <p className="mt-2 text-sm text-[#64748b]">There was a problem starting Tally. Please try again.</p>
-            <button className="mt-6 h-9 w-full rounded-md bg-[#6366f1] px-3 text-sm font-medium text-white hover:bg-[#4f46e5]" type="button" onClick={reset}>
-              Reload Tally
-            </button>
+        <main className="relative flex min-h-svh items-center justify-center bg-slate-50 px-6 text-slate-900" id="main-content" role="alert">
+          <section className="w-full max-w-sm text-center">
+            <TallyLogo className="absolute left-1/2 top-6 -translate-x-1/2 text-lg text-indigo-600" aria-hidden="true" />
+            <h1 className="text-2xl font-semibold tracking-tight">Something went wrong</h1>
+            <p className="mt-2 text-sm text-slate-500">We couldn&apos;t start Tally. Please try again.</p>
+            <button className="mt-6 inline-flex h-10 items-center gap-2 rounded-md bg-indigo-600 px-4 text-sm font-medium text-white hover:bg-indigo-700" type="button" onClick={reset}><RefreshCw className="size-4" /> Reload Tally</button>
           </section>
         </main>
       </body>

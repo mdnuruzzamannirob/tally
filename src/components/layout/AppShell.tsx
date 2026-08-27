@@ -1,15 +1,12 @@
 "use client";
-import {
-  AppAvatar,
-  AppButton,
-  AppNotificationMenu,
-  AppSearchDialog,
-  AppThemeMenu,
-} from "@/components/app-ui";
+import { AppAvatar, AppButton, AppSearchDialog, AppThemeMenu } from "@/components/app-ui";
 import { AppConfirmDialog } from "@/components/app-ui/app-confirm-dialog";
 import { cn } from "@/lib/utils";
-import { useCurrentUserQuery, useLogoutMutation } from "@/store/api/auth.api";
+import { TallyLogo } from "@/components/shared/TallyLogo";
+import { useLogoutMutation } from "@/store/api/auth.api";
 import { useUpdatePreferencesMutation } from "@/store/api/users.api";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
+import { clearSession } from "@/store/slices/auth.slice";
 import {
   BriefcaseBusiness,
   CalendarDays,
@@ -36,7 +33,8 @@ const navigation = [
 export function AppShell({ children }: { children: ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
-  const { data: user } = useCurrentUserQuery();
+  const dispatch = useAppDispatch();
+  const user = useAppSelector((state) => state.auth.user);
   const [logout, { isLoading }] = useLogoutMutation();
   const [updatePreferences] = useUpdatePreferencesMutation();
   const [searchOpen, setSearchOpen] = useState(false);
@@ -65,9 +63,12 @@ export function AppShell({ children }: { children: ReactNode }) {
   const handleLogout = async () => {
     try {
       await logout().unwrap();
-      router.replace("/login");
+    } catch {
+      // The local session is cleared even if the server session already expired.
     } finally {
+      dispatch(clearSession());
       setConfirmLogout(false);
+      router.replace("/login");
     }
   };
   useLayoutEffect(() => {
@@ -85,7 +86,7 @@ export function AppShell({ children }: { children: ReactNode }) {
       style={{ "--shell-notice-height": `${noticeHeight}px` } as CSSProperties}
     >
       <a
-        className="fixed top-2 left-2 z-[70] -translate-y-20 rounded-md bg-primary px-3 py-2 text-sm font-medium text-primary-foreground transition-transform focus:translate-y-0"
+        className="fixed top-2 left-2 z-70 -translate-y-20 rounded-md bg-primary px-3 py-2 text-sm font-medium text-primary-foreground transition-transform focus:translate-y-0"
         href="#main-content"
       >
         Skip to content
@@ -106,7 +107,7 @@ export function AppShell({ children }: { children: ReactNode }) {
         ) : null}
         <aside
           className={cn(
-            "fixed inset-y-0 left-0 z-40 flex w-[260px] -translate-x-full flex-col border-r border-border bg-card transition-transform duration-200 lg:w-[240px] lg:translate-x-0",
+            "fixed inset-y-0 left-0 z-40 flex w-65 -translate-x-full flex-col border-r border-border bg-card transition-transform duration-200 lg:w-60 lg:translate-x-0",
             drawerOpen && "translate-x-0",
           )}
           style={{ top: "var(--shell-notice-height)" }}
@@ -115,10 +116,7 @@ export function AppShell({ children }: { children: ReactNode }) {
             className="flex h-15 shrink-0 items-center gap-2 border-b border-border px-4 text-lg font-semibold tracking-tight"
             href="/dashboard"
           >
-            <span className="grid size-8 place-items-center rounded-md bg-primary text-primary-foreground">
-              <Target className="size-4" />
-            </span>
-            Tally
+            <TallyLogo className="text-2xl" />
           </Link>
           <nav aria-label="Main navigation" className="mt-5 space-y-1 px-3">
             {navigation.map(({ href, icon: Icon, label }) => (
@@ -170,10 +168,7 @@ export function AppShell({ children }: { children: ReactNode }) {
                 <Menu className="size-4" />
               </AppButton>
               <Link className="flex items-center gap-2 font-semibold lg:hidden" href="/dashboard">
-                <span className="grid size-7 place-items-center rounded-md bg-primary text-primary-foreground">
-                  <Target className="size-3.5" />
-                </span>
-                <span className="hidden sm:inline">Tally</span>
+                <TallyLogo className="text-xl" />
               </Link>
               <h1 className="hidden text-base font-semibold sm:block">{pageName}</h1>
               <div className="ml-auto flex items-center gap-2">
@@ -198,7 +193,7 @@ export function AppShell({ children }: { children: ReactNode }) {
                   <span className="hidden md:inline">Add application</span>
                   <span className="md:hidden">Add</span>
                 </Link>
-                <AppNotificationMenu onOpenChange={setNotificationsOpen} open={notificationsOpen} />
+                {/* <AppNotificationMenu onOpenChange={setNotificationsOpen} open={notificationsOpen} /> */}
                 <AppThemeMenu
                   onThemeChange={handleThemeChange}
                   resolvedTheme={resolvedTheme}
