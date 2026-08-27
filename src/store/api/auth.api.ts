@@ -1,23 +1,12 @@
 import { baseApi } from "./base-api";
 import type { ApiEnvelope } from "@/types/api.types";
 import type { AuthSession, CurrentUser } from "@/types/auth.types";
-import type { AccessTokenResponse, ConnectedAccounts } from "@/types/auth.types";
+import type { ConnectedAccounts } from "@/types/auth.types";
 
 type MessageResponse = Record<string, never>;
 
 export const authApi = baseApi.injectEndpoints({
   endpoints: (build) => ({
-    refresh: build.mutation<AccessTokenResponse, void>({
-      query: () => ({
-        url: "/auth/refresh",
-        method: "POST",
-        headers: { "X-Requested-With": "XMLHttpRequest" },
-      }),
-      transformResponse: (response: ApiEnvelope<AccessTokenResponse>) => {
-        if (!response.success) throw new Error(response.message);
-        return response.data;
-      },
-    }),
     login: build.mutation<AuthSession, { email: string; password: string }>({
       query: (body) => ({ url: "/auth/login", method: "POST", body }),
       transformResponse: (response: ApiEnvelope<AuthSession>) => {
@@ -31,7 +20,6 @@ export const authApi = baseApi.injectEndpoints({
         method: "POST",
         headers: { "X-Requested-With": "XMLHttpRequest" },
       }),
-      invalidatesTags: ["Auth"],
     }),
     currentUser: build.query<CurrentUser, void>({
       query: () => "/auth/me",
@@ -121,7 +109,6 @@ export const authApi = baseApi.injectEndpoints({
 export const {
   useCurrentUserQuery,
   useLazyCurrentUserQuery,
-  useRefreshMutation,
   useLoginMutation,
   useLogoutMutation,
   useRegisterMutation,

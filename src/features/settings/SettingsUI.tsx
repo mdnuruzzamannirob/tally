@@ -33,7 +33,6 @@ import {
 import {
   useChangePasswordMutation,
   useConnectedAccountsQuery,
-  useCurrentUserQuery,
   useLinkConnectedAccountMutation,
   useSetPasswordMutation,
   useUnlinkConnectedAccountMutation,
@@ -50,6 +49,8 @@ import {
   useExportJsonMutation,
   useImportJsonMutation,
 } from "@/store/api/export-import.api";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
+import { setCurrentUser } from "@/store/slices/auth.slice";
 import type { ExportBackup } from "@/types/export-import.types";
 import { GitHubIcon, GoogleIcon, PasswordStrength } from "@/features/auth/AuthControls";
 
@@ -134,7 +135,8 @@ function Password({
 export function SettingsUI() {
   const [active, setActive] = useState<Section>("profile");
   const { setTheme } = useTheme();
-  const { data: user } = useCurrentUserQuery();
+  const dispatch = useAppDispatch();
+  const user = useAppSelector((state) => state.auth.user);
   const prefs = user?.preferences;
   const { data: accounts } = useConnectedAccountsQuery(undefined, { skip: active !== "security" });
   const { data: tags = [] } = useTagsQuery(undefined, { skip: active !== "tags" });
@@ -185,7 +187,8 @@ export function SettingsUI() {
     value: string | boolean,
   ) => {
     try {
-      await updatePrefs({ [field]: value }).unwrap();
+      const updatedUser = await updatePrefs({ [field]: value }).unwrap();
+      dispatch(setCurrentUser(updatedUser));
       if (field === "theme") setTheme(value as "light" | "dark" | "system");
       toast.success("Preferences updated.");
     } catch (e) {
@@ -315,7 +318,10 @@ export function SettingsUI() {
                     onClick={() =>
                       void updateProfile({ name: name.trim() })
                         .unwrap()
-                        .then(() => toast.success("Profile updated."))
+                        .then((updatedUser) => {
+                          dispatch(setCurrentUser(updatedUser));
+                          toast.success("Profile updated.");
+                        })
                         .catch((e) => toast.error(err(e, "Could not update profile.")))
                     }
                   >

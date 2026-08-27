@@ -3,12 +3,11 @@
 import { useEffect, useRef } from "react";
 
 import { useAppDispatch } from "@/store/hooks";
-import { clearSession, setSession } from "@/store/slices/auth.slice";
-import { useLazyCurrentUserQuery, useRefreshMutation } from "@/store/api/auth.api";
+import { clearSession, setCurrentUser } from "@/store/slices/auth.slice";
+import { useLazyCurrentUserQuery } from "@/store/api/auth.api";
 
 export function SessionBootstrap() {
   const dispatch = useAppDispatch();
-  const [refresh] = useRefreshMutation();
   const [loadUser] = useLazyCurrentUserQuery();
   const started = useRef(false);
 
@@ -16,16 +15,17 @@ export function SessionBootstrap() {
     if (started.current) return;
     started.current = true;
 
-    void refresh()
+    // baseQueryWithReauth restores the access token before /auth/me after a
+    // full reload. The callback page waits for this same request to finish.
+    void loadUser()
       .unwrap()
-      .then(async ({ accessToken }) => {
-        const user = await loadUser().unwrap();
-        dispatch(setSession({ accessToken, user }));
+      .then((user) => {
+        dispatch(setCurrentUser(user));
       })
       .catch(() => {
         dispatch(clearSession());
       });
-  }, [dispatch, loadUser, refresh]);
+  }, [dispatch, loadUser]);
 
   return null;
 }

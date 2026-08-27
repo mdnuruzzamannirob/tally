@@ -1,9 +1,9 @@
 "use client";
 
-import { Download, Target, X } from "lucide-react";
-import { useEffect, useState } from "react";
 import { AppButton, toast } from "@/components/app-ui";
 import { TallyLogo } from "@/components/shared/TallyLogo";
+import { Download, Target, X } from "lucide-react";
+import { useEffect, useState } from "react";
 
 type InstallPromptEvent = Event & {
   prompt: () => Promise<void>;
@@ -14,11 +14,18 @@ export function InstallPrompt() {
   const [event, setEvent] = useState<InstallPromptEvent | null>(null);
   const [dismissed, setDismissed] = useState(() => {
     if (typeof window === "undefined") return false;
-    return window.matchMedia("(display-mode: standalone)").matches || localStorage.getItem("tally-install-dismissed") === "1";
+    return (
+      window.matchMedia("(display-mode: standalone)").matches ||
+      localStorage.getItem("tally-install-dismissed") === "1"
+    );
   });
 
   useEffect(() => {
-    if (window.matchMedia("(display-mode: standalone)").matches || localStorage.getItem("tally-install-dismissed") === "1") return;
+    if (
+      window.matchMedia("(display-mode: standalone)").matches ||
+      localStorage.getItem("tally-install-dismissed") === "1"
+    )
+      return;
     const onBeforeInstallPrompt = (nextEvent: Event) => {
       nextEvent.preventDefault();
       setEvent(nextEvent as InstallPromptEvent);
@@ -36,7 +43,9 @@ export function InstallPrompt() {
 
   const install = async () => {
     if (!event) {
-      toast.info("To install Tally, open your browser menu and choose Ã¢â‚¬ËœInstall TallyÃ¢â‚¬â„¢ or Ã¢â‚¬ËœAdd to home screenÃ¢â‚¬â„¢.");
+      toast.info(
+        "To install Tally, open your browser menu and choose 'Install Tally' or 'Add to home screen'.",
+      );
       return;
     }
     await event.prompt();
@@ -87,7 +96,7 @@ export function InstallPrompt() {
             <Target className="size-3" />
           </span>
           <span className="min-w-0 truncate text-[10px] leading-3.5 text-foreground">
-            Install Tally <span className="text-muted-foreground">Ã‚Â· offline access</span>
+            Install Tally <span className="text-muted-foreground">· offline access</span>
           </span>
         </div>
         <AppButton

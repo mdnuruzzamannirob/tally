@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, type ReactNode } from "react";
 import { usePathname, useRouter } from "next/navigation";
+import { useEffect, type ReactNode } from "react";
 
 import { useAppSelector } from "@/store/hooks";
 import { AuthRouteLoading } from "./AuthRouteLoading";
@@ -13,7 +13,7 @@ export function ProtectedRoute({ children }: { children: ReactNode }) {
   // useEffect(() => {
   //   if (initialized && !user) router.replace(`/login?redirect=${encodeURIComponent(pathname)}`);
   // }, [initialized, pathname, router, user]);
-  // if (!initialized || !user) return <p aria-live="polite">Loading your sessionÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦</p>;
+  // if (!initialized || !user) return <p aria-live="polite">Loading your session...</p>;
   // if (!user.emailVerified) return <p>Your email must be verified before accessing Tally.</p>;
   useEffect(() => {
     if (!initialized) return;
@@ -21,10 +21,10 @@ export function ProtectedRoute({ children }: { children: ReactNode }) {
       router.replace(`/login?redirect=${encodeURIComponent(pathname)}`);
       return;
     }
-    if (!user.emailVerified) router.replace(`/verify-email?email=${encodeURIComponent(user.email)}`);
+    if (!user.emailVerified)
+      router.replace(`/verify-email?email=${encodeURIComponent(user.email)}`);
   }, [initialized, pathname, router, user]);
   if (!initialized || !user) return <AuthRouteLoading />;
   if (!user.emailVerified) return <AuthRouteLoading />;
   return <>{children}</>;
 }
-

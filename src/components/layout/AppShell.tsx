@@ -4,9 +4,10 @@ import { AppConfirmDialog } from "@/components/app-ui/app-confirm-dialog";
 import { cn } from "@/lib/utils";
 import { TallyLogo } from "@/components/shared/TallyLogo";
 import { useLogoutMutation } from "@/store/api/auth.api";
+import { baseApi } from "@/store/api/base-api";
 import { useUpdatePreferencesMutation } from "@/store/api/users.api";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
-import { clearSession } from "@/store/slices/auth.slice";
+import { clearSession, setCurrentUser } from "@/store/slices/auth.slice";
 import {
   BriefcaseBusiness,
   CalendarDays,
@@ -58,7 +59,10 @@ export function AppShell({ children }: { children: ReactNode }) {
   const handleThemeChange = (nextTheme: string) => {
     if (nextTheme !== "light" && nextTheme !== "dark" && nextTheme !== "system") return;
     setTheme(nextTheme);
-    void updatePreferences({ theme: nextTheme });
+    void updatePreferences({ theme: nextTheme })
+      .unwrap()
+      .then((updatedUser) => dispatch(setCurrentUser(updatedUser)))
+      .catch(() => undefined);
   };
   const handleLogout = async () => {
     try {
@@ -67,6 +71,7 @@ export function AppShell({ children }: { children: ReactNode }) {
       // The local session is cleared even if the server session already expired.
     } finally {
       dispatch(clearSession());
+      dispatch(baseApi.util.resetApiState());
       setConfirmLogout(false);
       router.replace("/login");
     }
