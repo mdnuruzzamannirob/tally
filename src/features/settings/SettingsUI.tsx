@@ -156,16 +156,23 @@ export function SettingsUI() {
   const [confirm, setConfirm] = useState("");
   const [tagName, setTagName] = useState("");
   const [color, setColor] = useState("#6366f1");
+  const [editCustomColor, setEditCustomColor] = useState<string | null>(null);
   const isPresetColor = tagColors.some((preset) => preset.toLowerCase() === color.toLowerCase());
+
   const [editingTag, setEditingTag] = useState<{
     id: string;
     name: string;
     color: string | null;
   } | null>(null);
+  const paletteColors = editingTag && editCustomColor ? [...tagColors, editCustomColor] : tagColors;
+  const pickerHasNewCustomColor =
+    !isPresetColor && (!editingTag || color.toLowerCase() !== editCustomColor?.toLowerCase());
   const [tagModalOpen, setTagModalOpen] = useState(false);
   const [deleteTagTarget, setDeleteTagTarget] = useState<{ id: string; name: string } | null>(null);
   const [tagPage, setTagPage] = useState(1);
   const [file, setFile] = useState<File | null>(null);
+  // Sync the editable profile field when the authenticated user data arrives or changes.
+  // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => setName(user?.name ?? ""), [user?.name]);
   useEffect(() => {
     if (prefs?.theme) setTheme(prefs.theme);
@@ -228,6 +235,16 @@ export function SettingsUI() {
     setEditingTag(tag ?? null);
     setTagName(tag?.name ?? "");
     setColor(tag?.color ?? tagColors[0]);
+    setEditCustomColor(
+      tag?.color && !tagColors.some((preset) => preset.toLowerCase() === tag.color!.toLowerCase())
+        ? tag.color
+        : null,
+    );
+    setEditCustomColor(
+      tag?.color && !tagColors.some((preset) => preset.toLowerCase() === tag.color?.toLowerCase())
+        ? tag.color
+        : null,
+    );
     setTagModalOpen(true);
   };
   const saveTag = async () => {
@@ -567,10 +584,10 @@ export function SettingsUI() {
                 <div className="mt-5">
                   <p className="text-[13px] font-medium">Color</p>
                   <div className="mt-2 flex flex-wrap gap-2">
-                    {tagColors.map((preset) => (
+                    {paletteColors.map((preset) => (
                       <button
                         aria-label={`Use ${preset}`}
-                        className={`size-7 rounded-full border-2 transition-shadow ${color.toLowerCase() === preset.toLowerCase() ? "border-foreground ring-2 ring-primary/25" : "border-card"}`}
+                        className={`size-7 rounded-full border-2 transition-shadow ${color.toLowerCase() === preset.toLowerCase() ? "border-card ring-2 ring-primary ring-offset-1 ring-offset-card" : "border-card"}`}
                         key={preset}
                         onClick={() => setColor(preset)}
                         style={{ backgroundColor: preset }}
@@ -579,10 +596,10 @@ export function SettingsUI() {
                     ))}
                     <label
                       aria-label="Choose custom color"
-                      className={`grid size-7 cursor-pointer place-items-center rounded-full border-2 text-xs font-bold transition-shadow ${isPresetColor ? "border-border bg-muted text-muted-foreground" : "border-foreground ring-2 ring-primary/25 text-white"}`}
-                      style={!isPresetColor ? { backgroundColor: color } : undefined}
+                      className={`grid size-7 cursor-pointer place-items-center rounded-full border-2 text-xs font-bold transition-shadow ${pickerHasNewCustomColor ? "border-card ring-2 ring-primary ring-offset-1 ring-offset-card text-white" : "border-border bg-muted text-muted-foreground"}`}
+                      style={pickerHasNewCustomColor ? { backgroundColor: color } : undefined}
                     >
-                      {isPresetColor ? "+" : "✓"}
+                      {pickerHasNewCustomColor ? null : "+"}
                       <input
                         className="sr-only"
                         onChange={(e) => setColor(e.target.value)}
