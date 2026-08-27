@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { format } from "date-fns";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { BriefcaseBusiness, CalendarClock, Plus } from "lucide-react";
@@ -9,12 +10,13 @@ import {
   AppButton,
   AppCard,
   AppConfirmDialog,
+  AppDateTimePicker,
+  AppDatePicker,
   AppEmptyState,
   AppField,
   AppInput,
   AppMobileList,
   AppModal,
-  AppMultiSelect,
   AppPagination,
   AppSelect,
   AppSkeleton,
@@ -29,7 +31,7 @@ import {
   useDeleteApplicationMutation,
   useUpdateApplicationMutation,
 } from "@/store/api/applications.api";
-import { useTagsQuery } from "@/store/api/tags.api";
+import { useCreateTagMutation, useTagsQuery } from "@/store/api/tags.api";
 import type {
   Application,
   ApplicationStatus,
@@ -49,6 +51,120 @@ import {
 
 const queryValue = (params: URLSearchParams, key: string) => params.get(key) ?? "";
 export { ApplicationStatusBadge as StatusBadge } from "./components/ApplicationStatusBadge";
+
+function ApplicationTags({
+  selected,
+  tags,
+  onChange,
+}: {
+  selected: string[];
+  tags: readonly { id: string; name: string; color: string | null }[];
+  onChange: (value: string[]) => void;
+}) {
+  const [draft, setDraft] = useState("");
+  const [adding, setAdding] = useState(false);
+  const [createTag, state] = useCreateTagMutation();
+  const addTag = async () => {
+    if (!draft.trim()) return;
+    const tag = await createTag({ name: draft.trim() }).unwrap();
+    onChange([...selected, tag.id]);
+    setDraft("");
+    setAdding(false);
+  };
+  return (
+    <div className="space-y-2">
+      <div className="flex flex-wrap gap-2">
+        {tags
+          .filter((tag) => selected.includes(tag.id))
+          .map((tag) => (
+            <button
+              className="rounded-full border border-primary/30 bg-primary-soft px-2.5 py-1 text-xs text-primary"
+              key={tag.id}
+              onClick={() => onChange(selected.filter((id) => id !== tag.id))}
+              type="button"
+            >
+              {tag.name} ×
+            </button>
+          ))}
+        <AppButton onClick={() => setAdding(true)} size="sm" tone="outline" type="button">
+          + Add tag
+        </AppButton>
+      </div>
+      {adding ? (
+        <div className="flex gap-2">
+          <AppInput
+            autoFocus
+            onChange={(event) => setDraft(event.target.value)}
+            onKeyDown={(event) => {
+              if (event.key === "Enter") {
+                event.preventDefault();
+                void addTag();
+              }
+            }}
+            placeholder="e.g. Follow up"
+            value={draft}
+          />
+          <AppButton
+            disabled={!draft.trim()}
+            loading={state.isLoading}
+            onClick={() => void addTag()}
+            size="sm"
+          >
+            Add
+          </AppButton>
+        </div>
+      ) : null}
+    </div>
+  );
+}
+
+function ApplicationTagOptions({
+  selected,
+  tags,
+  onChange,
+}: {
+  selected: string[];
+  tags: readonly { id: string; name: string; color: string | null }[];
+  onChange: (value: string[]) => void;
+}) {
+  const [expanded, setExpanded] = useState(false);
+  const visibleTags = expanded ? tags : tags.slice(0, 5);
+  const toggle = (id: string) =>
+    onChange(selected.includes(id) ? selected.filter((item) => item !== id) : [...selected, id]);
+  return (
+    <div className="flex flex-wrap items-center gap-2">
+      {visibleTags.map((tag) => (
+        <AppButton
+          className={`h-7! rounded-md! border-border! bg-card! px-2! text-xs! ${selected.includes(tag.id) ? "border-primary! bg-primary/15! text-foreground!" : ""}`}
+          key={tag.id}
+          onClick={() => toggle(tag.id)}
+          size="sm"
+          tone="outline"
+          type="button"
+        >
+          <span
+            className="size-2 rounded-full"
+            style={{ backgroundColor: tag.color ?? "#64748b" }}
+          />
+          {tag.name}
+        </AppButton>
+      ))}
+      {tags.length > 5 ? (
+        <AppButton
+          onClick={() => setExpanded((value) => !value)}
+          size="sm"
+          tone="ghost"
+          type="button"
+        >
+          {expanded ? "− Less" : `+ ${tags.length - 5} more`}
+        </AppButton>
+      ) : null}
+      {!tags.length ? (
+        <span className="text-xs text-muted-foreground">No tags created yet.</span>
+      ) : null}
+    </div>
+  );
+}
 
 export function ApplicationWorkspace() {
   const router = useRouter();
@@ -116,21 +232,12 @@ export function ApplicationWorkspace() {
       ...(queryValue(searchParams, "followUp")
         ? {
             followUp: queryValue(searchParams, "followUp") as
-              | "overdue"
-              | "today"
-              | "upcoming"
-              | "none",
+              "overdue" | "today" | "upcoming" | "none",
           }
         : {}),
       ...(queryValue(searchParams, "includeArchived") === "true" ? { includeArchived: true } : {}),
       sort: (queryValue(searchParams, "sort") || "updatedAt") as
-        | "updatedAt"
-        | "createdAt"
-        | "company"
-        | "role"
-        | "appliedAt"
-        | "nextFollowUpAt"
-        | "status",
+        "updatedAt" | "createdAt" | "company" | "role" | "appliedAt" | "nextFollowUpAt" | "status",
       order: (queryValue(searchParams, "order") || "desc") as "asc" | "desc",
     }),
     [page, pageSize, searchParams, status],
@@ -240,8 +347,12 @@ export function ApplicationWorkspace() {
     setNextFollowUpAt(
       app.nextFollowUpAt ? new Date(app.nextFollowUpAt).toISOString().slice(0, 16) : "",
     );
-    setSalaryMin(app.salaryMin !== null && app.salaryMin !== undefined ? String(app.salaryMin) : "");
-    setSalaryMax(app.salaryMax !== null && app.salaryMax !== undefined ? String(app.salaryMax) : "");
+    setSalaryMin(
+      app.salaryMin !== null && app.salaryMin !== undefined ? String(app.salaryMin) : "",
+    );
+    setSalaryMax(
+      app.salaryMax !== null && app.salaryMax !== undefined ? String(app.salaryMax) : "",
+    );
     setCurrency(app.currency ?? "USD");
     setTagIds(app.tags.map((t) => t.id));
     setRemoteType(app.remoteType ?? "");
@@ -313,6 +424,7 @@ export function ApplicationWorkspace() {
           salaryMin: min,
           salaryMax: max,
           currency: min !== null || max !== null ? currency.toUpperCase() : null,
+          tagIds,
           nextFollowUpAt: nextFollowUpAt ? new Date(nextFollowUpAt).toISOString() : null,
         },
       }).unwrap();
@@ -425,16 +537,15 @@ export function ApplicationWorkspace() {
             />
             <div className="flex flex-col gap-3 rounded-lg border border-border bg-card px-4 py-2.5 sm:flex-row sm:items-center sm:justify-between shadow-2xs">
               <p className="text-xs text-muted-foreground sm:text-sm">
-                Showing {Math.min((page - 1) * pageSize + 1, data?.meta?.total ?? 0)}–{Math.min(page * pageSize, data?.meta?.total ?? 0)} of{" "}
-                {data?.meta?.total ?? 0} applications
+                Showing {Math.min((page - 1) * pageSize + 1, data?.meta?.total ?? 0)}–
+                {Math.min(page * pageSize, data?.meta?.total ?? 0)} of {data?.meta?.total ?? 0}{" "}
+                applications
               </p>
               <div className="flex items-center gap-3">
                 <span className="text-xs text-muted-foreground">Cards per page</span>
                 <AppSelect
                   ariaLabel="Cards per page"
-                  onValueChange={(value) =>
-                    updateUrl({ pageSize: value || "20", page: "1" })
-                  }
+                  onValueChange={(value) => updateUrl({ pageSize: value || "20", page: "1" })}
                   options={[
                     { label: "10", value: "10" },
                     { label: "20", value: "20" },
@@ -460,10 +571,9 @@ export function ApplicationWorkspace() {
                 onDelete={(app) => setDeleteTarget(app)}
                 onEdit={openEditModal}
                 onMove={moveApplication}
+                onRowClick={(app) => router.push(`/applications/${app.id}`)}
                 onPageChange={(nextPage) => updateUrl({ page: String(nextPage) })}
-                onPageSizeChange={(newSize) =>
-                  updateUrl({ pageSize: newSize || "20", page: "1" })
-                }
+                onPageSizeChange={(newSize) => updateUrl({ pageSize: newSize || "20", page: "1" })}
                 page={page}
                 pageSize={pageSize}
                 rows={rows}
@@ -557,6 +667,7 @@ export function ApplicationWorkspace() {
 
       <AppModal
         bodyClassName="max-h-[75vh]"
+        contentClassName="sm:max-w-3xl"
         description="Capture the opportunity now and enrich it later."
         footer={
           <>
@@ -579,20 +690,33 @@ export function ApplicationWorkspace() {
         <div className="space-y-4">
           <div className="grid gap-4 sm:grid-cols-2">
             <AppField label="Company" required>
-              <AppInput onChange={(event) => setCompany(event.target.value)} value={company} />
+              <AppInput
+                onChange={(event) => setCompany(event.target.value)}
+                placeholder="e.g. Acme Corporation"
+                value={company}
+              />
             </AppField>
             <AppField label="Role" required>
-              <AppInput onChange={(event) => setRole(event.target.value)} value={role} />
+              <AppInput
+                onChange={(event) => setRole(event.target.value)}
+                placeholder="e.g. Senior Product Designer"
+                value={role}
+              />
             </AppField>
             <AppField label="Job URL">
               <AppInput
                 onChange={(event) => setJobUrl(event.target.value)}
+                placeholder="https://company.com/jobs/..."
                 type="url"
                 value={jobUrl}
               />
             </AppField>
             <AppField label="Location">
-              <AppInput onChange={(event) => setLocation(event.target.value)} value={location} />
+              <AppInput
+                onChange={(event) => setLocation(event.target.value)}
+                placeholder="e.g. Dhaka, Bangladesh"
+                value={location}
+              />
             </AppField>
             <AppField label="Workplace">
               <AppSelect
@@ -626,31 +750,19 @@ export function ApplicationWorkspace() {
               />
             </AppField>
             <AppField label="Applied date">
-              <AppInput
-                onChange={(event) => setAppliedAt(event.target.value)}
-                type="date"
-                value={appliedAt}
-              />
-            </AppField>
-            <AppField label="Follow-up">
-              <AppInput
-                onChange={(event) => setNextFollowUpAt(event.target.value)}
-                type="datetime-local"
-                value={nextFollowUpAt}
-              />
-            </AppField>
-            <AppField label="Tags">
-              <AppMultiSelect
-                onValueChange={setTagIds}
-                options={tags.map((tag) => ({ label: tag.name, value: tag.id }))}
-                value={tagIds}
+              <AppDatePicker
+                onValueChange={(date) => setAppliedAt(date ? format(date, "yyyy-MM-dd") : "")}
+                placeholder="Pick application date"
+                value={appliedAt ? new Date(`${appliedAt}T00:00:00`) : undefined}
               />
             </AppField>
           </div>
-          <div className="grid gap-4 sm:grid-cols-3">
+          <div className="grid gap-4 sm:grid-cols-2">
             <AppField label="Minimum salary">
               <AppInput
                 inputMode="decimal"
+                type="number"
+                placeholder="e.g. 50000"
                 onChange={(event) => setSalaryMin(event.target.value)}
                 value={salaryMin}
               />
@@ -658,22 +770,37 @@ export function ApplicationWorkspace() {
             <AppField label="Maximum salary">
               <AppInput
                 inputMode="decimal"
+                type="number"
+                placeholder="e.g. 80000"
                 onChange={(event) => setSalaryMax(event.target.value)}
                 value={salaryMax}
               />
             </AppField>
+          </div>
+          <div className="grid gap-4 sm:grid-cols-2">
+            <AppField label="Follow-up">
+              <AppDateTimePicker onChange={setNextFollowUpAt} value={nextFollowUpAt} />
+            </AppField>
             <AppField label="Currency">
-              <AppInput
-                maxLength={3}
-                onChange={(event) => setCurrency(event.target.value.toUpperCase())}
+              <AppSelect
+                onValueChange={(value) => setCurrency(value ?? "USD")}
+                options={["USD", "EUR", "GBP", "BDT", "CAD", "AUD"].map((value) => ({
+                  label: value,
+                  value,
+                }))}
+                placeholder="Choose currency"
                 value={currency}
               />
             </AppField>
           </div>
+          <AppField label="Tags">
+            <ApplicationTagOptions onChange={setTagIds} selected={tagIds} tags={tags} />
+          </AppField>
           <AppField label="Initial note">
             <AppTextarea
               onChange={(event) => setInitialNote(event.target.value)}
               value={initialNote}
+              placeholder="Capture recruiter conversations, research, and next steps..."
             />
           </AppField>
         </div>
@@ -681,6 +808,7 @@ export function ApplicationWorkspace() {
 
       <AppModal
         bodyClassName="max-h-[75vh]"
+        contentClassName="sm:max-w-3xl"
         description="Update key application details."
         footer={
           <>
@@ -705,20 +833,33 @@ export function ApplicationWorkspace() {
         <div className="space-y-4">
           <div className="grid gap-4 sm:grid-cols-2">
             <AppField label="Company" required>
-              <AppInput onChange={(event) => setCompany(event.target.value)} value={company} />
+              <AppInput
+                onChange={(event) => setCompany(event.target.value)}
+                placeholder="e.g. Acme Corporation"
+                value={company}
+              />
             </AppField>
             <AppField label="Role" required>
-              <AppInput onChange={(event) => setRole(event.target.value)} value={role} />
+              <AppInput
+                onChange={(event) => setRole(event.target.value)}
+                placeholder="e.g. Senior Product Designer"
+                value={role}
+              />
             </AppField>
             <AppField label="Job URL">
               <AppInput
                 onChange={(event) => setJobUrl(event.target.value)}
+                placeholder="https://company.com/jobs/..."
                 type="url"
                 value={jobUrl}
               />
             </AppField>
             <AppField label="Location">
-              <AppInput onChange={(event) => setLocation(event.target.value)} value={location} />
+              <AppInput
+                onChange={(event) => setLocation(event.target.value)}
+                placeholder="e.g. Dhaka, Bangladesh"
+                value={location}
+              />
             </AppField>
             <AppField label="Workplace">
               <AppSelect
@@ -752,24 +893,19 @@ export function ApplicationWorkspace() {
               />
             </AppField>
             <AppField label="Applied date">
-              <AppInput
-                onChange={(event) => setAppliedAt(event.target.value)}
-                type="date"
-                value={appliedAt}
-              />
-            </AppField>
-            <AppField label="Follow-up">
-              <AppInput
-                onChange={(event) => setNextFollowUpAt(event.target.value)}
-                type="datetime-local"
-                value={nextFollowUpAt}
+              <AppDatePicker
+                onValueChange={(date) => setAppliedAt(date ? format(date, "yyyy-MM-dd") : "")}
+                placeholder="Pick application date"
+                value={appliedAt ? new Date(`${appliedAt}T00:00:00`) : undefined}
               />
             </AppField>
           </div>
-          <div className="grid gap-4 sm:grid-cols-3">
+          <div className="grid gap-4 sm:grid-cols-2">
             <AppField label="Minimum salary">
               <AppInput
                 inputMode="decimal"
+                type="number"
+                placeholder="e.g. 50000"
                 onChange={(event) => setSalaryMin(event.target.value)}
                 value={salaryMin}
               />
@@ -777,18 +913,30 @@ export function ApplicationWorkspace() {
             <AppField label="Maximum salary">
               <AppInput
                 inputMode="decimal"
+                type="number"
+                placeholder="e.g. 80000"
                 onChange={(event) => setSalaryMax(event.target.value)}
                 value={salaryMax}
               />
             </AppField>
+            <AppField label="Follow-up">
+              <AppDateTimePicker onChange={setNextFollowUpAt} value={nextFollowUpAt} />
+            </AppField>
             <AppField label="Currency">
-              <AppInput
-                maxLength={3}
-                onChange={(event) => setCurrency(event.target.value.toUpperCase())}
+              <AppSelect
+                onValueChange={(value) => setCurrency(value ?? "USD")}
+                options={["USD", "EUR", "GBP", "BDT", "CAD", "AUD"].map((value) => ({
+                  label: value,
+                  value,
+                }))}
+                placeholder="Choose currency"
                 value={currency}
               />
             </AppField>
           </div>
+          <AppField label="Tags">
+            <ApplicationTagOptions onChange={setTagIds} selected={tagIds} tags={tags} />
+          </AppField>
         </div>
       </AppModal>
 
@@ -816,7 +964,8 @@ export function ApplicationWorkspace() {
         {statusTarget && (
           <div className="space-y-4">
             <p className="text-xs text-muted-foreground">
-              <span className="font-medium text-foreground">{statusTarget.company}</span> · {statusTarget.role} — currently{" "}
+              <span className="font-medium text-foreground">{statusTarget.company}</span> ·{" "}
+              {statusTarget.role} — currently{" "}
               <ApplicationStatusBadge status={statusTarget.status} />
             </p>
             <AppField label="New status" required>
@@ -837,7 +986,9 @@ export function ApplicationWorkspace() {
                   value={statusNote}
                 />
               </AppField>
-              <p className="mt-1 text-[11px] text-muted-foreground">Saved with the status history entry.</p>
+              <p className="mt-1 text-[11px] text-muted-foreground">
+                Saved with the status history entry.
+              </p>
             </div>
           </div>
         )}

@@ -12,6 +12,8 @@ import { cn } from '@/lib/utils';
 export type AppModalProps = React.ComponentProps<typeof Dialog> & {
   bodyClassName?: string;
   children: ReactNode;
+  /** Use for multi-column or information-dense forms; the standard modal stays compact. */
+  contentClassName?: string;
   description?: ReactNode;
   footer?: ReactNode;
   footerClassName?: string;
@@ -20,6 +22,7 @@ export type AppModalProps = React.ComponentProps<typeof Dialog> & {
 export function AppModal({
   bodyClassName,
   children,
+  contentClassName,
   description,
   footer,
   footerClassName,
@@ -28,7 +31,12 @@ export function AppModal({
 }: AppModalProps) {
   return (
     <Dialog {...props}>
-      <DialogContent className="gap-0 overflow-visible rounded-lg border-border bg-card p-0 shadow-modal max-sm:rounded-b-none [&>button]:top-3 [&>button]:right-4 [&>button]:size-8">
+      <DialogContent
+        className={cn(
+          'gap-0 overflow-visible rounded-lg border-border bg-card p-0 shadow-modal max-sm:rounded-b-none [&>button]:top-3 [&>button]:right-4 [&>button]:size-8',
+          contentClassName,
+        )}
+      >
         <DialogHeader className="min-w-0 rounded-t-lg px-4 py-4 pr-16 sm:px-5 sm:pr-16">
           <DialogTitle className="min-w-0 text-lg leading-6 wrap-break-word">{title}</DialogTitle>
           {description ? (

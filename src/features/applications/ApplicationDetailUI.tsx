@@ -23,14 +23,17 @@ import {
   AppButton,
   AppCard,
   AppConfirmDialog,
+  AppDatePicker,
   AppDropdownMenu,
   AppEmptyState,
   AppField,
   AppInput,
   AppModal,
+  AppNumberInput,
   AppSelect,
   AppSkeleton,
   AppTextarea,
+  AppTimePicker,
   toast,
 } from "@/components/app-ui";
 import {
@@ -128,10 +131,13 @@ export function ApplicationDetailUI({ id }: { id: string }) {
   const [updateInterview, updateIvState] = useUpdateInterviewMutation();
   const [deleteInterview] = useDeleteInterviewMutation();
 
-  const searchParams = typeof window !== "undefined" ? new URLSearchParams(window.location.search) : null;
+  const searchParams =
+    typeof window !== "undefined" ? new URLSearchParams(window.location.search) : null;
   const triggerStatusModal = searchParams?.get("statusModal") === "true";
 
-  const [activeTab, setActiveTab] = useState<"overview" | "notes" | "interviews" | "activity">("overview");
+  const [activeTab, setActiveTab] = useState<"overview" | "notes" | "interviews" | "activity">(
+    "overview",
+  );
 
   // Status Modal State
   const [statusModalOpen, setStatusModalOpen] = useState(triggerStatusModal);
@@ -352,9 +358,7 @@ export function ApplicationDetailUI({ id }: { id: string }) {
   const openEditInterview = (iv: (typeof interviews)[number]) => {
     setEditingIvId(iv.id);
     setIvType(iv.type);
-    setIvScheduledAt(
-      iv.scheduledAt ? new Date(iv.scheduledAt).toISOString().slice(0, 16) : "",
-    );
+    setIvScheduledAt(iv.scheduledAt ? new Date(iv.scheduledAt).toISOString().slice(0, 16) : "");
     setIvInterviewer(iv.interviewerName ?? "");
     setIvMeetingLink(iv.meetingLink ?? "");
     setIvLocation(iv.location ?? "");
@@ -538,7 +542,11 @@ export function ApplicationDetailUI({ id }: { id: string }) {
               {fuDate ? (
                 <span
                   className={`inline-flex items-center gap-1 ${
-                    isFuOverdue ? "text-danger" : isFuToday ? "text-warning" : "text-muted-foreground"
+                    isFuOverdue
+                      ? "text-danger"
+                      : isFuToday
+                        ? "text-warning"
+                        : "text-muted-foreground"
                   }`}
                 >
                   {isFuOverdue ? (
@@ -861,9 +869,7 @@ export function ApplicationDetailUI({ id }: { id: string }) {
                       <ArrowRight className="size-3 text-muted-foreground" />
                       <ApplicationStatusBadge status={h.toStatus} />
                     </div>
-                    {h.note && (
-                      <p className="text-xs italic text-muted-foreground">“{h.note}”</p>
-                    )}
+                    {h.note && <p className="text-xs italic text-muted-foreground">“{h.note}”</p>}
                     <div className="text-[11px] text-muted-foreground">
                       {formatDateTime(h.changedAt)}
                     </div>
@@ -922,6 +928,7 @@ export function ApplicationDetailUI({ id }: { id: string }) {
       {/* Edit Application Modal */}
       <AppModal
         bodyClassName="max-h-[75vh]"
+        contentClassName="sm:max-w-3xl"
         description="Update key details for this opportunity."
         footer={
           <>
@@ -944,16 +951,33 @@ export function ApplicationDetailUI({ id }: { id: string }) {
         <div className="space-y-4">
           <div className="grid gap-4 sm:grid-cols-2">
             <AppField label="Company" required>
-              <AppInput onChange={(e) => setCompany(e.target.value)} value={company} />
+              <AppInput
+                onChange={(e) => setCompany(e.target.value)}
+                placeholder="e.g. Acme Corporation"
+                value={company}
+              />
             </AppField>
             <AppField label="Role" required>
-              <AppInput onChange={(e) => setRole(e.target.value)} value={role} />
+              <AppInput
+                onChange={(e) => setRole(e.target.value)}
+                placeholder="e.g. Senior Product Designer"
+                value={role}
+              />
             </AppField>
             <AppField label="Job URL">
-              <AppInput onChange={(e) => setJobUrl(e.target.value)} type="url" value={jobUrl} />
+              <AppInput
+                onChange={(e) => setJobUrl(e.target.value)}
+                placeholder="https://company.com/jobs/..."
+                type="url"
+                value={jobUrl}
+              />
             </AppField>
             <AppField label="Location">
-              <AppInput onChange={(e) => setLocation(e.target.value)} value={location} />
+              <AppInput
+                onChange={(e) => setLocation(e.target.value)}
+                placeholder="e.g. Dhaka, Bangladesh"
+                value={location}
+              />
             </AppField>
             <AppField label="Workplace">
               <AppSelect
@@ -985,35 +1009,59 @@ export function ApplicationDetailUI({ id }: { id: string }) {
               />
             </AppField>
             <AppField label="Applied date">
-              <AppInput onChange={(e) => setAppliedAt(e.target.value)} type="date" value={appliedAt} />
+              <AppDatePicker
+                onValueChange={(date) => setAppliedAt(date ? date.toISOString().slice(0, 10) : "")}
+                placeholder="Pick application date"
+                value={appliedAt ? new Date(`${appliedAt}T00:00:00`) : undefined}
+              />
             </AppField>
             <AppField label="Follow-up">
-              <AppInput
-                onChange={(e) => setNextFollowUpAt(e.target.value)}
-                type="datetime-local"
-                value={nextFollowUpAt}
-              />
+              <div className="grid grid-cols-2 gap-2">
+                <AppDatePicker
+                  onValueChange={(date) =>
+                    setNextFollowUpAt(
+                      date
+                        ? `${date.toISOString().slice(0, 10)}T${nextFollowUpAt.slice(11, 16) || "09:00"}`
+                        : "",
+                    )
+                  }
+                  placeholder="Pick date"
+                  value={
+                    nextFollowUpAt ? new Date(`${nextFollowUpAt.slice(0, 10)}T00:00:00`) : undefined
+                  }
+                />
+                <AppTimePicker
+                  onValueChange={(time) =>
+                    setNextFollowUpAt(`${nextFollowUpAt.slice(0, 10)}T${time ?? "09:00"}`)
+                  }
+                  value={nextFollowUpAt.slice(11, 16)}
+                />
+              </div>
             </AppField>
           </div>
           <div className="grid gap-4 sm:grid-cols-3">
             <AppField label="Minimum salary">
-              <AppInput
-                inputMode="decimal"
-                onChange={(e) => setSalaryMin(e.target.value)}
-                value={salaryMin}
+              <AppNumberInput
+                min={0}
+                onValueChange={(value) => setSalaryMin(String(value))}
+                value={Number(salaryMin) || 0}
               />
             </AppField>
             <AppField label="Maximum salary">
-              <AppInput
-                inputMode="decimal"
-                onChange={(e) => setSalaryMax(e.target.value)}
-                value={salaryMax}
+              <AppNumberInput
+                min={0}
+                onValueChange={(value) => setSalaryMax(String(value))}
+                value={Number(salaryMax) || 0}
               />
             </AppField>
             <AppField label="Currency">
-              <AppInput
-                maxLength={3}
-                onChange={(e) => setCurrency(e.target.value.toUpperCase())}
+              <AppSelect
+                onValueChange={(value) => setCurrency(value ?? "USD")}
+                options={["USD", "EUR", "GBP", "BDT", "CAD", "AUD"].map((value) => ({
+                  label: value,
+                  value,
+                }))}
+                placeholder="Choose currency"
                 value={currency}
               />
             </AppField>
@@ -1023,6 +1071,7 @@ export function ApplicationDetailUI({ id }: { id: string }) {
 
       {/* Add/Edit Interview Modal */}
       <AppModal
+        contentClassName="sm:max-w-2xl"
         description="Record details for an upcoming or completed interview."
         footer={
           <>
@@ -1055,11 +1104,27 @@ export function ApplicationDetailUI({ id }: { id: string }) {
               />
             </AppField>
             <AppField label="Date & time" required>
-              <AppInput
-                onChange={(e) => setIvScheduledAt(e.target.value)}
-                type="datetime-local"
-                value={ivScheduledAt}
-              />
+              <div className="grid grid-cols-2 gap-2">
+                <AppDatePicker
+                  onValueChange={(date) =>
+                    setIvScheduledAt(
+                      date
+                        ? `${date.toISOString().slice(0, 10)}T${ivScheduledAt.slice(11, 16) || "09:00"}`
+                        : "",
+                    )
+                  }
+                  placeholder="Pick date"
+                  value={
+                    ivScheduledAt ? new Date(`${ivScheduledAt.slice(0, 10)}T00:00:00`) : undefined
+                  }
+                />
+                <AppTimePicker
+                  onValueChange={(time) =>
+                    setIvScheduledAt(`${ivScheduledAt.slice(0, 10)}T${time ?? "09:00"}`)
+                  }
+                  value={ivScheduledAt.slice(11, 16)}
+                />
+              </div>
             </AppField>
             <AppField label="Interviewer name">
               <AppInput

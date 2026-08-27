@@ -17,6 +17,7 @@ import {
   AppBadge,
   AppButton,
   AppConfirmDialog,
+  AppDateTimePicker,
   AppEmptyState,
   AppField,
   AppInput,
@@ -325,6 +326,7 @@ export function InterviewsScreen() {
         ]}
       />
       <AppModal
+        contentClassName="sm:max-w-2xl"
         description="Keep the schedule, meeting details, and interview status up to date."
         footer={
           <>
@@ -360,6 +362,7 @@ export function InterviewsScreen() {
             <AppSelect
               onValueChange={(value) => setType((value ?? "PHONE") as InterviewType)}
               options={types.map((value) => ({ label: humanize(value), value }))}
+              placeholder="Choose interview type"
               value={type}
             />
           </AppField>
@@ -367,30 +370,34 @@ export function InterviewsScreen() {
             <AppSelect
               onValueChange={(value) => setStatus((value ?? "SCHEDULED") as InterviewStatus)}
               options={statuses.map((value) => ({ label: humanize(value), value }))}
+              placeholder="Choose status"
               value={status}
             />
           </AppField>
           <AppField label="Scheduled at" required>
-            <AppInput
-              onChange={(event) => setScheduledAt(event.target.value)}
-              type="datetime-local"
-              value={scheduledAt}
-            />
+            <AppDateTimePicker onChange={setScheduledAt} value={scheduledAt} />
           </AppField>
           <AppField label="Interviewer">
             <AppInput
               onChange={(event) => setInterviewerName(event.target.value)}
+              placeholder="e.g. Sarah Connor"
               value={interviewerName}
             />
           </AppField>
           <AppField label="Meeting link">
             <AppInput
               onChange={(event) => setMeetingLink(event.target.value)}
+              placeholder="https://meet.google.com/..."
+              type="url"
               value={meetingLink}
             />
           </AppField>
           <AppField label="Location">
-            <AppInput onChange={(event) => setLocation(event.target.value)} value={location} />
+            <AppInput
+              onChange={(event) => setLocation(event.target.value)}
+              placeholder="e.g. HQ 4th Floor"
+              value={location}
+            />
           </AppField>
         </div>
       </AppModal>

@@ -1,10 +1,29 @@
 "use client";
 
 import Link from "next/link";
-import { AlertTriangle, Archive, ArrowRightLeft, CalendarClock, MoreHorizontal, Pencil, Trash2 } from "lucide-react";
-import { AppBadge, AppCard, AppDropdownMenu, AppPagination, AppSelect, AppTable } from "@/components/app-ui";
+import {
+  AlertTriangle,
+  Archive,
+  ArrowRightLeft,
+  CalendarClock,
+  MoreHorizontal,
+  Pencil,
+  Trash2,
+} from "lucide-react";
+import {
+  AppBadge,
+  AppCard,
+  AppDropdownMenu,
+  AppPagination,
+  AppSelect,
+  AppTable,
+} from "@/components/app-ui";
 import type { Application, ApplicationStatus } from "@/types/application.types";
-import { applicationLabels, applicationStatuses, humanizeApplicationValue } from "../application-config";
+import {
+  applicationLabels,
+  applicationStatuses,
+  humanizeApplicationValue,
+} from "../application-config";
 import { ApplicationStatusBadge } from "./ApplicationStatusBadge";
 
 type ApplicationTableProps = {
@@ -12,6 +31,7 @@ type ApplicationTableProps = {
   onDelete?: (application: Application) => void;
   onEdit?: (application: Application) => void;
   onMove?: (id: string, status: ApplicationStatus) => Promise<boolean>;
+  onRowClick?: (application: Application) => void;
   onPageChange: (page: number) => void;
   onPageSizeChange: (pageSize: string) => void;
   page: number;
@@ -45,6 +65,7 @@ export function ApplicationTable({
   onDelete,
   onEdit,
   onMove,
+  onRowClick,
   onPageChange,
   onPageSizeChange,
   page,
@@ -202,6 +223,7 @@ export function ApplicationTable({
           },
         ]}
         getRowKey={(row) => row.id}
+        onRowClick={onRowClick}
         rows={rows}
       />
       <div className="flex flex-col gap-3 border-t border-border bg-muted/20 px-5 py-3 sm:flex-row sm:items-center sm:justify-between">

@@ -9,6 +9,7 @@ export * from "./app-combobox";
 export * from "./app-confirm-dialog";
 export * from "./app-currency-input";
 export * from "./app-date-picker";
+export * from "./app-date-time-picker";
 export * from "./app-dropdown-menu";
 export * from "./app-empty-state";
 export * from "./app-field";
