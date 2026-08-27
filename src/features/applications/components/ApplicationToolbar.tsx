@@ -439,9 +439,9 @@ export function ApplicationToolbar({
           </AppPopover>
 
           {/* List / Board Selection Styled with AppTabs styling pattern (Primary color highlight box, h-9 height) */}
-          <div className="inline-flex h-9 rounded-lg border border-border bg-muted/60 p-0.5 shadow-2xs">
+          <div className="inline-flex h-9 box-border rounded-lg border border-border bg-muted/60 p-0.5 shadow-2xs">
             <button
-              className={`inline-flex items-center gap-1.5 rounded-md px-3.5 text-xs font-semibold transition-all ${
+              className={`inline-flex w-20 shrink-0 items-center justify-center gap-1.5 rounded-md border border-transparent px-3.5 text-xs font-semibold transition-colors ${
                 view === "table"
                   ? "bg-primary-subtle text-primary border border-transparent shadow-3xs"
                   : "text-muted-foreground hover:text-foreground"
@@ -453,7 +453,7 @@ export function ApplicationToolbar({
               List
             </button>
             <button
-              className={`inline-flex items-center gap-1.5 rounded-md px-3.5 text-xs font-semibold transition-all ${
+              className={`inline-flex w-20 shrink-0 items-center justify-center gap-1.5 rounded-md border border-transparent px-3.5 text-xs font-semibold transition-colors ${
                 view === "board"
                   ? "bg-primary-subtle text-primary border border-transparent shadow-3xs"
                   : "text-muted-foreground hover:text-foreground"

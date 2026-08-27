@@ -9,6 +9,7 @@ import {
 import { AppConfirmDialog } from "@/components/app-ui/app-confirm-dialog";
 import { cn } from "@/lib/utils";
 import { useCurrentUserQuery, useLogoutMutation } from "@/store/api/auth.api";
+import { useUpdatePreferencesMutation } from "@/store/api/users.api";
 import {
   BriefcaseBusiness,
   CalendarDays,
@@ -37,6 +38,7 @@ export function AppShell({ children }: { children: ReactNode }) {
   const router = useRouter();
   const { data: user } = useCurrentUserQuery();
   const [logout, { isLoading }] = useLogoutMutation();
+  const [updatePreferences] = useUpdatePreferencesMutation();
   const [searchOpen, setSearchOpen] = useState(false);
   const [notificationsOpen, setNotificationsOpen] = useState(false);
   const [confirmLogout, setConfirmLogout] = useState(false);
@@ -55,6 +57,11 @@ export function AppShell({ children }: { children: ReactNode }) {
     pathname === href || (href !== "/dashboard" && pathname.startsWith(`${href}/`));
   const pageName = navigation.find(({ href }) => isActive(href))?.label ?? "Tally";
   const closeDrawer = () => setDrawerOpen(false);
+  const handleThemeChange = (nextTheme: string) => {
+    if (nextTheme !== "light" && nextTheme !== "dark" && nextTheme !== "system") return;
+    setTheme(nextTheme);
+    void updatePreferences({ theme: nextTheme });
+  };
   const handleLogout = async () => {
     try {
       await logout().unwrap();
@@ -193,7 +200,7 @@ export function AppShell({ children }: { children: ReactNode }) {
                 </Link>
                 <AppNotificationMenu onOpenChange={setNotificationsOpen} open={notificationsOpen} />
                 <AppThemeMenu
-                  onThemeChange={setTheme}
+                  onThemeChange={handleThemeChange}
                   resolvedTheme={resolvedTheme}
                   theme={theme}
                 />

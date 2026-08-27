@@ -2,7 +2,16 @@
 
 import Link from "next/link";
 import { useMemo, useRef, useState, type DragEvent } from "react";
-import { Archive, ArrowRightLeft, CalendarClock, ChevronLeft, ChevronRight, MoreHorizontal, Pencil, Trash2 } from "lucide-react";
+import {
+  Archive,
+  ArrowRightLeft,
+  CalendarClock,
+  ChevronLeft,
+  ChevronRight,
+  MoreHorizontal,
+  Pencil,
+  Trash2,
+} from "lucide-react";
 import { AppBadge, AppButton, AppDropdownMenu } from "@/components/app-ui";
 import type { Application, ApplicationStatus } from "@/types/application.types";
 import { applicationLabels, applicationStatuses } from "../application-config";
@@ -201,6 +210,8 @@ export function ApplicationBoard({
                                   {
                                     label: "Delete",
                                     icon: <Trash2 className="size-3.5 text-danger" />,
+                                    separatorBefore: true,
+                                    variant: "destructive" as const,
                                     onSelect: () => onDelete(row),
                                   },
                                 ]
@@ -209,33 +220,91 @@ export function ApplicationBoard({
                           trigger={
                             <button
                               aria-label={`Actions for ${row.company}`}
-                              className="rounded p-0.5 text-muted-foreground opacity-60 hover:bg-muted hover:opacity-100 focus:opacity-100"
+                              className="rounded p-1 text-muted-foreground hover:bg-muted hover:text-foreground"
+                              onClick={(event) => event.stopPropagation()}
                               type="button"
                             >
-                              <MoreHorizontal className="size-3.5" />
+                              <MoreHorizontal className="size-4" />
                             </button>
                           }
                         />
                       </div>
-                      <div className="mt-0.5 text-xs text-muted-foreground line-clamp-1">{row.role}</div>
+                      <div className="mt-0.5 text-xs text-muted-foreground line-clamp-1">
+                        {row.role}
+                      </div>
+                      {row.tags.length > 0 && (
+                        <div className="mt-3 flex flex-wrap gap-1">
+                          {row.tags.slice(0, 3).map((tag) => (
+                            <span
+                              className="inline-flex items-center gap-1 rounded border border-border bg-secondary px-1.5 py-0.5 text-[10px] text-secondary-foreground"
+                              key={tag.id}
+                            >
+                              <span
+                                className="size-1.5 shrink-0 rounded-full"
+                                style={{ backgroundColor: tag.color || "var(--primary)" }}
+                              />
+                              <span className="max-w-24 truncate">{tag.name}</span>
+                            </span>
+                          ))}
+                        </div>
+                      )}
+
+                      <div className="mt-3 space-y-2 border-t border-border pt-2.5">
+                        <div className="flex items-center justify-between gap-3">
+                          <p className="text-[10px] font-medium uppercase tracking-wide text-muted-foreground/70">
+                            Applied
+                          </p>
+                          <p className="mt-0.5 text-[10px] font-medium tabular-nums text-foreground">
+                            {row.appliedAt
+                              ? new Date(row.appliedAt).toLocaleDateString(undefined, {
+                                  month: "short",
+                                  day: "numeric",
+                                })
+                              : "—"}
+                          </p>
+                        </div>
+                        <div className="flex items-center justify-between gap-3">
+                          <p className="text-[10px] font-medium uppercase tracking-wide text-muted-foreground/70">
+                            Updated
+                          </p>
+                          <p className="mt-0.5 text-[10px] font-medium tabular-nums text-foreground">
+                            {new Date(row.updatedAt).toLocaleDateString(undefined, {
+                              month: "short",
+                              day: "numeric",
+                            })}
+                          </p>
+                        </div>
+                      </div>
 
                       {/* Follow-up date matching screenshot format */}
                       {fuDate && (
                         <div
-                          className={`mt-2 flex items-center gap-1.5 text-xs font-medium ${
+                          className={`mt-2 flex items-center justify-between gap-3 text-xs font-medium ${
                             isOverdue
-                              ? "text-danger"
+                              ? "text-danger-text"
                               : isToday
-                                ? "text-warning"
+                                ? "text-warning-text"
                                 : "text-muted-foreground"
                           }`}
                         >
+                          <span className="text-[10px] font-medium uppercase tracking-wide opacity-75">Follow-up</span>
                           {isOverdue ? (
-                            <span>⚠️ {fuDate.toLocaleDateString(undefined, { month: "short", day: "numeric" })}</span>
+                            <span className="ml-auto text-[10px] font-semibold tabular-nums">
+                              ⚠️{" "}
+                              {fuDate.toLocaleDateString(undefined, {
+                                month: "short",
+                                day: "numeric",
+                              })}
+                            </span>
                           ) : isToday ? (
-                            <span>🕒 Today</span>
+                            <span className="ml-auto text-[10px] font-semibold tabular-nums">Today</span>
                           ) : (
-                            <span>{fuDate.toLocaleDateString(undefined, { month: "short", day: "numeric" })}</span>
+                            <span className="ml-auto text-[10px] font-semibold tabular-nums">
+                              {fuDate.toLocaleDateString(undefined, {
+                                month: "short",
+                                day: "numeric",
+                              })}
+                            </span>
                           )}
                         </div>
                       )}
@@ -243,9 +312,7 @@ export function ApplicationBoard({
                   );
                 })}
                 {!cards.length ? (
-                  <div className="p-2 text-xs text-muted-foreground">
-                    No items
-                  </div>
+                  <div className="p-2 text-xs text-muted-foreground">No items</div>
                 ) : null}
               </div>
             </div>

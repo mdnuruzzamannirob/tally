@@ -107,8 +107,23 @@ function Password({
       <AppInput
         className="mt-1.5"
         onChange={(e) => onChange(e.target.value)}
-        placeholder={label === "Current password" ? "Enter your current password" : label === "New password" ? "Create a password" : "Confirm your password"}
-        trailing={<button aria-label="Toggle password visibility" className="rounded-sm p-1 text-muted-foreground hover:bg-muted" onClick={() => setShow(!show)} type="button">{show ? <EyeOff className="size-4" /> : <Eye className="size-4" />}</button>}
+        placeholder={
+          label === "Current password"
+            ? "Enter your current password"
+            : label === "New password"
+              ? "Create a password"
+              : "Confirm your password"
+        }
+        trailing={
+          <button
+            aria-label="Toggle password visibility"
+            className="rounded-sm p-1 text-muted-foreground hover:bg-muted"
+            onClick={() => setShow(!show)}
+            type="button"
+          >
+            {show ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
+          </button>
+        }
         type={show ? "text" : "password"}
         value={value}
       />
@@ -141,6 +156,7 @@ export function SettingsUI() {
   const [confirm, setConfirm] = useState("");
   const [tagName, setTagName] = useState("");
   const [color, setColor] = useState("#6366f1");
+  const isPresetColor = tagColors.some((preset) => preset.toLowerCase() === color.toLowerCase());
   const [editingTag, setEditingTag] = useState<{
     id: string;
     name: string;
@@ -300,9 +316,18 @@ export function SettingsUI() {
                   {user?.hasPassword && (
                     <Password label="Current password" onChange={setCurrent} value={current} />
                   )}
-                  <div><Password label="New password" onChange={setNewPassword} value={password} /><PasswordStrength password={password} /><p className="mt-1.5 text-xs text-muted-foreground">Use at least 8 characters, one uppercase letter, one number, and one special character.</p></div>
+                  <div>
+                    <Password label="New password" onChange={setNewPassword} value={password} />
+                    <PasswordStrength password={password} />
+                    <p className="mt-1.5 text-xs text-muted-foreground">
+                      Use at least 8 characters, one uppercase letter, one number, and one special
+                      character.
+                    </p>
+                  </div>
                   <Password label="Confirm new password" onChange={setConfirm} value={confirm} />
-                  {confirm && password !== confirm ? <p className="-mt-2 text-xs text-danger">Passwords don’t match.</p> : null}
+                  {confirm && password !== confirm ? (
+                    <p className="-mt-2 text-xs text-danger">Passwords don’t match.</p>
+                  ) : null}
                 </div>
                 {!user?.hasPassword && (
                   <div className="mt-3 rounded-md border border-info-border bg-info-soft px-3 py-2.5 text-[13px] text-info-text">
@@ -340,12 +365,24 @@ export function SettingsUI() {
                         })
                         .catch((e) => toast.error(err(e, "Could not connect account.")));
                     return (
-                      <div className="flex items-center justify-between gap-3 py-3.5" key={provider}>
+                      <div
+                        className="flex items-center justify-between gap-3 py-3.5"
+                        key={provider}
+                      >
                         <div className="flex min-w-0 items-center gap-3">
                           <span className="grid size-9 shrink-0 place-items-center rounded-md border border-border bg-background text-foreground">
                             {provider === "github" ? <GitHubIcon /> : <GoogleIcon />}
                           </span>
-                          <div className="min-w-0"><p className="text-sm font-semibold capitalize">{provider === "github" ? "GitHub" : "Google"}</p><p className="truncate text-xs text-muted-foreground">{account?.connected ? `${account.email || "Connected"} · connected` : "Not connected"}</p></div>
+                          <div className="min-w-0">
+                            <p className="text-sm font-semibold capitalize">
+                              {provider === "github" ? "GitHub" : "Google"}
+                            </p>
+                            <p className="truncate text-xs text-muted-foreground">
+                              {account?.connected
+                                ? `${account.email || "Connected"} · connected`
+                                : "Not connected"}
+                            </p>
+                          </div>
                         </div>
                         {account?.connected ? (
                           <AppButton
@@ -466,7 +503,31 @@ export function SettingsUI() {
                     </tbody>
                   </table>
                 </div>
-                {tagPages > 1 ? <div className="flex items-center justify-between border-t border-border px-4 py-3 text-xs text-muted-foreground"><span>Page {tagPage} of {tagPages}</span><div className="flex gap-1"><AppButton disabled={tagPage === 1} onClick={() => setTagPage((page) => page - 1)} size="sm" tone="outline">Previous</AppButton><AppButton disabled={tagPage === tagPages} onClick={() => setTagPage((page) => page + 1)} size="sm" tone="outline">Next</AppButton></div></div> : null}
+                {tagPages > 1 ? (
+                  <div className="flex items-center justify-between border-t border-border px-4 py-3 text-xs text-muted-foreground">
+                    <span>
+                      Page {tagPage} of {tagPages}
+                    </span>
+                    <div className="flex gap-1">
+                      <AppButton
+                        disabled={tagPage === 1}
+                        onClick={() => setTagPage((page) => page - 1)}
+                        size="sm"
+                        tone="outline"
+                      >
+                        Previous
+                      </AppButton>
+                      <AppButton
+                        disabled={tagPage === tagPages}
+                        onClick={() => setTagPage((page) => page + 1)}
+                        size="sm"
+                        tone="outline"
+                      >
+                        Next
+                      </AppButton>
+                    </div>
+                  </div>
+                ) : null}
               </AppCard>
               <AppModal
                 description={
@@ -488,6 +549,8 @@ export function SettingsUI() {
                     </AppButton>
                   </>
                 }
+                contentClassName="top-16! translate-y-0! max-h-[calc(100dvh-2rem)] sm:top-20!"
+
                 onOpenChange={setTagModalOpen}
                 open={tagModalOpen}
                 title={editingTag ? "Edit tag" : "Add tag"}
@@ -507,7 +570,7 @@ export function SettingsUI() {
                     {tagColors.map((preset) => (
                       <button
                         aria-label={`Use ${preset}`}
-                        className={`size-7 rounded-full border-2 ${color === preset ? "border-foreground ring-2 ring-primary/25" : "border-card"}`}
+                        className={`size-7 rounded-full border-2 transition-shadow ${color.toLowerCase() === preset.toLowerCase() ? "border-foreground ring-2 ring-primary/25" : "border-card"}`}
                         key={preset}
                         onClick={() => setColor(preset)}
                         style={{ backgroundColor: preset }}
@@ -516,9 +579,10 @@ export function SettingsUI() {
                     ))}
                     <label
                       aria-label="Choose custom color"
-                      className="grid size-7 cursor-pointer place-items-center rounded-full border border-border bg-muted text-xs font-bold text-muted-foreground"
+                      className={`grid size-7 cursor-pointer place-items-center rounded-full border-2 text-xs font-bold transition-shadow ${isPresetColor ? "border-border bg-muted text-muted-foreground" : "border-foreground ring-2 ring-primary/25 text-white"}`}
+                      style={!isPresetColor ? { backgroundColor: color } : undefined}
                     >
-                      +
+                      {isPresetColor ? "+" : "✓"}
                       <input
                         className="sr-only"
                         onChange={(e) => setColor(e.target.value)}
@@ -563,8 +627,39 @@ export function SettingsUI() {
                       </p>
                     </div>
                     <AppTabs
-                      defaultValue={prefs?.theme ?? "system"}
-                      items={[{ value: "light", label: <><Sun className="mr-1.5 inline size-3.5" />Light</>, content: null }, { value: "dark", label: <><Moon className="mr-1.5 inline size-3.5" />Dark</>, content: null }, { value: "system", label: <><Monitor className="mr-1.5 inline size-3.5" />System</>, content: null }]}
+                      value={prefs?.theme ?? "system"}
+                      items={[
+                        {
+                          value: "light",
+                          label: (
+                            <>
+                              <Sun className="mr-1.5 inline size-3.5" />
+                              Light
+                            </>
+                          ),
+                          content: null,
+                        },
+                        {
+                          value: "dark",
+                          label: (
+                            <>
+                              <Moon className="mr-1.5 inline size-3.5" />
+                              Dark
+                            </>
+                          ),
+                          content: null,
+                        },
+                        {
+                          value: "system",
+                          label: (
+                            <>
+                              <Monitor className="mr-1.5 inline size-3.5" />
+                              System
+                            </>
+                          ),
+                          content: null,
+                        },
+                      ]}
                       onValueChange={(value) => void pref("theme", value)}
                       variant="box"
                       width="fit"
@@ -608,22 +703,26 @@ export function SettingsUI() {
                       value={prefs?.timeZone ?? "Asia/Dhaka"}
                     />
                   </div>
-              <div className="setting-row">
-                <div>
-                  <p className="text-sm font-medium">Email notifications</p>
-                  <p className="text-xs text-muted-foreground">Optional product updates.</p>
-                </div>
-                <button
-                  aria-checked={prefs?.notificationsEnabled ?? false}
-                  aria-label="Email notifications"
-                  className={`relative h-5 w-9 shrink-0 rounded-full border p-0.5 transition-colors ${prefs?.notificationsEnabled ? "border-primary bg-primary" : "border-border bg-input"}`}
-                  onClick={() => void pref("notificationsEnabled", !(prefs?.notificationsEnabled ?? false))}
-                  role="switch"
-                  type="button"
-                >
-                  <span className={`block size-4 rounded-full bg-primary-foreground shadow-sm transition-transform ${prefs?.notificationsEnabled ? "translate-x-4" : "translate-x-0"}`} />
-                </button>
-              </div>
+                  <div className="setting-row">
+                    <div>
+                      <p className="text-sm font-medium">Email notifications</p>
+                      <p className="text-xs text-muted-foreground">Optional product updates.</p>
+                    </div>
+                    <button
+                      aria-checked={prefs?.notificationsEnabled ?? false}
+                      aria-label="Email notifications"
+                      className={`relative h-5 w-9 shrink-0 rounded-full border p-0.5 transition-colors ${prefs?.notificationsEnabled ? "border-primary bg-primary" : "border-border bg-input"}`}
+                      onClick={() =>
+                        void pref("notificationsEnabled", !(prefs?.notificationsEnabled ?? false))
+                      }
+                      role="switch"
+                      type="button"
+                    >
+                      <span
+                        className={`block size-4 rounded-full bg-primary-foreground shadow-sm transition-transform ${prefs?.notificationsEnabled ? "translate-x-4" : "translate-x-0"}`}
+                      />
+                    </button>
+                  </div>
                 </div>
               </AppCard>
             </>

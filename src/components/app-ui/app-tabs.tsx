@@ -11,6 +11,7 @@ export type AppTabItem = {
 export function AppTabs({
   className,
   defaultValue,
+  value,
   items,
   onValueChange,
   variant = "line",
@@ -18,13 +19,19 @@ export function AppTabs({
 }: {
   className?: string;
   defaultValue?: string;
+  value?: string;
   items: readonly AppTabItem[];
   onValueChange?: (value: string) => void;
   variant?: "line" | "box";
   width?: "full" | "fit";
 }) {
   return (
-    <Tabs className={className} defaultValue={defaultValue ?? items[0]?.value} onValueChange={onValueChange}>
+    <Tabs
+      className={className}
+      defaultValue={defaultValue ?? items[0]?.value}
+      onValueChange={onValueChange}
+      value={value}
+    >
       <TabsList
         className={cn(
           "grid w-full grid-flow-col shadow-none",
@@ -57,11 +64,13 @@ export function AppTabs({
           </TabsTrigger>
         ))}
       </TabsList>
-      {items.map((item) => item.content ? (
-        <TabsContent className="pt-4" key={item.value} value={item.value}>
-          {item.content}
-        </TabsContent>
-      ) : null)}
+      {items.map((item) =>
+        item.content ? (
+          <TabsContent className="pt-4" key={item.value} value={item.value}>
+            {item.content}
+          </TabsContent>
+        ) : null,
+      )}
     </Tabs>
   );
 }
