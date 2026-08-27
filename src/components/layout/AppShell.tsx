@@ -1,8 +1,8 @@
 "use client";
 import { AppAvatar, AppButton, AppSearchDialog, AppThemeMenu } from "@/components/app-ui";
 import { AppConfirmDialog } from "@/components/app-ui/app-confirm-dialog";
-import { cn } from "@/lib/utils";
 import { TallyLogo } from "@/components/shared/TallyLogo";
+import { cn } from "@/lib/utils";
 import { useLogoutMutation } from "@/store/api/auth.api";
 import { baseApi } from "@/store/api/base-api";
 import { useUpdatePreferencesMutation } from "@/store/api/users.api";
@@ -16,7 +16,6 @@ import {
   Menu,
   Search,
   Settings,
-  Target,
 } from "lucide-react";
 import { useTheme } from "next-themes";
 import Link from "next/link";
@@ -163,19 +162,11 @@ export function AppShell({ children }: { children: ReactNode }) {
             style={{ top: "var(--shell-notice-height)" }}
           >
             <div className="flex h-full items-center gap-3 px-4 sm:px-6 lg:px-8">
-              <AppButton
-                aria-label="Open navigation"
-                className="hidden md:inline-flex lg:hidden"
-                onClick={() => setDrawerOpen(true)}
-                size="icon-sm"
-                tone="ghost"
-              >
-                <Menu className="size-4" />
-              </AppButton>
+
               <Link className="flex items-center gap-2 font-semibold lg:hidden" href="/dashboard">
                 <TallyLogo className="text-xl" />
               </Link>
-              <h1 className="hidden text-base font-semibold sm:block">{pageName}</h1>
+              <h1 className="hidden text-base font-semibold lg:block">{pageName}</h1>
               <div className="ml-auto flex items-center gap-2">
                 <AppButton
                   aria-label="Open search"
@@ -198,7 +189,7 @@ export function AppShell({ children }: { children: ReactNode }) {
                   <span className="hidden md:inline">Add application</span>
                   <span className="md:hidden">Add</span>
                 </Link>
-                {/* <AppNotificationMenu onOpenChange={setNotificationsOpen} open={notificationsOpen} /> */}
+
                 <AppThemeMenu
                   onThemeChange={handleThemeChange}
                   resolvedTheme={resolvedTheme}
