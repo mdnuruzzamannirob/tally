@@ -1,14 +1,20 @@
 import type { ReactNode } from "react";
 
 import { AppCard } from "@/components/app-ui";
+import { TallyLogo } from "@/components/shared/TallyLogo";
 import { cn } from "@/lib/utils";
 
 export function AuthLayout({ children }: { children: ReactNode }) {
   return (
     <main className="relative flex min-h-[100dvh] items-center justify-center bg-background px-4 py-8 sm:px-6 sm:py-10">
-      <a className="fixed top-2 left-2 z-50 -translate-y-20 rounded-md bg-primary px-3 py-2 text-sm font-medium text-primary-foreground transition-transform focus:translate-y-0" href="#auth-content">Skip to content</a>
+      <a
+        className="fixed top-2 left-2 z-50 -translate-y-20 rounded-md bg-primary px-3 py-2 text-sm font-medium text-primary-foreground transition-transform focus:translate-y-0"
+        href="#auth-content"
+      >
+        Skip to content
+      </a>
       <div className="w-full" id="auth-content">
-      {children}
+        {children}
       </div>
     </main>
   );
@@ -35,11 +41,13 @@ export function AuthHeader({
     <header className="mb-6 text-center">
       <div
         className={cn(
-          "mx-auto mb-4 grid size-12 place-items-center rounded-lg bg-primary text-lg font-bold text-primary-foreground",
-          icon && "bg-primary-soft text-primary ring-1 ring-primary/20",
+          "mx-auto mb-4 grid place-items-center",
+          icon
+            ? "size-12 rounded-lg bg-primary-soft text-primary ring-1 ring-primary/20"
+            : "bg-transparent",
         )}
       >
-        {icon ?? "T"}
+        {icon ?? <TallyLogo className="text-3xl sm:text-4xl" aria-label="Tally" />}
       </div>
       <h1 className="text-[22px] font-bold tracking-tight text-foreground">{title}</h1>
       <p className="mt-1 text-sm leading-5 text-muted-foreground">{description}</p>
