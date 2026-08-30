@@ -10,19 +10,30 @@ type InstallPromptEvent = Event & {
   userChoice: Promise<{ outcome: "accepted" | "dismissed" }>;
 };
 
+function isInstalledApp(): boolean {
+  if (typeof window === "undefined") return false;
+  return (
+    window.matchMedia("(display-mode: standalone)").matches ||
+    // Safari iOS exposes the installed state through this non-standard flag.
+    ("standalone" in navigator && Boolean((navigator as Navigator & { standalone?: boolean }).standalone))
+  );
+}
+
 export function InstallPrompt() {
   const [event, setEvent] = useState<InstallPromptEvent | null>(null);
   const [dismissed, setDismissed] = useState(() => {
     if (typeof window === "undefined") return false;
     return (
-      window.matchMedia("(display-mode: standalone)").matches ||
+      isInstalledApp() ||
+      localStorage.getItem("tally-install-installed") === "1" ||
       localStorage.getItem("tally-install-dismissed") === "1"
     );
   });
 
   useEffect(() => {
     if (
-      window.matchMedia("(display-mode: standalone)").matches ||
+      isInstalledApp() ||
+      localStorage.getItem("tally-install-installed") === "1" ||
       localStorage.getItem("tally-install-dismissed") === "1"
     )
       return;
@@ -30,7 +41,11 @@ export function InstallPrompt() {
       nextEvent.preventDefault();
       setEvent(nextEvent as InstallPromptEvent);
     };
-    const onInstalled = () => setEvent(null);
+    const onInstalled = () => {
+      localStorage.setItem("tally-install-installed", "1");
+      setEvent(null);
+      setDismissed(true);
+    };
     window.addEventListener("beforeinstallprompt", onBeforeInstallPrompt);
     window.addEventListener("appinstalled", onInstalled);
     return () => {
@@ -50,7 +65,11 @@ export function InstallPrompt() {
     }
     await event.prompt();
     const choice = await event.userChoice;
-    if (choice.outcome === "accepted") setEvent(null);
+    if (choice.outcome === "accepted") {
+      localStorage.setItem("tally-install-installed", "1");
+      setEvent(null);
+      setDismissed(true);
+    }
   };
   const dismiss = () => {
     localStorage.setItem("tally-install-dismissed", "1");
