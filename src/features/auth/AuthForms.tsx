@@ -3,7 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -58,14 +58,26 @@ function SocialLogin() {
 
 export function LoginForm() {
   const router = useRouter();
+  const params = useSearchParams();
   const dispatch = useAppDispatch();
   const [login, { isLoading }] = useLoginMutation();
   const [remember, setRemember] = useState(true);
+  const oauthErrorShown = useRef(false);
+
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm<z.infer<typeof loginSchema>>({ resolver: zodResolver(loginSchema), mode: "onBlur" });
+
+  useEffect(() => {
+    if (params.get("oauth") === "error" && !oauthErrorShown.current) {
+      oauthErrorShown.current = true;
+      toast.error(
+        "Social sign-in failed. Please check that your account email is verified with your provider.",
+      );
+    }
+  }, [params]);
 
   const onSubmit = async (values: { email: string; password: string }) => {
     try {
