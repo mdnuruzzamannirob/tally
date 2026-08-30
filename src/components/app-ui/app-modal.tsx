@@ -1,5 +1,5 @@
-'use client';
-import type { ReactNode } from 'react';
+"use client";
+import type { ReactNode } from "react";
 import {
   Dialog,
   DialogContent,
@@ -7,8 +7,8 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from '@/components/ui/dialog';
-import { cn } from '@/lib/utils';
+} from "@/components/ui/dialog";
+import { cn } from "@/lib/utils";
 export type AppModalProps = React.ComponentProps<typeof Dialog> & {
   bodyClassName?: string;
   children: ReactNode;
@@ -33,7 +33,7 @@ export function AppModal({
     <Dialog {...props}>
       <DialogContent
         className={cn(
-          'gap-0 overflow-visible rounded-lg border-border bg-card p-0 shadow-modal max-sm:rounded-b-none [&>button]:top-3 [&>button]:right-4 [&>button]:size-8',
+          "gap-0 overflow-visible rounded-lg border-border bg-card p-0 shadow-modal max-sm:rounded-b-none [&>button]:top-3 [&>button]:right-4 [&>button]:size-8",
           contentClassName,
         )}
       >
@@ -45,13 +45,13 @@ export function AppModal({
             </DialogDescription>
           ) : null}
         </DialogHeader>
-        <div className={cn('max-h-[65vh] overflow-y-auto px-4 py-4 sm:px-5', bodyClassName)}>
+        <div className={cn("max-h-[65vh] overflow-y-auto px-4 py-4 sm:px-5", bodyClassName)}>
           {children}
         </div>
         {footer ? (
           <DialogFooter
             className={cn(
-              'm-0 rounded-b-lg border-t border-border bg-secondary px-4 py-3 sm:px-5 max-sm:rounded-b-none',
+              "m-0 rounded-b-lg border-t border-border bg-secondary px-4 py-3 sm:px-5 max-sm:rounded-b-none",
               footerClassName,
             )}
           >

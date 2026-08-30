@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import {
   AppBreadcrumb,
@@ -8,13 +8,13 @@ import {
   AppPagination,
   AppSegmentedControl,
   AppTabs,
-} from '@/components/app-ui';
-import { Mail, WalletCards } from 'lucide-react';
-import { useState } from 'react';
+} from "@/components/app-ui";
+import { Mail, WalletCards } from "lucide-react";
+import { useState } from "react";
 
 export function NavigationSection() {
   const [page, setPage] = useState(1);
-  const [segment, setSegment] = useState('monthly');
+  const [segment, setSegment] = useState("monthly");
 
   return (
     <div className="space-y-12">
@@ -49,9 +49,9 @@ export function NavigationSection() {
         <h3 className="text-lg font-semibold">Breadcrumbs</h3>
         <AppBreadcrumb
           items={[
-            { label: 'Dashboard', href: '/dashboard' },
-            { label: 'Wallets', href: '/wallets' },
-            { label: 'Checking Account' },
+            { label: "Dashboard", href: "/dashboard" },
+            { label: "Wallets", href: "/wallets" },
+            { label: "Checking Account" },
           ]}
         />
       </section>
@@ -61,11 +61,11 @@ export function NavigationSection() {
         <h3 className="text-lg font-semibold">Segmented Controls & Tabs</h3>
         <div className="space-y-4">
           <AppSegmentedControl
-            onValueChange={(val) => setSegment(val ?? 'monthly')}
+            onValueChange={(val) => setSegment(val ?? "monthly")}
             options={[
-              { label: 'Monthly', value: 'monthly' },
-              { label: 'Quarterly', value: 'quarterly' },
-              { label: 'Yearly', value: 'yearly' },
+              { label: "Monthly", value: "monthly" },
+              { label: "Quarterly", value: "quarterly" },
+              { label: "Yearly", value: "yearly" },
             ]}
             value={segment}
           />
@@ -73,20 +73,20 @@ export function NavigationSection() {
             defaultValue="overview"
             items={[
               {
-                value: 'overview',
-                label: 'Overview',
+                value: "overview",
+                label: "Overview",
                 content: <p className="p-2 text-sm text-muted-foreground">Overview Tab Content</p>,
               },
               {
-                value: 'transactions',
-                label: 'Transactions',
+                value: "transactions",
+                label: "Transactions",
                 content: (
                   <p className="p-2 text-sm text-muted-foreground">Transactions Tab Content</p>
                 ),
               },
               {
-                value: 'analytics',
-                label: 'Analytics',
+                value: "analytics",
+                label: "Analytics",
                 content: <p className="p-2 text-sm text-muted-foreground">Analytics Tab Content</p>,
               },
             ]}
@@ -101,9 +101,9 @@ export function NavigationSection() {
           <AppPagination onPageChange={setPage} page={page} totalPages={10} />
           <AppDropdownMenu
             items={[
-              { label: 'View Profile', onSelect: () => {}, icon: <Mail className="size-4" /> },
+              { label: "View Profile", onSelect: () => {}, icon: <Mail className="size-4" /> },
               {
-                label: 'Wallet Settings',
+                label: "Wallet Settings",
                 onSelect: () => {},
                 icon: <WalletCards className="size-4" />,
               },

@@ -1,6 +1,6 @@
-import { ChevronRight } from 'lucide-react';
-import Link from 'next/link';
-import type { ReactNode } from 'react';
+import { ChevronRight } from "lucide-react";
+import Link from "next/link";
+import type { ReactNode } from "react";
 export type AppBreadcrumbItem = { href?: string; label: ReactNode };
 export function AppBreadcrumb({ items }: { items: readonly AppBreadcrumbItem[] }) {
   return (

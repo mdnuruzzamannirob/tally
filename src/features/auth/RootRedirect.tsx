@@ -11,9 +11,12 @@ export function RootRedirect() {
   useEffect(() => {
     if (!initialized) return;
     if (!user) router.replace("/login");
-    else if (!user.emailVerified) router.replace(`/verify-email?email=${encodeURIComponent(user.email)}`);
-    else router.replace(user.preferences.defaultLandingPage === "applications" ? "/applications" : "/dashboard");
+    else if (!user.emailVerified)
+      router.replace(`/verify-email?email=${encodeURIComponent(user.email)}`);
+    else
+      router.replace(
+        user.preferences.defaultLandingPage === "applications" ? "/applications" : "/dashboard",
+      );
   }, [initialized, router, user]);
   return <AuthRouteLoading />;
 }
-

@@ -1,17 +1,17 @@
-'use client';
+"use client";
 
-import type { ComponentProps, ReactNode } from 'react';
-import { useId } from 'react';
+import type { ComponentProps, ReactNode } from "react";
+import { useId } from "react";
 
-import { Checkbox } from '@/components/ui/checkbox';
-import { cn } from '@/lib/utils';
+import { Checkbox } from "@/components/ui/checkbox";
+import { cn } from "@/lib/utils";
 
-export type AppCheckboxProps = Omit<ComponentProps<typeof Checkbox>, 'className' | 'id'> & {
+export type AppCheckboxProps = Omit<ComponentProps<typeof Checkbox>, "className" | "id"> & {
   className?: string;
   description?: string;
   id?: string;
   label: ReactNode;
-  size?: 'sm' | 'md' | 'lg';
+  size?: "sm" | "md" | "lg";
 };
 
 export function AppCheckbox({
@@ -19,7 +19,7 @@ export function AppCheckbox({
   description,
   id,
   label,
-  size = 'md',
+  size = "md",
   ...props
 }: AppCheckboxProps) {
   const generatedId = useId();
@@ -27,17 +27,17 @@ export function AppCheckbox({
   return (
     <label
       className={cn(
-        'flex cursor-pointer select-none items-center gap-3 text-sm has-disabled:cursor-not-allowed has-disabled:opacity-60',
-        description && 'items-start',
+        "flex cursor-pointer select-none items-center gap-3 text-sm has-disabled:cursor-not-allowed has-disabled:opacity-60",
+        description && "items-start",
       )}
       htmlFor={checkboxId}
     >
       <Checkbox
         {...props}
         className={cn(
-          { sm: 'size-4', md: 'size-5', lg: 'size-6' }[size],
-          'rounded-sm border-border bg-card data-checked:border-primary! data-checked:bg-primary! data-checked:text-primary-foreground focus-visible:ring-2 focus-visible:ring-primary/25',
-          description && 'mt-0.5',
+          { sm: "size-4", md: "size-5", lg: "size-6" }[size],
+          "rounded-sm border-border bg-card data-checked:border-primary! data-checked:bg-primary! data-checked:text-primary-foreground focus-visible:ring-2 focus-visible:ring-primary/25",
+          description && "mt-0.5",
           className,
         )}
         id={checkboxId}
@@ -45,8 +45,8 @@ export function AppCheckbox({
       <span>
         <span
           className={cn(
-            'block font-medium',
-            { sm: 'text-xs leading-4', md: 'text-sm leading-5', lg: 'text-base leading-6' }[size],
+            "block font-medium",
+            { sm: "text-xs leading-4", md: "text-sm leading-5", lg: "text-base leading-6" }[size],
           )}
         >
           {label}

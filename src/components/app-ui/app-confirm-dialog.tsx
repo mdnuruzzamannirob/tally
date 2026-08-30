@@ -1,5 +1,5 @@
-'use client';
-import type { ReactNode } from 'react';
+"use client";
+import type { ReactNode } from "react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -9,16 +9,16 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from '@/components/ui/alert-dialog';
+} from "@/components/ui/alert-dialog";
 export function AppConfirmDialog({
-  cancelLabel = 'Cancel',
-  confirmLabel = 'Confirm',
+  cancelLabel = "Cancel",
+  confirmLabel = "Confirm",
   description,
   onConfirm,
   open,
   onOpenChange,
   title,
-  variant = 'danger',
+  variant = "danger",
 }: {
   cancelLabel?: string;
   confirmLabel?: string;
@@ -27,7 +27,7 @@ export function AppConfirmDialog({
   onOpenChange: (open: boolean) => void;
   open: boolean;
   title: ReactNode;
-  variant?: 'default' | 'danger';
+  variant?: "default" | "danger";
 }) {
   return (
     <AlertDialog onOpenChange={onOpenChange} open={open}>
@@ -43,14 +43,17 @@ export function AppConfirmDialog({
           </AlertDialogDescription>
         </div>
         <AlertDialogFooter className="m-0 rounded-b-lg border-t border-border bg-secondary px-4 py-3 sm:px-5">
-          <AlertDialogCancel className="border-transparent! bg-muted/35! text-foreground hover:bg-muted! hover:text-foreground" variant="ghost">
+          <AlertDialogCancel
+            className="border-transparent! bg-muted/35! text-foreground hover:bg-muted! hover:text-foreground"
+            variant="ghost"
+          >
             {cancelLabel}
           </AlertDialogCancel>
           <AlertDialogAction
             className={
-              variant === 'danger'
-                ? 'border-danger! bg-danger! text-white hover:bg-danger-hover!'
-                : 'border-primary! bg-primary! text-primary-foreground hover:bg-primary-hover!'
+              variant === "danger"
+                ? "border-danger! bg-danger! text-white hover:bg-danger-hover!"
+                : "border-primary! bg-primary! text-primary-foreground hover:bg-primary-hover!"
             }
             onClick={onConfirm}
             variant="default"

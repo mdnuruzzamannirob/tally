@@ -628,7 +628,10 @@ export function ComponentExamples({ component }: { component: ComponentPreviewId
   if (component === "mobile-list") {
     return (
       <div>
-        <PreviewHeader description="A stacked data pattern for narrow screens." title="Mobile list" />
+        <PreviewHeader
+          description="A stacked data pattern for narrow screens."
+          title="Mobile list"
+        />
         <AppMobileList
           getItemKey={(item) => item.company}
           items={[
@@ -637,8 +640,13 @@ export function ComponentExamples({ component }: { component: ComponentPreviewId
           ]}
           renderItem={(item) => (
             <div className="flex items-center justify-between gap-4">
-              <div className="min-w-0"><p className="truncate text-sm font-medium">{item.company}</p><p className="truncate text-xs text-muted-foreground">{item.role}</p></div>
-              <AppBadge status={item.status === "Interview" ? "warning" : "info"}>{item.status}</AppBadge>
+              <div className="min-w-0">
+                <p className="truncate text-sm font-medium">{item.company}</p>
+                <p className="truncate text-xs text-muted-foreground">{item.role}</p>
+              </div>
+              <AppBadge status={item.status === "Interview" ? "warning" : "info"}>
+                {item.status}
+              </AppBadge>
             </div>
           )}
         />
@@ -649,7 +657,10 @@ export function ComponentExamples({ component }: { component: ComponentPreviewId
   if (component === "offline-banner") {
     return (
       <div>
-        <PreviewHeader description="A shared connection status message for mutation-aware screens." title="Offline banner" />
+        <PreviewHeader
+          description="A shared connection status message for mutation-aware screens."
+          title="Offline banner"
+        />
         <AppOfflineBanner online={false} />
       </div>
     );
@@ -658,9 +669,18 @@ export function ComponentExamples({ component }: { component: ComponentPreviewId
   if (component === "section") {
     return (
       <div>
-        <PreviewHeader description="Responsive heading, description, actions, and content spacing." title="Section" />
-        <AppSection actions={<AppButton size="sm">Add item</AppButton>} description="Reusable content blocks keep page rhythm consistent." title="Recent applications">
-          <AppCard padding="sm"><p className="text-sm text-muted-foreground">Section content</p></AppCard>
+        <PreviewHeader
+          description="Responsive heading, description, actions, and content spacing."
+          title="Section"
+        />
+        <AppSection
+          actions={<AppButton size="sm">Add item</AppButton>}
+          description="Reusable content blocks keep page rhythm consistent."
+          title="Recent applications"
+        >
+          <AppCard padding="sm">
+            <p className="text-sm text-muted-foreground">Section content</p>
+          </AppCard>
         </AppSection>
       </div>
     );
@@ -857,23 +877,52 @@ export function ComponentExamples({ component }: { component: ComponentPreviewId
         <ExampleFrame>
           <div className="space-y-8">
             <div className="space-y-2">
-              <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Line tabs</p>
+              <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                Line tabs
+              </p>
               <AppTabs
                 items={[
-                  { content: <p className="p-2 text-sm text-muted-foreground">Overview content</p>, label: "Overview", value: "overview" },
-                  { content: <p className="p-2 text-sm text-muted-foreground">Activity content</p>, label: "Activity", value: "activity" },
-                  { content: <p className="p-2 text-sm text-muted-foreground">Settings content</p>, disabled: true, label: "Settings", value: "settings" },
+                  {
+                    content: <p className="p-2 text-sm text-muted-foreground">Overview content</p>,
+                    label: "Overview",
+                    value: "overview",
+                  },
+                  {
+                    content: <p className="p-2 text-sm text-muted-foreground">Activity content</p>,
+                    label: "Activity",
+                    value: "activity",
+                  },
+                  {
+                    content: <p className="p-2 text-sm text-muted-foreground">Settings content</p>,
+                    disabled: true,
+                    label: "Settings",
+                    value: "settings",
+                  },
                 ]}
                 variant="line"
               />
             </div>
             <div className="space-y-2">
-              <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Box tabs</p>
+              <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                Box tabs
+              </p>
               <AppTabs
                 items={[
-                  { content: <p className="p-2 text-sm text-muted-foreground">List content</p>, label: "List", value: "list" },
-                  { content: <p className="p-2 text-sm text-muted-foreground">Board content</p>, label: "Board", value: "board" },
-                  { content: <p className="p-2 text-sm text-muted-foreground">Archived content</p>, label: "Archived", value: "archived" },
+                  {
+                    content: <p className="p-2 text-sm text-muted-foreground">List content</p>,
+                    label: "List",
+                    value: "list",
+                  },
+                  {
+                    content: <p className="p-2 text-sm text-muted-foreground">Board content</p>,
+                    label: "Board",
+                    value: "board",
+                  },
+                  {
+                    content: <p className="p-2 text-sm text-muted-foreground">Archived content</p>,
+                    label: "Archived",
+                    value: "archived",
+                  },
                 ]}
                 variant="box"
               />

@@ -368,9 +368,7 @@ export function DashboardScreen() {
                     style={{ backgroundColor: statusColors[s] }}
                   />
                   <span className="flex-1 text-muted-foreground">{statusLabels[s]}</span>
-                  <span className="font-medium text-foreground">
-                    {data.statusCounts[s] ?? 0}
-                  </span>
+                  <span className="font-medium text-foreground">{data.statusCounts[s] ?? 0}</span>
                 </div>
               ))}
             </div>
@@ -384,10 +382,7 @@ export function DashboardScreen() {
         <AppCard padding="none">
           <div className="flex items-center justify-between px-4 py-3.5 border-b border-border">
             <h2 className="font-semibold text-sm">Upcoming interviews</h2>
-            <Link
-              className="text-sm font-medium text-primary hover:underline"
-              href="/interviews"
-            >
+            <Link className="text-sm font-medium text-primary hover:underline" href="/interviews">
               View all
             </Link>
           </div>

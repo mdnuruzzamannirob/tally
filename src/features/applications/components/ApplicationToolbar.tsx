@@ -3,12 +3,7 @@
 import { useState } from "react";
 import { ArrowUpDown, Check, ChevronDown, Filter, Kanban, Table2, X, Search } from "lucide-react";
 import { format, parseISO } from "date-fns";
-import {
-  AppCheckbox,
-  AppDateRangePicker,
-  AppInput,
-  AppPopover,
-} from "@/components/app-ui";
+import { AppCheckbox, AppDateRangePicker, AppInput, AppPopover } from "@/components/app-ui";
 import type { Tag } from "@/types/tag.types";
 import type { ApplicationStatus, EmploymentType, RemoteType } from "@/types/application.types";
 import {
@@ -72,12 +67,7 @@ function FilterPill({
       onClick={onClick}
       type="button"
     >
-      {dot && (
-        <span
-          className="size-2 rounded-full shrink-0"
-          style={{ backgroundColor: dot }}
-        />
-      )}
+      {dot && <span className="size-2 rounded-full shrink-0" style={{ backgroundColor: dot }} />}
       {label}
     </button>
   );
@@ -130,7 +120,8 @@ export function ApplicationToolbar({
     updateUrl({ employmentType: currentEmployment === et ? undefined : et });
   };
 
-  const activeChips: Array<{ key: string; label: string; value: string; onRemove: () => void }> = [];
+  const activeChips: Array<{ key: string; label: string; value: string; onRemove: () => void }> =
+    [];
   if (currentStatus && applicationLabels[currentStatus as ApplicationStatus]) {
     activeChips.push({
       key: "status",
@@ -350,7 +341,9 @@ export function ApplicationToolbar({
               <div className="pt-0.5">
                 <AppCheckbox
                   checked={currentIncludeArchived}
-                  label={<span className="text-xs text-foreground font-normal">Include archived</span>}
+                  label={
+                    <span className="text-xs text-foreground font-normal">Include archived</span>
+                  }
                   onCheckedChange={(checked) =>
                     updateUrl({ includeArchived: checked ? "true" : undefined })
                   }

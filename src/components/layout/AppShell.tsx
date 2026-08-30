@@ -162,7 +162,6 @@ export function AppShell({ children }: { children: ReactNode }) {
             style={{ top: "var(--shell-notice-height)" }}
           >
             <div className="flex h-full items-center gap-3 px-4 sm:px-6 lg:px-8">
-
               <Link className="flex items-center gap-2 font-semibold lg:hidden" href="/dashboard">
                 <TallyLogo className="text-xl" />
               </Link>

@@ -10,7 +10,12 @@ const user: CurrentUser = {
   emailVerified: true,
   hasPassword: true,
   providers: [],
-  preferences: { theme: "system", defaultLandingPage: "dashboard", timeZone: "UTC", notificationsEnabled: false },
+  preferences: {
+    theme: "system",
+    defaultLandingPage: "dashboard",
+    timeZone: "UTC",
+    notificationsEnabled: false,
+  },
 };
 
 const session: AuthSession = { accessToken: "test-access-token", user };

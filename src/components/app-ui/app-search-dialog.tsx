@@ -2,10 +2,7 @@
 
 import { ArrowUpRight, Briefcase, Clock3, FileText, Search } from "lucide-react";
 import { AppInput } from "./app-input";
-import {
-  Dialog,
-  DialogContent,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
 
 export function AppSearchDialog({
   onOpenChange,

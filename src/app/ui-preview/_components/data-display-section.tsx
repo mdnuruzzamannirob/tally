@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import {
   AppAvatar,
@@ -9,8 +9,8 @@ import {
   AppSkeleton,
   AppStatCard,
   AppTable,
-} from '@/components/app-ui';
-import { CreditCard, TrendingDown, TrendingUp, WalletCards } from 'lucide-react';
+} from "@/components/app-ui";
+import { CreditCard, TrendingDown, TrendingUp, WalletCards } from "lucide-react";
 
 export function DataDisplaySection() {
   return (
@@ -73,30 +73,30 @@ export function DataDisplaySection() {
         <h3 className="text-lg font-semibold">Data Table</h3>
         <AppTable
           columns={[
-            { header: 'Transaction', key: 'name', render: (r) => r.name },
-            { header: 'Category', key: 'category', render: (r) => r.category },
-            { header: 'Amount', key: 'amount', render: (r) => r.amount },
-            { header: 'Status', key: 'status', render: (r) => r.status },
+            { header: "Transaction", key: "name", render: (r) => r.name },
+            { header: "Category", key: "category", render: (r) => r.category },
+            { header: "Amount", key: "amount", render: (r) => r.amount },
+            { header: "Status", key: "status", render: (r) => r.status },
           ]}
 
           getRowKey={(r) => r.name}
           rows={[
             {
-              name: 'Grocery Supermarket',
-              category: 'Food',
-              amount: '৳4,500',
+              name: "Grocery Supermarket",
+              category: "Food",
+              amount: "৳4,500",
               status: <AppBadge status="success">Completed</AppBadge>,
             },
             {
-              name: 'Electricity Bill',
-              category: 'Utilities',
-              amount: '৳2,100',
+              name: "Electricity Bill",
+              category: "Utilities",
+              amount: "৳2,100",
               status: <AppBadge status="success">Completed</AppBadge>,
             },
             {
-              name: 'Online Subscription',
-              category: 'Entertainment',
-              amount: '৳850',
+              name: "Online Subscription",
+              category: "Entertainment",
+              amount: "৳850",
               status: <AppBadge status="warning">Pending</AppBadge>,
             },
           ]}

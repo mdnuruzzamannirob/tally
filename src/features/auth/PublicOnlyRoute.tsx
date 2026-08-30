@@ -8,7 +8,11 @@ import { useEffect, useSyncExternalStore, type ReactNode } from "react";
 export function PublicOnlyRoute({ children }: { children: ReactNode }) {
   const router = useRouter();
   const { initialized, user } = useAppSelector((state) => state.auth);
-  const hydrated = useSyncExternalStore(() => () => {}, () => true, () => false);
+  const hydrated = useSyncExternalStore(
+    () => () => {},
+    () => true,
+    () => false,
+  );
   useEffect(() => {
     if (!initialized || !user?.emailVerified) return;
     router.replace(

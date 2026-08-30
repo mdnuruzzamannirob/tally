@@ -68,7 +68,8 @@ export function AppCombobox({
             <button
               className={cn(
                 "flex w-full items-center gap-2 rounded-sm px-2 py-1.5 text-left text-sm hover:bg-muted hover:text-foreground",
-                currentValue === option.value && "bg-primary-soft text-primary-text hover:bg-primary-soft hover:text-primary-text",
+                currentValue === option.value &&
+                  "bg-primary-soft text-primary-text hover:bg-primary-soft hover:text-primary-text",
               )}
               key={option.value}
               onClick={() => choose(option.value)}

@@ -1,14 +1,96 @@
 import { baseApi } from "./base-api";
 import type { ApiEnvelope } from "@/types/api.types";
-import type { CreateInterviewInput, Interview, InterviewListQuery, UpdateInterviewInput } from "@/types/interview.types";
+import type {
+  CreateInterviewInput,
+  Interview,
+  InterviewListQuery,
+  UpdateInterviewInput,
+} from "@/types/interview.types";
 import type { Paginated } from "./applications.api";
-const unwrap = <T,>(response: ApiEnvelope<T>) => { if (!response.success) throw new Error(response.message); return response.data; };
-const params = (query?: InterviewListQuery) => query ? Object.fromEntries(Object.entries(query).filter(([, value]) => value !== undefined).map(([k, v]) => [k, String(v)])) : undefined;
-export const interviewsApi = baseApi.injectEndpoints({ endpoints: (build) => ({
-  interviews: build.query<Paginated<Interview>, InterviewListQuery | void>({ query: (query) => ({ url: "/interviews", params: params(query || undefined) }), transformResponse: (response: ApiEnvelope<Interview[]>) => ({ items: unwrap(response), meta: response.success ? response.meta : undefined }), providesTags: ["Interviews"] }),
-  applicationInterviews: build.query<Paginated<Interview>, { applicationId: string; query?: InterviewListQuery }>({ query: ({ applicationId, query }) => ({ url: `/applications/${applicationId}/interviews`, params: params(query) }), transformResponse: (response: ApiEnvelope<Interview[]>) => ({ items: unwrap(response), meta: response.success ? response.meta : undefined }), providesTags: (_r, _e, { applicationId }) => [{ type: "Interviews", id: applicationId }] }),
-  createInterview: build.mutation<Interview, { applicationId: string; body: CreateInterviewInput }>({ query: ({ applicationId, body }) => ({ url: `/applications/${applicationId}/interviews`, method: "POST", body }), transformResponse: unwrap, invalidatesTags: (_r, _e, { applicationId }) => ["Interviews", "Dashboard", { type: "Interviews", id: applicationId }, { type: "Application", id: applicationId }] }),
-  updateInterview: build.mutation<Interview, { id: string; applicationId: string; body: UpdateInterviewInput }>({ query: ({ id, body }) => ({ url: `/interviews/${id}`, method: "PATCH", body }), transformResponse: unwrap, invalidatesTags: (_r, _e, { applicationId }) => ["Interviews", "Dashboard", { type: "Interviews", id: applicationId }, { type: "Application", id: applicationId }] }),
-  deleteInterview: build.mutation<void, { id: string; applicationId: string }>({ query: ({ id }) => ({ url: `/interviews/${id}`, method: "DELETE" }), transformResponse: (response: ApiEnvelope<Record<string, never>>) => { unwrap(response); }, invalidatesTags: (_r, _e, { applicationId }) => ["Interviews", "Dashboard", { type: "Interviews", id: applicationId }, { type: "Application", id: applicationId }] }),
-}) });
-export const { useInterviewsQuery, useApplicationInterviewsQuery, useCreateInterviewMutation, useUpdateInterviewMutation, useDeleteInterviewMutation } = interviewsApi;
+const unwrap = <T>(response: ApiEnvelope<T>) => {
+  if (!response.success) throw new Error(response.message);
+  return response.data;
+};
+const params = (query?: InterviewListQuery) =>
+  query
+    ? Object.fromEntries(
+        Object.entries(query)
+          .filter(([, value]) => value !== undefined)
+          .map(([k, v]) => [k, String(v)]),
+      )
+    : undefined;
+export const interviewsApi = baseApi.injectEndpoints({
+  endpoints: (build) => ({
+    interviews: build.query<Paginated<Interview>, InterviewListQuery | void>({
+      query: (query) => ({ url: "/interviews", params: params(query || undefined) }),
+      transformResponse: (response: ApiEnvelope<Interview[]>) => ({
+        items: unwrap(response),
+        meta: response.success ? response.meta : undefined,
+      }),
+      providesTags: ["Interviews"],
+    }),
+    applicationInterviews: build.query<
+      Paginated<Interview>,
+      { applicationId: string; query?: InterviewListQuery }
+    >({
+      query: ({ applicationId, query }) => ({
+        url: `/applications/${applicationId}/interviews`,
+        params: params(query),
+      }),
+      transformResponse: (response: ApiEnvelope<Interview[]>) => ({
+        items: unwrap(response),
+        meta: response.success ? response.meta : undefined,
+      }),
+      providesTags: (_r, _e, { applicationId }) => [{ type: "Interviews", id: applicationId }],
+    }),
+    createInterview: build.mutation<
+      Interview,
+      { applicationId: string; body: CreateInterviewInput }
+    >({
+      query: ({ applicationId, body }) => ({
+        url: `/applications/${applicationId}/interviews`,
+        method: "POST",
+        body,
+      }),
+      transformResponse: unwrap,
+      invalidatesTags: (_r, _e, { applicationId }) => [
+        "Interviews",
+        "Dashboard",
+        { type: "Interviews", id: applicationId },
+        { type: "Application", id: applicationId },
+      ],
+    }),
+    updateInterview: build.mutation<
+      Interview,
+      { id: string; applicationId: string; body: UpdateInterviewInput }
+    >({
+      query: ({ id, body }) => ({ url: `/interviews/${id}`, method: "PATCH", body }),
+      transformResponse: unwrap,
+      invalidatesTags: (_r, _e, { applicationId }) => [
+        "Interviews",
+        "Dashboard",
+        { type: "Interviews", id: applicationId },
+        { type: "Application", id: applicationId },
+      ],
+    }),
+    deleteInterview: build.mutation<void, { id: string; applicationId: string }>({
+      query: ({ id }) => ({ url: `/interviews/${id}`, method: "DELETE" }),
+      transformResponse: (response: ApiEnvelope<Record<string, never>>) => {
+        unwrap(response);
+      },
+      invalidatesTags: (_r, _e, { applicationId }) => [
+        "Interviews",
+        "Dashboard",
+        { type: "Interviews", id: applicationId },
+        { type: "Application", id: applicationId },
+      ],
+    }),
+  }),
+});
+export const {
+  useInterviewsQuery,
+  useApplicationInterviewsQuery,
+  useCreateInterviewMutation,
+  useUpdateInterviewMutation,
+  useDeleteInterviewMutation,
+} = interviewsApi;

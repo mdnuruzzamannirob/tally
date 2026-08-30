@@ -3,11 +3,13 @@
 ## 30-Second Setup
 
 ### 1. Verify Production Ready
+
 ```bash
 ./scripts/check-production-ready.sh
 ```
 
 ### 2. Build & Test Locally
+
 ```bash
 pnpm install
 pnpm build
@@ -15,6 +17,7 @@ pnpm start  # Test the build
 ```
 
 ### 3. Configure Production Environment
+
 ```bash
 # Edit .env.production with your production values
 # NEXT_PUBLIC_API_URL=https://api.yourdomain.com/api/v1
@@ -25,17 +28,20 @@ nano .env.production
 ### 4. Deploy
 
 #### Option A: Docker Compose (Recommended for VPS)
+
 ```bash
 docker-compose -f docker-compose.deploy.yml up -d
 ```
 
 #### Option B: Vercel (Recommended for SaaS)
+
 ```bash
 # Push to GitHub and connect to Vercel dashboard
 # https://vercel.com/import
 ```
 
 #### Option C: Kubernetes
+
 ```bash
 kubectl apply -f deployment.yaml
 ```
@@ -45,12 +51,14 @@ kubectl apply -f deployment.yaml
 ## Full Deployment Steps
 
 ### Prerequisites
+
 - Node.js 20.9.0+
 - pnpm 9.0.0+
 - Docker (for containerized deployment)
 - Production domain & SSL certificate
 
 ### Step 1: Configure Environment
+
 ```bash
 # Copy and update production environment
 cp .env.example .env.production
@@ -60,12 +68,14 @@ nano .env.production
 ```
 
 **Required Variables:**
+
 ```
 NEXT_PUBLIC_API_URL=https://api.yourdomain.com/api/v1
 NEXT_PUBLIC_APP_URL=https://yourdomain.com
 ```
 
 ### Step 2: Run Readiness Checks
+
 ```bash
 ./scripts/check-production-ready.sh
 
@@ -73,12 +83,14 @@ NEXT_PUBLIC_APP_URL=https://yourdomain.com
 ```
 
 ### Step 3: Build Production Bundle
+
 ```bash
 pnpm install
 pnpm build
 ```
 
 ### Step 4: Test Locally
+
 ```bash
 pnpm start
 
@@ -87,6 +99,7 @@ pnpm start
 ```
 
 ### Step 5: Build Docker Image
+
 ```bash
 docker build -t tally-web:latest .
 ```
@@ -94,11 +107,13 @@ docker build -t tally-web:latest .
 ### Step 6: Deploy
 
 **For Docker Compose:**
+
 ```bash
 docker-compose -f docker-compose.deploy.yml up -d
 ```
 
 **For Kubernetes:**
+
 ```bash
 # Update deployment.yaml with your image and settings
 kubectl apply -f deployment.yaml
@@ -115,6 +130,7 @@ sudo certbot --nginx -d yourdomain.com
 ```
 
 ### Step 8: Verify Deployment
+
 ```bash
 # Check health
 curl https://app.yourdomain.com/
@@ -161,6 +177,7 @@ docker-compose -f docker-compose.deploy.yml restart web
 ## Common Issues
 
 ### Issue: "Cannot connect to API"
+
 **Solution:** Verify `NEXT_PUBLIC_API_URL` is set correctly and API is accessible.
 
 ```bash
@@ -169,6 +186,7 @@ curl https://api.yourdomain.com/api/v1/health
 ```
 
 ### Issue: "Port 3000 already in use"
+
 **Solution:** Find and stop the existing process.
 
 ```bash
@@ -177,6 +195,7 @@ kill -9 <PID>
 ```
 
 ### Issue: "Docker image build fails"
+
 **Solution:** Clear cache and try again.
 
 ```bash
@@ -185,6 +204,7 @@ docker build --no-cache -t tally-web:latest .
 ```
 
 ### Issue: "High memory usage"
+
 **Solution:** Increase container memory limit.
 
 ```bash
@@ -200,6 +220,7 @@ docker run -m 2g tally-web:latest
 ## Performance Optimization
 
 ### Enable Static Asset Caching
+
 Update your reverse proxy (Nginx) to cache static assets:
 
 ```nginx
@@ -210,12 +231,14 @@ location /_next/static/ {
 ```
 
 ### Enable Gzip Compression
+
 ```nginx
 gzip on;
 gzip_types text/plain text/css text/javascript application/json;
 ```
 
 ### Use CDN for Static Assets
+
 Upload `public/` directory to a CDN and update `next.config.ts`:
 
 ```typescript
@@ -230,6 +253,7 @@ images: {
 ## Monitoring & Alerts
 
 ### Set Up Health Checks
+
 ```bash
 # Check endpoint
 curl -I https://app.yourdomain.com/
@@ -239,6 +263,7 @@ curl -I https://app.yourdomain.com/
 ```
 
 ### View Logs
+
 ```bash
 # Docker
 docker logs -f tally-web

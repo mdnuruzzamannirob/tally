@@ -10,7 +10,10 @@ export const applicationLabels: Record<ApplicationStatus, string> = {
   WITHDRAWN: "Withdrawn",
 };
 
-export const applicationTones: Record<ApplicationStatus, "neutral" | "info" | "success" | "warning" | "danger"> = {
+export const applicationTones: Record<
+  ApplicationStatus,
+  "neutral" | "info" | "success" | "warning" | "danger"
+> = {
   WISHLIST: "neutral",
   APPLIED: "info",
   SCREENING: "warning",
@@ -34,4 +37,7 @@ export const boardAccents: Record<ApplicationStatus, string> = {
 };
 
 export const humanizeApplicationValue = (value: string) =>
-  value.split("_").map((part) => part.charAt(0) + part.slice(1).toLowerCase()).join(" ");
+  value
+    .split("_")
+    .map((part) => part.charAt(0) + part.slice(1).toLowerCase())
+    .join(" ");

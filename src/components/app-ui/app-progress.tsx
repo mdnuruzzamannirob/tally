@@ -1,13 +1,13 @@
-import { cn } from '@/lib/utils';
+import { cn } from "@/lib/utils";
 export function AppProgress({
   className,
   label,
-  tone = 'primary',
+  tone = "primary",
   value,
 }: {
   className?: string;
   label?: string;
-  tone?: 'primary' | 'success' | 'warning' | 'danger';
+  tone?: "primary" | "success" | "warning" | "danger";
   value: number;
 }) {
   const safe = Math.min(100, Math.max(0, value));
@@ -28,12 +28,12 @@ export function AppProgress({
       >
         <div
           className={cn(
-            'h-full rounded-full transition-[width]',
+            "h-full rounded-full transition-[width]",
             {
-              primary: 'bg-primary',
-              success: 'bg-success',
-              warning: 'bg-warning',
-              danger: 'bg-danger',
+              primary: "bg-primary",
+              success: "bg-success",
+              warning: "bg-warning",
+              danger: "bg-danger",
             }[tone],
           )}
           style={{ width: `${safe}%` }}

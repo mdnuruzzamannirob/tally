@@ -1,5 +1,5 @@
-import type { ComponentProps } from 'react';
-import { Toaster } from '@/components/ui/sonner';
+import type { ComponentProps } from "react";
+import { Toaster } from "@/components/ui/sonner";
 
 export type AppToasterProps = ComponentProps<typeof Toaster>;
 

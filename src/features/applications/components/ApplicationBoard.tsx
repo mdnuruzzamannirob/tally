@@ -287,7 +287,9 @@ export function ApplicationBoard({
                                 : "text-muted-foreground"
                           }`}
                         >
-                          <span className="text-[10px] font-medium uppercase tracking-wide opacity-75">Follow-up</span>
+                          <span className="text-[10px] font-medium uppercase tracking-wide opacity-75">
+                            Follow-up
+                          </span>
                           {isOverdue ? (
                             <span className="ml-auto text-[10px] font-semibold tabular-nums">
                               ⚠️{" "}
@@ -297,7 +299,9 @@ export function ApplicationBoard({
                               })}
                             </span>
                           ) : isToday ? (
-                            <span className="ml-auto text-[10px] font-semibold tabular-nums">Today</span>
+                            <span className="ml-auto text-[10px] font-semibold tabular-nums">
+                              Today
+                            </span>
                           ) : (
                             <span className="ml-auto text-[10px] font-semibold tabular-nums">
                               {fuDate.toLocaleDateString(undefined, {

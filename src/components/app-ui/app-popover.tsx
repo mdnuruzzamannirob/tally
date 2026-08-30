@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import type { ReactElement, ReactNode } from 'react';
-import { cn } from '@/lib/utils';
+import type { ReactElement, ReactNode } from "react";
+import { cn } from "@/lib/utils";
 import {
   Popover,
   PopoverContent,
@@ -9,7 +9,7 @@ import {
   PopoverHeader,
   PopoverTitle,
   PopoverTrigger,
-} from '@/components/ui/popover';
+} from "@/components/ui/popover";
 
 export function AppPopover({
   children,
@@ -17,8 +17,8 @@ export function AppPopover({
   title,
   trigger,
   contentClassName,
-  align = 'center',
-  side = 'bottom',
+  align = "center",
+  side = "bottom",
   sideOffset = 4,
   open,
   onOpenChange,
@@ -28,8 +28,8 @@ export function AppPopover({
   title?: ReactNode;
   trigger: ReactElement;
   contentClassName?: string;
-  align?: 'start' | 'center' | 'end';
-  side?: 'top' | 'right' | 'bottom' | 'left';
+  align?: "start" | "center" | "end";
+  side?: "top" | "right" | "bottom" | "left";
   sideOffset?: number;
   open?: boolean;
   onOpenChange?: (open: boolean) => void;
@@ -41,7 +41,10 @@ export function AppPopover({
         align={align}
         side={side}
         sideOffset={sideOffset}
-        className={cn('w-80 gap-2 rounded-md border border-border bg-popover ring-0 shadow-popover', contentClassName)}
+        className={cn(
+          "w-80 gap-2 rounded-md border border-border bg-popover ring-0 shadow-popover",
+          contentClassName,
+        )}
       >
         {title || description ? (
           <PopoverHeader>

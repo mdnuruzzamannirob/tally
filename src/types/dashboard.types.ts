@@ -17,10 +17,14 @@ export interface DashboardSummary {
     overdue: Array<Pick<Application, "id" | "company" | "role" | "status" | "nextFollowUpAt">>;
     today: Array<Pick<Application, "id" | "company" | "role" | "status" | "nextFollowUpAt">>;
   };
-  upcomingInterviews: Array<Pick<Interview, "id" | "type" | "status" | "scheduledAt"> & {
-    application: Pick<Application, "id" | "company" | "role">;
-  }>;
-  recentApplications: Array<Pick<Application, "id" | "company" | "role" | "status"> & {
-    updatedAt: string;
-  }>;
+  upcomingInterviews: Array<
+    Pick<Interview, "id" | "type" | "status" | "scheduledAt"> & {
+      application: Pick<Application, "id" | "company" | "role">;
+    }
+  >;
+  recentApplications: Array<
+    Pick<Application, "id" | "company" | "role" | "status"> & {
+      updatedAt: string;
+    }
+  >;
 }

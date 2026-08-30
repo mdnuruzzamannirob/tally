@@ -18,7 +18,12 @@ export function AppMobileList<T>({
   renderItem,
 }: AppMobileListProps<T>) {
   return (
-    <div className={cn("divide-y divide-border overflow-hidden rounded-lg border border-border bg-card", className)}>
+    <div
+      className={cn(
+        "divide-y divide-border overflow-hidden rounded-lg border border-border bg-card",
+        className,
+      )}
+    >
       {items.length ? (
         items.map((item) => (
           <div className="p-4" key={getItemKey(item)}>

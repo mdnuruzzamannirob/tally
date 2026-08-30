@@ -1,16 +1,16 @@
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { cn } from '@/lib/utils';
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { cn } from "@/lib/utils";
 export function AppAvatar({
   alt,
   className,
   fallback,
-  size = 'md',
+  size = "md",
   src,
 }: {
   alt: string;
   className?: string;
   fallback: string;
-  size?: 'sm' | 'md' | 'lg' | 'xl';
+  size?: "sm" | "md" | "lg" | "xl";
   src?: string;
 }) {
   return (
@@ -29,12 +29,12 @@ export function AppAvatar({
       <AvatarImage alt={alt} src={src} />
       <AvatarFallback
         className={cn(
-          'inline-flex items-center justify-center bg-primary font-semibold leading-none tracking-wide text-primary-foreground',
+          "inline-flex items-center justify-center bg-primary font-semibold leading-none tracking-wide text-primary-foreground",
           {
-            sm: 'text-[10px]',
-            md: 'text-xs',
-            lg: 'text-sm',
-            xl: 'text-base',
+            sm: "text-[10px]",
+            md: "text-xs",
+            lg: "text-sm",
+            xl: "text-base",
           }[size],
         )}
       >

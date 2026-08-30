@@ -23,6 +23,7 @@ NEXT_PUBLIC_APP_URL=https://yourdomain.com
 ### 2. Configure Project Settings
 
 Select `tally_web` as the project root:
+
 - **Framework**: Next.js
 - **Root Directory**: `tally_web`
 - **Build Command**: `pnpm run build`
@@ -39,6 +40,7 @@ NEXT_PUBLIC_APP_URL=https://yourdomain.com
 ```
 
 **Important**: Set these for all environments:
+
 - Preview
 - Production
 - Development
@@ -46,6 +48,7 @@ NEXT_PUBLIC_APP_URL=https://yourdomain.com
 ### 4. Deploy
 
 Push to main branch to automatically deploy:
+
 ```bash
 git push origin main
 ```
@@ -57,6 +60,7 @@ Or manually trigger deployment from Vercel dashboard.
 ### Build Error: Invalid URL Format
 
 If you see:
+
 ```
 Error [ZodError]: "code": "invalid_format", "format": "url"
 ```
@@ -66,6 +70,7 @@ Error [ZodError]: "code": "invalid_format", "format": "url"
 ### Build Timeout
 
 If build times out:
+
 1. Check the build logs in Vercel dashboard
 2. Optimize Next.js config: disable ISR, reduce prerendering
 3. Increase build timeout in `vercel.json` (if needed)
@@ -85,6 +90,7 @@ git push origin main
 Current build time: ~35-40 seconds
 
 Optimizations applied:
+
 - Webpack bundler (faster than SWC)
 - Static page generation
 - Image optimization
@@ -119,6 +125,7 @@ Optimizations applied:
 ### Rollback
 
 To rollback to previous version:
+
 1. Go to Vercel project
 2. Click "Deployments"
 3. Find previous successful deployment
@@ -149,6 +156,7 @@ Certificates auto-renew every 30 days. No manual action needed.
 ### Analytics
 
 Enable Vercel Analytics:
+
 1. Settings → Analytics
 2. Click "Enable"
 3. Choose pricing plan
@@ -156,6 +164,7 @@ Enable Vercel Analytics:
 ### Runtime Logs
 
 View production errors and logs:
+
 1. Functions → Logs
 2. Monitor real-time requests and errors
 
@@ -164,6 +173,7 @@ View production errors and logs:
 ### GitHub Actions
 
 Vercel automatically integrates with GitHub:
+
 - Preview deployments on PRs
 - Production deployment on merge to main
 - Automatic rollback on deployment failure (configurable)
@@ -171,6 +181,7 @@ Vercel automatically integrates with GitHub:
 ### Pull Request Previews
 
 Each PR automatically gets:
+
 - Preview deployment URL
 - Vercel bot comments with deployment status
 - Automatic preview cleanup when PR is closed
@@ -178,6 +189,7 @@ Each PR automatically gets:
 ## Database Connection from Vercel
 
 For connecting to backend API:
+
 - Use `NEXT_PUBLIC_API_URL` for frontend calls
 - Set to production API domain in environment variables
 - Ensure CORS allows Vercel domain
@@ -187,6 +199,7 @@ For connecting to backend API:
 ### Web Vitals
 
 Vercel Web Analytics shows:
+
 - Core Web Vitals (LCP, FID, CLS)
 - Real user performance data
 - Performance trends over time
@@ -194,6 +207,7 @@ Vercel Web Analytics shows:
 ### Lighthouse
 
 Vercel runs Lighthouse on production:
+
 - Performance scores
 - SEO analysis
 - Best practices
@@ -206,6 +220,7 @@ Vercel runs Lighthouse on production:
 - **Serverless function size**: Up to 50MB
 
 If you exceed limits, optimize:
+
 - Remove unused dependencies
 - Compress assets
 - Split routes into separate functions

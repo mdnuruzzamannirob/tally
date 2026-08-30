@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import {
   AppCheckbox,
@@ -16,21 +16,21 @@ import {
   AppSwitch,
   AppTextarea,
   AppTimePicker,
-} from '@/components/app-ui';
-import { useState } from 'react';
+} from "@/components/app-ui";
+import { useState } from "react";
 
 export function FormControlsSection() {
-  const [inputValue, setInputValue] = useState('');
+  const [inputValue, setInputValue] = useState("");
   const [currencyVal, setCurrencyVal] = useState(150.0);
   const [switchVal, setSwitchVal] = useState(true);
   const [checkboxVal, setCheckboxVal] = useState(true);
-  const [radioVal, setRadioVal] = useState('card');
+  const [radioVal, setRadioVal] = useState("card");
   const [sliderVal, setSliderVal] = useState(50);
-  const [selectVal, setSelectVal] = useState('usd');
-  const [multiSelectVal, setMultiSelectVal] = useState(['groceries']);
-  const [comboboxVal, setComboboxVal] = useState('bKash');
+  const [selectVal, setSelectVal] = useState("usd");
+  const [multiSelectVal, setMultiSelectVal] = useState(["groceries"]);
+  const [comboboxVal, setComboboxVal] = useState("bKash");
   const [dateVal, setDateVal] = useState<Date | undefined>(new Date());
-  const [timeVal, setTimeVal] = useState('14:30');
+  const [timeVal, setTimeVal] = useState("14:30");
 
   return (
     <div className="grid gap-8 sm:grid-cols-2">
@@ -69,11 +69,11 @@ export function FormControlsSection() {
 
         <AppField label="Select Currency">
           <AppSelect
-            onValueChange={(val) => setSelectVal(val ?? 'usd')}
+            onValueChange={(val) => setSelectVal(val ?? "usd")}
             options={[
-              { label: 'USD ($)', value: 'usd' },
-              { label: 'EUR (€)', value: 'eur' },
-              { label: 'BDT (৳)', value: 'bdt' },
+              { label: "USD ($)", value: "usd" },
+              { label: "EUR (€)", value: "eur" },
+              { label: "BDT (৳)", value: "bdt" },
             ]}
             value={selectVal}
           />
@@ -81,11 +81,11 @@ export function FormControlsSection() {
 
         <AppField label="Combobox (Wallet Search)">
           <AppCombobox
-            onValueChange={(val) => setComboboxVal(val ?? 'bKash')}
+            onValueChange={(val) => setComboboxVal(val ?? "bKash")}
             options={[
-              { label: 'bKash Account', value: 'bKash' },
-              { label: 'BRAC Bank Savings', value: 'brac' },
-              { label: 'Cash Wallet', value: 'cash' },
+              { label: "bKash Account", value: "bKash" },
+              { label: "BRAC Bank Savings", value: "brac" },
+              { label: "Cash Wallet", value: "cash" },
             ]}
             placeholder="Select a wallet..."
             value={comboboxVal}
@@ -96,9 +96,9 @@ export function FormControlsSection() {
           <AppMultiSelect
             onValueChange={setMultiSelectVal}
             options={[
-              { label: 'Groceries', value: 'groceries' },
-              { label: 'Utilities', value: 'utilities' },
-              { label: 'Dining Out', value: 'dining' },
+              { label: "Groceries", value: "groceries" },
+              { label: "Utilities", value: "utilities" },
+              { label: "Dining Out", value: "dining" },
             ]}
             value={multiSelectVal}
           />
@@ -109,7 +109,7 @@ export function FormControlsSection() {
         </AppField>
 
         <AppField label="Time Picker">
-          <AppTimePicker onValueChange={(val) => setTimeVal(val ?? '14:30')} value={timeVal} />
+          <AppTimePicker onValueChange={(val) => setTimeVal(val ?? "14:30")} value={timeVal} />
         </AppField>
       </div>
 
@@ -146,11 +146,11 @@ export function FormControlsSection() {
 
         <AppField label="Payment Method">
           <AppRadioGroup
-            onValueChange={(val) => setRadioVal(val ?? 'card')}
+            onValueChange={(val) => setRadioVal(val ?? "card")}
             options={[
-              { label: 'Credit/Debit Card', value: 'card' },
-              { label: 'Mobile Wallet (bKash/Nagad)', value: 'mfs' },
-              { label: 'Bank Transfer', value: 'bank' },
+              { label: "Credit/Debit Card", value: "card" },
+              { label: "Mobile Wallet (bKash/Nagad)", value: "mfs" },
+              { label: "Bank Transfer", value: "bank" },
             ]}
             value={radioVal}
           />

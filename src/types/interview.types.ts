@@ -15,7 +15,12 @@ export interface Interview {
   status: InterviewStatus;
   createdAt: ISODateTimeString;
   updatedAt: ISODateTimeString;
-  application?: { id: string; company: string; role: string; archivedAt?: Nullable<ISODateTimeString> };
+  application?: {
+    id: string;
+    company: string;
+    role: string;
+    archivedAt?: Nullable<ISODateTimeString>;
+  };
 }
 
 export interface CreateInterviewInput {

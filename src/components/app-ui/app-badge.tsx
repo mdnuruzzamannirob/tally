@@ -4,13 +4,7 @@ import type { CSSProperties } from "react";
 export type AppBadgeStatus = "neutral" | "info" | "success" | "warning" | "danger";
 export type AppBadgeSize = "sm" | "md" | "lg";
 export type AppApplicationStatus =
-  | "wishlist"
-  | "applied"
-  | "screening"
-  | "interview"
-  | "offer"
-  | "rejected"
-  | "withdrawn";
+  "wishlist" | "applied" | "screening" | "interview" | "offer" | "rejected" | "withdrawn";
 export type AppInterviewStatus = "scheduled" | "completed" | "cancelled" | "no-show";
 export function AppBadge({
   children,
@@ -84,7 +78,9 @@ export function AppStatusBadge({
     <span
       className={cn(
         "inline-flex items-center rounded-sm border font-medium",
-        { sm: "px-1.5 py-0.5 text-[10px]", md: "px-2 py-0.5 text-xs", lg: "px-2.5 py-1 text-sm" }[size],
+        { sm: "px-1.5 py-0.5 text-[10px]", md: "px-2 py-0.5 text-xs", lg: "px-2.5 py-1 text-sm" }[
+          size
+        ],
         className,
       )}
       style={tokenStyle(applicationStatusTokens[status])}
@@ -109,7 +105,9 @@ export function AppInterviewStatusBadge({
     <span
       className={cn(
         "inline-flex items-center rounded-sm border font-medium",
-        { sm: "px-1.5 py-0.5 text-[10px]", md: "px-2 py-0.5 text-xs", lg: "px-2.5 py-1 text-sm" }[size],
+        { sm: "px-1.5 py-0.5 text-[10px]", md: "px-2 py-0.5 text-xs", lg: "px-2.5 py-1 text-sm" }[
+          size
+        ],
         className,
       )}
       style={tokenStyle(interviewStatusTokens[status])}

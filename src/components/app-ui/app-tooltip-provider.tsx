@@ -1,5 +1,5 @@
-import type { ComponentProps } from 'react';
-import { TooltipProvider } from '@/components/ui/tooltip';
+import type { ComponentProps } from "react";
+import { TooltipProvider } from "@/components/ui/tooltip";
 
 export type AppTooltipProviderProps = ComponentProps<typeof TooltipProvider>;
 
