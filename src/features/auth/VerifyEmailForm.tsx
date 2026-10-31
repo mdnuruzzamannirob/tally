@@ -57,7 +57,7 @@ export function VerifyEmailForm() {
     }
     try {
       await resendVerification({ email }).unwrap();
-      toast.success("Verification email sent. Check your inbox and spam folder.");
+      toast.success("If the account exists and is unverified, a verification email has been sent.");
     } catch (error) {
       toast.error(
         getErrorMessage(error, "We couldn't send the verification email. Please try again."),
