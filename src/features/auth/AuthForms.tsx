@@ -327,8 +327,10 @@ export function ResetPasswordForm() {
   const [passwordError, setPasswordError] = useState<string | null>(null);
   useEffect(() => {
     const value = new URLSearchParams(window.location.search).get("token");
-    tokenRef.current = value;
-    window.history.replaceState(null, "", "/reset-password");
+    if (value) {
+      tokenRef.current = value;
+      window.history.replaceState(null, "", "/reset-password");
+    }
   }, []);
   const submit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
