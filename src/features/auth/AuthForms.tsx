@@ -1,5 +1,6 @@
 "use client";
 
+import { getErrorMessage } from "@/lib/api-error";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
@@ -40,15 +41,6 @@ const registerSchema = z
     message: "Passwords must match.",
   });
 
-function getErrorMessage(error: unknown, fallback: string) {
-  if (error && typeof error === "object" && "data" in error) {
-    const data = error.data;
-    if (data && typeof data === "object" && "message" in data && typeof data.message === "string")
-      return data.message;
-  }
-  return fallback;
-}
-
 function SocialLogin() {
   const startProvider = (provider: "google" | "github") => {
     window.location.replace(`${webEnv.NEXT_PUBLIC_API_URL}/auth/${provider}`);
@@ -86,7 +78,7 @@ export function LoginForm() {
       const redirect = new URLSearchParams(window.location.search).get("redirect");
       router.replace(redirect?.startsWith("/") ? redirect : "/dashboard");
     } catch (submitError) {
-      toast.error(getErrorMessage(submitError, "Unable to sign in with those credentials."));
+      toast.error(getErrorMessage(submitError, "Unable to sign in right now. Please try again."));
     }
   };
 
@@ -352,7 +344,7 @@ export function ResetPasswordForm() {
     }
     const token = tokenRef.current;
     if (!token) {
-      toast.error("This reset link is invalid or has expired.");
+      toast.error("Unable to reset your password right now. Please try again.");
       return;
     }
     try {
@@ -360,7 +352,9 @@ export function ResetPasswordForm() {
       toast.success("Password reset successfully. Taking you to sign in...");
       window.setTimeout(() => router.replace("/login"), 900);
     } catch (submitError) {
-      toast.error(getErrorMessage(submitError, "This reset link is invalid or has expired."));
+      toast.error(
+        getErrorMessage(submitError, "Unable to reset your password right now. Please try again."),
+      );
     }
   };
   return (

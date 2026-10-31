@@ -1,5 +1,6 @@
 "use client";
 
+import { getErrorMessage } from "@/lib/api-error";
 import Link from "next/link";
 import { useState } from "react";
 import {
@@ -300,8 +301,8 @@ export function InterviewsScreen() {
       else await create({ applicationId, body }).unwrap();
       toast.success(editing ? "Interview updated." : "Interview scheduled.");
       reset();
-    } catch {
-      toast.error("Could not save interview.");
+    } catch (error) {
+      toast.error(getErrorMessage(error, "Could not save interview."));
     }
   };
   return (
@@ -444,7 +445,7 @@ export function InterviewsScreen() {
                 toast.success("Interview deleted.");
                 setDeleting(null);
               })
-              .catch(() => toast.error("Could not delete interview."));
+              .catch((error) => toast.error(getErrorMessage(error, "Could not delete interview.")));
         }}
         onOpenChange={(value) => !value && setDeleting(null)}
         open={Boolean(deleting)}

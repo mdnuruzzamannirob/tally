@@ -1,5 +1,6 @@
 "use client";
 
+import { getErrorMessage } from "@/lib/api-error";
 import { ChangeEvent, useEffect, useState } from "react";
 import { useTheme } from "next-themes";
 import {
@@ -62,8 +63,6 @@ const sections = [
   { id: "data", label: "Data", icon: Database },
 ] as const;
 type Section = (typeof sections)[number]["id"];
-const err = (e: unknown, fallback: string) =>
-  (e as { data?: { message?: string } })?.data?.message ?? fallback;
 const tagColors = [
   "#6366f1",
   "#0ea5e9",
@@ -192,7 +191,7 @@ export function SettingsUI() {
       if (field === "theme") setTheme(value as "light" | "dark" | "system");
       toast.success("Preferences updated.");
     } catch (e) {
-      toast.error(err(e, "Could not update preferences."));
+      toast.error(getErrorMessage(e, "Could not update preferences."));
     }
   };
   const submitPassword = async () => {
@@ -206,14 +205,14 @@ export function SettingsUI() {
       setConfirm("");
       toast.success("Password updated.");
     } catch (e) {
-      toast.error(err(e, "Could not update password."));
+      toast.error(getErrorMessage(e, "Could not update password."));
     }
   };
   const exportData = async (kind: "json" | "csv") => {
     try {
       downloadFile(kind === "json" ? await exportJson().unwrap() : await exportCsv().unwrap());
-    } catch {
-      toast.error("Could not export your data.");
+    } catch (error) {
+      toast.error(getErrorMessage(error, "Could not export your data."));
     }
   };
   const chooseFile = (e: ChangeEvent<HTMLInputElement>) => {
@@ -230,8 +229,8 @@ export function SettingsUI() {
       await importJson(JSON.parse(await file.text()) as ExportBackup).unwrap();
       setFile(null);
       toast.success("Import completed.");
-    } catch {
-      toast.error("This backup is invalid or could not be imported.");
+    } catch (error) {
+      toast.error(getErrorMessage(error, "This backup is invalid or could not be imported."));
     }
   };
   const openTagModal = (tag?: { id: string; name: string; color: string | null }) => {
@@ -259,7 +258,7 @@ export function SettingsUI() {
       setTagModalOpen(false);
       toast.success(editingTag ? "Tag updated." : "Tag created.");
     } catch (e) {
-      toast.error(err(e, `Could not ${editingTag ? "update" : "create"} tag.`));
+      toast.error(getErrorMessage(e, `Could not ${editingTag ? "update" : "create"} tag.`));
     }
   };
   const navigation = (
@@ -322,7 +321,7 @@ export function SettingsUI() {
                           dispatch(setCurrentUser(updatedUser));
                           toast.success("Profile updated.");
                         })
-                        .catch((e) => toast.error(err(e, "Could not update profile.")))
+                        .catch((e) => toast.error(getErrorMessage(e, "Could not update profile.")))
                     }
                   >
                     Save changes
@@ -386,7 +385,9 @@ export function SettingsUI() {
                         .then(({ authorizationUrl }) => {
                           window.location.href = authorizationUrl;
                         })
-                        .catch((e) => toast.error(err(e, "Could not connect account.")));
+                        .catch((e) =>
+                          toast.error(getErrorMessage(e, "Could not connect account.")),
+                        );
                     return (
                       <div
                         className="flex items-center justify-between gap-3 py-3.5"
@@ -413,7 +414,9 @@ export function SettingsUI() {
                               void unlink(provider)
                                 .unwrap()
                                 .then(() => toast.success("Provider disconnected."))
-                                .catch((e) => toast.error(err(e, "Could not disconnect provider.")))
+                                .catch((e) =>
+                                  toast.error(getErrorMessage(e, "Could not disconnect provider.")),
+                                )
                             }
                             size="sm"
                             tone="outline"
@@ -623,7 +626,7 @@ export function SettingsUI() {
                   void deleteTag(deleteTagTarget.id)
                     .unwrap()
                     .then(() => toast.success("Tag deleted."))
-                    .catch(() => toast.error("Could not delete tag."));
+                    .catch((error) => toast.error(getErrorMessage(error, "Could not delete tag.")));
                   setDeleteTagTarget(null);
                 }}
                 onOpenChange={(open) => {

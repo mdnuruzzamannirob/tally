@@ -1,5 +1,6 @@
 "use client";
 
+import { getErrorMessage } from "@/lib/api-error";
 import Link from "next/link";
 import { ArrowLeft, Check, Info, MailCheck } from "lucide-react";
 import { useEffect, useRef, useState, useSyncExternalStore, type FormEvent } from "react";
@@ -14,6 +15,9 @@ type VerificationState = "pending" | "success" | "failure";
 
 export function VerifyEmailForm() {
   const [state, setState] = useState<VerificationState>("pending");
+  const [verificationError, setVerificationError] = useState(
+    "Unable to verify your email. Please try again.",
+  );
   const [typedEmail, setTypedEmail] = useState("");
   const queryEmail = useSyncExternalStore(
     () => () => {},
@@ -37,8 +41,10 @@ export function VerifyEmailForm() {
         toast.success("Email verified successfully.");
         setState("success");
       })
-      .catch(() => {
-        toast.error("This verification link is invalid or has expired.");
+      .catch((error) => {
+        const message = getErrorMessage(error, "Unable to verify your email. Please try again.");
+        setVerificationError(message);
+        toast.error(message);
         setState("failure");
       });
   }, [verifyEmail]);
@@ -52,8 +58,10 @@ export function VerifyEmailForm() {
     try {
       await resendVerification({ email }).unwrap();
       toast.success("Verification email sent. Check your inbox and spam folder.");
-    } catch {
-      toast.error("We couldn't send the verification email. Please try again.");
+    } catch (error) {
+      toast.error(
+        getErrorMessage(error, "We couldn't send the verification email. Please try again."),
+      );
     }
   };
 
@@ -86,7 +94,7 @@ export function VerifyEmailForm() {
       <AuthLayout>
         <AuthCard>
           <AuthHeader
-            description="This verification link is invalid or has expired."
+            description={verificationError}
             icon={<Info className="size-6" />}
             title="Verification failed"
           />

@@ -1,5 +1,6 @@
 "use client";
 
+import { getErrorMessage } from "@/lib/api-error";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -270,8 +271,8 @@ export function ApplicationDetailUI({ id }: { id: string }) {
       }).unwrap();
       setEditAppOpen(false);
       toast.success("Application updated.");
-    } catch {
-      toast.error("Could not update application.");
+    } catch (error) {
+      toast.error(getErrorMessage(error, "Could not update application."));
     }
   };
 
@@ -298,8 +299,8 @@ export function ApplicationDetailUI({ id }: { id: string }) {
       setStatusModalOpen(false);
       await refetch();
       toast.success(`Status updated to ${applicationLabels[selectedStatus]}.`);
-    } catch {
-      toast.error("Could not update status.");
+    } catch (error) {
+      toast.error(getErrorMessage(error, "Could not update status."));
     }
   };
 
@@ -328,8 +329,8 @@ export function ApplicationDetailUI({ id }: { id: string }) {
       }
       setNoteInput("");
       setNoteModalOpen(false);
-    } catch {
-      toast.error("Could not save note.");
+    } catch (error) {
+      toast.error(getErrorMessage(error, "Could not save note."));
     }
   };
 
@@ -345,8 +346,8 @@ export function ApplicationDetailUI({ id }: { id: string }) {
       await deleteNote({ applicationId: id, id: deleteNoteTarget }).unwrap();
       toast.success("Note removed.");
       setDeleteNoteTarget(null);
-    } catch {
-      toast.error("Could not delete note.");
+    } catch (error) {
+      toast.error(getErrorMessage(error, "Could not delete note."));
     }
   };
 
@@ -408,8 +409,8 @@ export function ApplicationDetailUI({ id }: { id: string }) {
         toast.success("Interview scheduled.");
       }
       setIvModalOpen(false);
-    } catch {
-      toast.error("Could not save interview.");
+    } catch (error) {
+      toast.error(getErrorMessage(error, "Could not save interview."));
     }
   };
 
@@ -419,8 +420,8 @@ export function ApplicationDetailUI({ id }: { id: string }) {
       await deleteInterview({ applicationId: id, id: deleteIvTarget }).unwrap();
       toast.success("Interview removed.");
       setDeleteIvTarget(null);
-    } catch {
-      toast.error("Could not delete interview.");
+    } catch (error) {
+      toast.error(getErrorMessage(error, "Could not delete interview."));
     }
   };
 
@@ -1263,7 +1264,7 @@ export function ApplicationDetailUI({ id }: { id: string }) {
               toast.success("Application deleted.");
               router.replace("/applications");
             })
-            .catch(() => toast.error("Could not delete application."));
+            .catch((error) => toast.error(getErrorMessage(error, "Could not delete application.")));
           setConfirmDeleteApp(false);
         }}
         onOpenChange={setConfirmDeleteApp}

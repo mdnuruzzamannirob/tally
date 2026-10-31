@@ -1,5 +1,6 @@
 "use client";
 
+import { getErrorMessage } from "@/lib/api-error";
 import Link from "next/link";
 import { format } from "date-fns";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
@@ -290,8 +291,8 @@ export function ApplicationWorkspace() {
         }).unwrap();
         toast.success(`Status updated to ${labels[toStatus]}`);
         return true;
-      } catch {
-        toast.error("Could not update status.");
+      } catch (error) {
+        toast.error(getErrorMessage(error, "Could not update status."));
         return false;
       }
     } else {
@@ -314,8 +315,8 @@ export function ApplicationWorkspace() {
       toast.success("Status updated.");
       setStatusTarget(null);
       setStatusNote("");
-    } catch {
-      toast.error("Could not update status.");
+    } catch (error) {
+      toast.error(getErrorMessage(error, "Could not update status."));
     }
   };
 
@@ -392,8 +393,8 @@ export function ApplicationWorkspace() {
       toast.success("Application added.");
       resetForm();
       setCreateOpen(false);
-    } catch {
-      toast.error("Could not add application.");
+    } catch (error) {
+      toast.error(getErrorMessage(error, "Could not add application."));
     }
   };
 
@@ -431,8 +432,8 @@ export function ApplicationWorkspace() {
       toast.success("Application updated.");
       resetForm();
       setEditApp(null);
-    } catch {
-      toast.error("Could not update application.");
+    } catch (error) {
+      toast.error(getErrorMessage(error, "Could not update application."));
     }
   };
 
@@ -440,8 +441,8 @@ export function ApplicationWorkspace() {
     try {
       await archiveApplication({ id: app.id, archived: !app.archivedAt }).unwrap();
       toast.success(app.archivedAt ? `${app.company} unarchived.` : `${app.company} archived.`);
-    } catch {
-      toast.error("Could not update archive status.");
+    } catch (error) {
+      toast.error(getErrorMessage(error, "Could not update archive status."));
     }
   };
 
@@ -451,8 +452,8 @@ export function ApplicationWorkspace() {
       await deleteApplication(deleteTarget.id).unwrap();
       toast.success("Application deleted.");
       setDeleteTarget(null);
-    } catch {
-      toast.error("Could not delete application.");
+    } catch (error) {
+      toast.error(getErrorMessage(error, "Could not delete application."));
     }
   };
 
