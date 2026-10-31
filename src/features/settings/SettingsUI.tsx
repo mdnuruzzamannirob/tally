@@ -732,7 +732,10 @@ export function SettingsUI() {
                   <div className="setting-row">
                     <div>
                       <p className="text-sm font-medium">Email notifications</p>
-                      <p className="text-xs text-muted-foreground">Optional product updates.</p>
+                      <p className="text-xs text-muted-foreground">
+                        Email interview updates, reminders and follow-ups. Security emails always
+                        stay on.
+                      </p>
                     </div>
                     <button
                       aria-checked={prefs?.notificationsEnabled ?? false}
