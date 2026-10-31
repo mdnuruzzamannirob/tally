@@ -132,6 +132,7 @@ export const baseApi = createApi({
   baseQuery: baseQueryWithReauth,
   tagTypes: [
     "Auth",
+    "Notifications",
     "Application",
     "Applications",
     "Dashboard",

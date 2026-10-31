@@ -1,4 +1,5 @@
 "use client";
+import { NotificationCenter } from "./NotificationCenter";
 import { AppAvatar, AppButton, AppSearchDialog, AppThemeMenu } from "@/components/app-ui";
 import { AppConfirmDialog } from "@/components/app-ui/app-confirm-dialog";
 import { TallyLogo } from "@/components/shared/TallyLogo";
@@ -38,7 +39,6 @@ export function AppShell({ children }: { children: ReactNode }) {
   const [logout, { isLoading }] = useLogoutMutation();
   const [updatePreferences] = useUpdatePreferencesMutation();
   const [searchOpen, setSearchOpen] = useState(false);
-  const [notificationsOpen, setNotificationsOpen] = useState(false);
   const [confirmLogout, setConfirmLogout] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const noticeRef = useRef<HTMLDivElement>(null);
@@ -189,6 +189,7 @@ export function AppShell({ children }: { children: ReactNode }) {
                   <span className="md:hidden">Add</span>
                 </Link>
 
+                <NotificationCenter />
                 <AppThemeMenu
                   onThemeChange={handleThemeChange}
                   resolvedTheme={resolvedTheme}
