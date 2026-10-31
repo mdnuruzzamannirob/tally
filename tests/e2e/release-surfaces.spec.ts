@@ -3,9 +3,9 @@ import { expect, test } from "@playwright/test";
 test.describe("release public surfaces", () => {
   const pages = [
     ["/register", "Create your account"],
-    ["/forgot-password", "Reset your password"],
-    ["/reset-password", "Choose a new password"],
-    ["/verify-email", "Verify your email"],
+    ["/forgot-password", "Forgot your password?"],
+    ["/reset-password", "Set a new password"],
+    ["/verify-email", "Check your email"],
   ] as const;
 
   for (const [path, heading] of pages) {
@@ -18,7 +18,7 @@ test.describe("release public surfaces", () => {
   test("login form exposes accessible credentials and submit controls", async ({ page }) => {
     await page.goto("/login");
     await expect(page.getByLabel("Email")).toBeVisible();
-    await expect(page.getByLabel("Password")).toBeVisible();
+    await expect(page.getByLabel("Password", { exact: true })).toBeVisible();
     await expect(page.getByRole("button", { name: "Sign in" })).toBeVisible();
   });
 });

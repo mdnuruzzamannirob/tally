@@ -8,6 +8,7 @@ export type AppFieldProps = {
   description?: ReactNode;
   error?: ReactNode;
   label: ReactNode;
+  htmlFor?: string;
   optional?: boolean;
   required?: boolean;
 };
@@ -17,6 +18,7 @@ export function AppField({
   description,
   error,
   label,
+  htmlFor,
   optional = false,
   required,
 }: AppFieldProps) {
@@ -29,7 +31,10 @@ export function AppField({
       data-disabled={disabled || undefined}
       data-invalid={Boolean(error)}
     >
-      <FieldLabel className="gap-1 group-data-[disabled=true]/field:cursor-not-allowed">
+      <FieldLabel
+        htmlFor={htmlFor}
+        className="gap-1 group-data-[disabled=true]/field:cursor-not-allowed"
+      >
         {label}
         {required ? (
           <span aria-label="required" className="text-destructive">

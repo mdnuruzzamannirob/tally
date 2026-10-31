@@ -99,8 +99,9 @@ export function VerifyEmailForm() {
             title="Verification failed"
           />
           <form className="space-y-4" onSubmit={resend}>
-            <AppField label="Email" required>
+            <AppField label="Email" htmlFor="verification-email" required>
               <EmailInput
+                id="verification-email"
                 autoComplete="email"
                 onChange={(event) => setTypedEmail(event.target.value)}
                 placeholder="you@company.com"
@@ -148,8 +149,9 @@ export function VerifyEmailForm() {
               </AppButton>
             ) : (
               <>
-                <AppField label="Email" required>
+                <AppField label="Email" htmlFor="verification-email" required>
                   <EmailInput
+                    id="verification-email"
                     autoComplete="email"
                     onChange={(event) => setTypedEmail(event.target.value)}
                     placeholder="you@company.com"

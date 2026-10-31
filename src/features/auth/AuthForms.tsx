@@ -1,6 +1,7 @@
 "use client";
 
 import { getErrorMessage } from "@/lib/api-error";
+import { getAuthRedirect } from "@/lib/auth-redirect";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
@@ -27,7 +28,10 @@ const emailSchema = z.string().trim().email("Enter a valid email address.");
 const passwordSchema = z
   .string()
   .min(8, "Password must contain at least 8 characters.")
-  .max(72, "Password must not exceed 72 characters.");
+  .refine(
+    (value) => new TextEncoder().encode(value).length <= 72,
+    "Password must not exceed 72 bytes.",
+  );
 const loginSchema = z.object({ email: emailSchema, password: passwordSchema });
 const registerSchema = z
   .object({
@@ -53,7 +57,6 @@ export function LoginForm() {
   const params = useSearchParams();
   const dispatch = useAppDispatch();
   const [login, { isLoading }] = useLoginMutation();
-  const [remember, setRemember] = useState(true);
   const oauthErrorShown = useRef(false);
 
   const {
@@ -76,7 +79,7 @@ export function LoginForm() {
       const session = await login(values).unwrap();
       dispatch(setSession(session));
       const redirect = new URLSearchParams(window.location.search).get("redirect");
-      router.replace(redirect?.startsWith("/") ? redirect : "/dashboard");
+      router.replace(getAuthRedirect(redirect, window.location.origin));
     } catch (submitError) {
       toast.error(getErrorMessage(submitError, "Unable to sign in right now. Please try again."));
     }
@@ -90,8 +93,9 @@ export function LoginForm() {
           title="Sign in to Tally"
         />
         <form className="space-y-4" noValidate onSubmit={handleSubmit(onSubmit)}>
-          <AppField error={errors.email?.message} label="Email" required>
-            <AppInput
+          <AppField error={errors.email?.message} label="Email" htmlFor="email" required>
+            <EmailInput
+              id="email"
               aria-invalid={Boolean(errors.email)}
               autoComplete="email"
               placeholder="you@company.com"
@@ -100,6 +104,7 @@ export function LoginForm() {
           </AppField>
           <AppField
             error={errors.password?.message}
+            htmlFor="password"
             label={
               <span className="flex w-full items-center justify-between">
                 <span>
@@ -115,18 +120,14 @@ export function LoginForm() {
             }
           >
             <PasswordInput
+              id="password"
+              aria-label="Password"
               aria-invalid={Boolean(errors.password)}
               autoComplete="current-password"
               placeholder="Enter your password"
               {...register("password")}
             />
           </AppField>{" "}
-          <AppCheckbox
-            checked={remember}
-            label="Keep me signed in for 30 days"
-            onCheckedChange={(value) => setRemember(value === true)}
-            size="sm"
-          />
           <AppButton className="h-10 w-full" loading={isLoading} type="submit">
             {isLoading ? "Signing in..." : "Sign in"}
           </AppButton>
@@ -185,11 +186,17 @@ export function RegisterForm() {
           title="Create your account"
         />
         <form className="space-y-4" noValidate onSubmit={handleSubmit(onSubmit)}>
-          <AppField error={errors.name?.message} label="Full name">
-            <AppInput autoComplete="name" placeholder="Alex Morgan" {...register("name")} />
+          <AppField error={errors.name?.message} label="Full name" htmlFor="name">
+            <AppInput
+              id="name"
+              autoComplete="name"
+              placeholder="Alex Morgan"
+              {...register("name")}
+            />
           </AppField>
-          <AppField error={errors.email?.message} label="Email" required>
+          <AppField error={errors.email?.message} label="Email" htmlFor="email" required>
             <EmailInput
+              id="email"
               aria-invalid={Boolean(errors.email)}
               autoComplete="email"
               placeholder="you@company.com"
@@ -200,13 +207,15 @@ export function RegisterForm() {
             description={
               errors.password
                 ? undefined
-                : "Use at least 8 characters, one uppercase letter, one number, and one special character."
+                : "Use at least 8 characters. A mix of letters, numbers and symbols makes it stronger."
             }
             error={errors.password?.message}
             label="Password"
+            htmlFor="password"
             required
           >
             <PasswordInput
+              id="password"
               {...passwordField}
               aria-invalid={Boolean(errors.password)}
               autoComplete="new-password"
@@ -218,8 +227,14 @@ export function RegisterForm() {
             />
             <PasswordStrength password={password} />
           </AppField>
-          <AppField error={errors.confirmPassword?.message} label="Confirm password" required>
+          <AppField
+            error={errors.confirmPassword?.message}
+            label="Confirm password"
+            htmlFor="confirm-password"
+            required
+          >
             <PasswordInput
+              id="confirm-password"
               {...confirmPasswordField}
               aria-invalid={Boolean(errors.confirmPassword)}
               autoComplete="new-password"
@@ -289,8 +304,9 @@ export function ForgotPasswordForm() {
           title="Forgot your password?"
         />
         <form className="space-y-4" noValidate onSubmit={submit}>
-          <AppField error={emailError ?? undefined} label="Email" required>
+          <AppField error={emailError ?? undefined} label="Email" htmlFor="email" required>
             <EmailInput
+              id="email"
               aria-invalid={Boolean(emailError)}
               autoComplete="email"
               onChange={(event) => {
@@ -342,11 +358,12 @@ export function ResetPasswordForm() {
     }
     setPasswordError(null);
     if (password !== confirm) {
+      setPasswordError("Passwords must match.");
       return;
     }
     const token = tokenRef.current;
     if (!token) {
-      toast.error("Unable to reset your password right now. Please try again.");
+      toast.error("This reset link is missing. Request a new link from Forgot password.");
       return;
     }
     try {
@@ -371,13 +388,15 @@ export function ResetPasswordForm() {
             description={
               passwordError
                 ? undefined
-                : "Use at least 8 characters, one uppercase letter, one number, and one special character."
+                : "Use at least 8 characters. A mix of letters, numbers and symbols makes it stronger."
             }
             error={passwordError ?? undefined}
             label="New password"
+            htmlFor="password"
             required
           >
             <PasswordInput
+              id="password"
               aria-invalid={Boolean(passwordError)}
               autoComplete="new-password"
               onChange={(event) => {
@@ -392,9 +411,11 @@ export function ResetPasswordForm() {
           <AppField
             error={confirm && password !== confirm ? "Passwords don't match." : undefined}
             label="Confirm new password"
+            htmlFor="confirm-password"
             required
           >
             <PasswordInput
+              id="confirm-password"
               aria-invalid={Boolean(confirm && password !== confirm)}
               autoComplete="new-password"
               onChange={(event) => setConfirm(event.target.value)}
@@ -406,6 +427,12 @@ export function ResetPasswordForm() {
             {isLoading ? "Resetting password..." : "Reset password"}
           </AppButton>
         </form>
+        <AuthFooter>
+          Need a new reset link?{" "}
+          <Link className="font-medium text-primary hover:underline" href="/forgot-password">
+            Request another
+          </Link>
+        </AuthFooter>
       </AuthCard>
     </AuthLayout>
   );

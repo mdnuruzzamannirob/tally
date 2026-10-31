@@ -59,7 +59,7 @@ export function GitHubIcon() {
 }
 
 export function EmailInput(props: ComponentProps<typeof AppInput>) {
-  return <AppInput {...props} leading={<Mail />} />;
+  return <AppInput type="email" {...props} leading={<Mail />} />;
 }
 
 export function SocialButtons({
