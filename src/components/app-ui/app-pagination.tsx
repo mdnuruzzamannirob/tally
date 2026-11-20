@@ -24,6 +24,7 @@ export function AppPagination({
       </AppButton>
       {pages.map((number) => (
         <button
+          aria-current={number === page ? "page" : undefined}
           className={
             number === page
               ? "grid size-8 place-items-center rounded-md border border-primary bg-primary text-xs font-medium text-primary-foreground"

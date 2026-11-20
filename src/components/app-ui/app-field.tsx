@@ -41,12 +41,12 @@ export function AppField({
             *
           </span>
         ) : optional ? (
-          <span className="text-xs font-normal text-muted-foreground/75">(optional)</span>
+          <span className="text-xs font-normal text-muted-foreground">(optional)</span>
         ) : null}
       </FieldLabel>
       {children}
       {description ? (
-        <FieldDescription className="text-xs leading-4 text-muted-foreground/75">
+        <FieldDescription className="text-xs leading-4 text-muted-foreground">
           {description}
         </FieldDescription>
       ) : null}

@@ -5,7 +5,7 @@ import { getAuthRedirect } from "@/lib/auth-redirect";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -54,7 +54,6 @@ function SocialLogin() {
 
 export function LoginForm() {
   const router = useRouter();
-  const params = useSearchParams();
   const dispatch = useAppDispatch();
   const [login, { isLoading }] = useLoginMutation();
   const oauthErrorShown = useRef(false);
@@ -66,13 +65,14 @@ export function LoginForm() {
   } = useForm<z.infer<typeof loginSchema>>({ resolver: zodResolver(loginSchema), mode: "onBlur" });
 
   useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
     if (params.get("oauth") === "error" && !oauthErrorShown.current) {
       oauthErrorShown.current = true;
       toast.error(
         "Social sign-in failed. Please check that your account email is verified with your provider.",
       );
     }
-  }, [params]);
+  }, []);
 
   const onSubmit = async (values: { email: string; password: string }) => {
     try {
@@ -242,6 +242,7 @@ export function RegisterForm() {
             />
           </AppField>{" "}
           <AppCheckbox
+            aria-label="Agree to the Terms and Privacy Policy"
             checked={terms}
             label={
               <span>

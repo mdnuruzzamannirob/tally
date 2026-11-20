@@ -99,7 +99,15 @@ export function PasswordStrength({ password }: { password: string }) {
 
   return (
     <div aria-live="polite" className="mt-2 space-y-2">
-      <div aria-label="Password strength indicator" className="flex gap-3">
+      <div
+        aria-label="Password strength"
+        aria-valuemax={4}
+        aria-valuemin={0}
+        aria-valuenow={score}
+        aria-valuetext={`${score} of 4 strength requirements met`}
+        className="flex gap-3"
+        role="meter"
+      >
         {[0, 1, 2, 3].map((bar) => (
           <span
             className={`h-1.5 flex-1 rounded-full ${bar < score ? "bg-success" : "bg-muted"}`}

@@ -136,9 +136,9 @@
   --ring: rgb(99 102 241 / 25%);
 
   /* Primary Brand (Indigo Modern) */
-  --primary: #6366f1;
-  --primary-hover: #4f46e5;
-  --primary-active: #4338ca;
+  --primary: #4f46e5;
+  --primary-hover: #4338ca;
+  --primary-active: #3730a3;
   --primary-foreground: #ffffff;
   --primary-soft: #eef2ff;
   --primary-border: #c7d2fe;
@@ -269,13 +269,13 @@
   --ring: rgb(129 140 248 / 35%);
 
   /* Primary Brand (Vibrant Indigo for Dark Mode) */
-  --primary: #6366f1;
-  --primary-hover: #818cf8;
-  --primary-active: #a5b4fc;
-  --primary-foreground: #ffffff;
+  --primary: #818cf8;
+  --primary-hover: #a5b4fc;
+  --primary-active: #c7d2fe;
+  --primary-foreground: #0b1220;
   --primary-soft: rgb(99 102 241 / 14%);
   --primary-border: rgb(129 140 248 / 35%);
-  --primary-text: #c7d2fe;
+  --primary-text: #a5b4fc;
 
   /* Secondary & Muted */
   --secondary: #1f2937;
