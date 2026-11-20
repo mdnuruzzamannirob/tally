@@ -212,7 +212,7 @@ Registry audit results from `pnpm audit`:
 | API       | Production       |               41 |       41 |   2 |       24 |   14 |        1 |
 | API       | All dependencies |               61 |       62 |   3 |       36 |   20 |        3 |
 
-The full-tree critical advisories affect `next`, `proxy-addr`, and `tinypool` in web, and `proxy-addr` and `tinypool` in API. Audit exit status was 1 because advisories were found; these counts do not assess exploitability. JSON output is saved in [`artifacts/dependency-audit/`](./artifacts/dependency-audit/), and Lighthouse JSON/HTML is in [`tally_web/artifacts/lighthouse/`](./tally_web/artifacts/lighthouse/).
+The full-tree critical advisories affect `next`, `proxy-addr`, and `tinypool` in web, and `proxy-addr` and `tinypool` in API. Audit exit status was 1 because advisories were found; these counts do not assess exploitability. JSON output is saved in [`artifacts/dependency-audit/`](../artifacts/dependency-audit/), and Lighthouse JSON/HTML is in [`artifacts/lighthouse/`](./artifacts/lighthouse/).
 
 For every comparison, record the commit, command/tool version, environment, route/viewport (for browser metrics), and raw output. Without matching conditions, before/after figures may not be comparable.
 
@@ -274,7 +274,7 @@ The original Lighthouse runs contacted the remote staging API during session ref
 
 In the second final mobile run, Lighthouse attributed 84% (2,408 ms) of LCP to render delay, with 454 ms TTFB; its `unused-javascript` audit estimated 168 KiB of unused transfer bytes and 440 ms possible LCP savings. Those are Lighthouse lab estimates, not guaranteed gains; route-level bundle/trace inspection is needed before changing code.
 
-Raw final Lighthouse runs: [`desktop 1`](./tally_web/artifacts/lighthouse/login-desktop-final-1.json), [`desktop 2`](./tally_web/artifacts/lighthouse/login-desktop-final-2.json), [`desktop 3`](./tally_web/artifacts/lighthouse/login-desktop-final-3.json), [`mobile 1`](./tally_web/artifacts/lighthouse/login-mobile-final-1.json), [`mobile 2`](./tally_web/artifacts/lighthouse/login-mobile-final-2.json), [`mobile 3`](./tally_web/artifacts/lighthouse/login-mobile-final-3.json).
+Raw final Lighthouse runs: [`desktop 1`](./artifacts/lighthouse/login-desktop-final-1.json), [`desktop 2`](./artifacts/lighthouse/login-desktop-final-2.json), [`desktop 3`](./artifacts/lighthouse/login-desktop-final-3.json), [`mobile 1`](./artifacts/lighthouse/login-mobile-final-1.json), [`mobile 2`](./artifacts/lighthouse/login-mobile-final-2.json), [`mobile 3`](./artifacts/lighthouse/login-mobile-final-3.json).
 
 ### Dependency audit after snapshot
 
@@ -283,7 +283,7 @@ Raw final Lighthouse runs: [`desktop 1`](./tally_web/artifacts/lighthouse/login-
 | Web       | 0                   | 2 high, 0 critical |
 | API       | 0                   | 0                  |
 
-The remaining web findings are development-tool transitive `extract-zip` findings under Lighthouse/Puppeteer; the saved registry audit reports no patched version for the affected package. They are not production dependency findings. Raw final audit outputs: [`web production`](./artifacts/dependency-audit/web-prod-final.json), [`web full tree`](./artifacts/dependency-audit/web-all-final.json), [`API production`](./artifacts/dependency-audit/api-prod-final.json), [`API full tree`](./artifacts/dependency-audit/api-all-final.json). Registry results are time-sensitive.
+The remaining web findings are development-tool transitive `extract-zip` findings under Lighthouse/Puppeteer; the saved registry audit reports no patched version for the affected package. They are not production dependency findings. Raw final audit outputs: [`web production`](../artifacts/dependency-audit/web-prod-final.json), [`web full tree`](../artifacts/dependency-audit/web-all-final.json), [`API production`](../artifacts/dependency-audit/api-prod-final.json), [`API full tree`](../artifacts/dependency-audit/api-all-final.json). Registry results are time-sensitive.
 
 ### Remaining improvement work
 
